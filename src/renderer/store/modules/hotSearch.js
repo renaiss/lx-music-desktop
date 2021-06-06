@@ -1,6 +1,6 @@
 import music from '../../utils/music'
-const sources = []
-const sourceList = {}
+/** @type { LxMusic.Renderer.SearchSources } */ const sources = []
+/** @type { LxMusic.Renderer.MusicSourcesMap } */ const sourceList = {}
 for (const source of music.sources) {
   const hotSearch = music[source.id].hotSearch
   if (!hotSearch) continue
@@ -14,6 +14,7 @@ sources.push({
 })
 
 // state
+/** @type { LxMusic.Renderer.HotSearchState } */
 const state = {
   list: {
     ...sourceList,
@@ -24,14 +25,27 @@ const state = {
 
 // getters
 const getters = {
+  /**
+   * @param { LxMusic.Renderer.HotSearchState } state
+   * @param { LxMusic.Renderer.HotSearchActionContext["getters"] } getters
+   * @param { LxMusic.Renderer.HotSearchActionContext["rootState"] } rootState
+   * @param { { sourceNames: LxMusic.Renderer.SearchMap; } } param3
+   */
   sources(state, getters, rootState, { sourceNames }) {
     return sources.map(item => ({ id: item.id, name: sourceNames[item.id] }))
   },
+  /** @param { LxMusic.Renderer.HotSearchState } state */
   list: state => state.list,
 }
 
 // actions
 const actions = {
+  /**
+   * 获取列表
+   * @param { LxMusic.Renderer.HotSearchActionContext } param0
+   * @param { LxMusic.Renderer.SearchType } source
+   * @returns
+   */
   getList({ state, commit }, source) {
     if (source == 'all') {
       let task = []
@@ -57,9 +71,19 @@ const actions = {
 
 // mitations
 const mutations = {
+  /**
+   * 设置列表
+   * @param { LxMusic.Renderer.HotSearchState } state
+   * @param { LxMusic.Renderer.HotSearchSetListInfo } param1
+   */
   setList(state, { source, data }) {
     state.list[source] = data ? data.list.slice(0, 20) : []
   },
+  /**
+   * 设置列表组
+   * @param { LxMusic.Renderer.HotSearchState } state
+   * @param { LxMusic.Renderer.HotSearchSetListInfo[] } lists
+   */
   setLists(state, lists) {
     let list = new Map()
     for (const source of lists) {
@@ -76,6 +100,11 @@ const mutations = {
     list = list.map(item => item[0])
     state.list.all = list
   },
+  /**
+   * 清除列表
+   * @param { LxMusic.Renderer.HotSearchState } state
+   * @param { LxMusic.Renderer.MusicSourcesId } source
+   */
   clearList(state, source) {
     state.list[source] = []
   },

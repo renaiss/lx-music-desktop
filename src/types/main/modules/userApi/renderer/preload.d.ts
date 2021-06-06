@@ -1,12 +1,12 @@
 /** 质量类型 */ export type QualityType = "128k" | "320k" | "flac";
 
 /** 支持的质量 */
-export type SupportQualitys = { [source in LxMusic.Common.SourcesId]: QualityType[] };
+export type SupportQualitys = { [source in LxMusic.Renderer.MusicSourcesId]: QualityType[] };
 
 /** 操作类型 */ export type ActionType = "musicUrl";
 
 /** 支持的操作 */
-export type SupportActions = { [source in LxMusic.Common.SourcesId]: ActionType[] };
+export type SupportActions = { [source in LxMusic.Renderer.MusicSourcesId]: ActionType[] };
 
 /** 初始化信息 */
 export interface InitInfo {

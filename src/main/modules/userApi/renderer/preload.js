@@ -27,7 +27,7 @@ const EVENT_NAMES = {
 
 /**
  * 所有来源
- * @type { LxMusic.Common.SourcesId[] }
+ * @type { LxMusic.Renderer.MusicSourcesId[] }
  */
 const allSources = ['kw', 'kg', 'tx', 'wy', 'mg']
 

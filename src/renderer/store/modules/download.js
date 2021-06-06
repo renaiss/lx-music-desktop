@@ -34,7 +34,10 @@ const filterFileName = /[\\/:*?#"<>|]/g
 
 // getters
 const getters = {
+  /** @param { LxMusic.Renderer.DownloadStatusStateInfo } state */
   list: state => state.list || [],
+
+  /** @param { LxMusic.Renderer.DownloadStatusStateInfo } state */
   downloadStatus: state => state.downloadStatus,
 }
 

@@ -57,22 +57,9 @@ export interface Download {
   /** 使用其它来源 */ isUseOtherSource: boolean;
 }
 
-/** 歌曲资源 */
-export type Sources = [
-  { name: "酷我音乐"; id: "kw"; },
-  { name: "酷狗音乐"; id: "kg"; },
-  { name: "QQ音乐"; id: "tx"; },
-  { name: "网易音乐"; id: "wy"; },
-  { name: "咪咕音乐"; id: "mg"; },
-  { name: "虾米音乐"; id: "xm"; },
-]
-
-/** 歌曲资源ID */
-export type SourcesId = Sources[number]["id"];
-
 /** 排行榜 */
 export interface Leaderboard {
-  /** 来源 */ source: SourcesId;
+  /** 来源 */ source: LxMusic.Renderer.MusicSourcesId;
   /** 列表ID */ tabId: string;
 }
 
@@ -84,7 +71,7 @@ export interface SongListTagInfo {
 
 /** 歌曲列表 */
 export interface SongList {
-  /** 来源 */ source: SourcesId,
+  /** 来源 */ source: LxMusic.Renderer.MusicSourcesId,
   /** 排序ID */ sortId: string,
   /** 目标信息 */ tagInfo: SongListTagInfo;
 }
@@ -97,8 +84,8 @@ export interface Odc {
 
 /** 搜素 */
 export interface Search {
-  /** 搜索来源 */ searchSource: SourcesId | "all";
-  /** 临时所搜来源 */ tempSearchSource: SourcesId;
+  /** 搜索来源 */ searchSource: LxMusic.Renderer.MusicSourcesId | "all";
+  /** 临时所搜来源 */ tempSearchSource: LxMusic.Renderer.MusicSourcesId;
   /** 显示热搜 */ isShowHotSearch: boolean;
   /** 显示搜索历史 */ isShowHistorySearch: boolean;
   /** 聚焦搜索框 */ isFocusSearchBox: boolean;
@@ -139,7 +126,7 @@ export interface Setting {
   /** 窗口规格ID */ windowSizeId: number;
   /** 主题ID */ themeId: number;
   /** 语言ID */ langId: null;
-  /** 来源ID */ sourceId: SourcesId;
+  /** 来源ID */ sourceId: LxMusic.Renderer.MusicSourcesId;
   /** 网络接口ID */ apiSource: "test" | "temp";
   /** 源名称类型 */ sourceNameType: "real" | "alias";
   /** 显示动画 */ isShowAnimation: boolean;
