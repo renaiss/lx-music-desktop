@@ -28,6 +28,7 @@ namespace LxMusic {
     import("./renderer/event"); export * from "./renderer/event";
     import("./renderer/plugins/Tips"); export * from "./renderer/plugins/Tips";
     import("./renderer/store"); export * from "./renderer/store";
+    import("./renderer/utils"); export * from "./renderer/utils";
   }
   namespace Utils {
     import("./main/utils"); export * from "./main/utils";

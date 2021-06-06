@@ -26,10 +26,9 @@ const state = {
   },
 }
 
-
-const dls = {}
-const tryNum = {}
-let isRuningActionTask = false
+/** @type { LxMusic.Renderer.DownloadMap } */ const dls = {}
+/** @type { LxMusic.Renderer.DownloadTryMap } */ const tryNum = {}
+/** 正在运行操作任务 */ let isRuningActionTask = false
 
 const filterFileName = /[\\/:*?#"<>|]/g
 
@@ -334,6 +333,7 @@ const fixKgLyric = lrc => /\[00:\d\d:\d\d.\d+\]/.test(lrc) ? lrc.replace(/(?:\[0
  * 设置歌曲元信息
  * @param { LxMusic.Renderer.DownloadInfo } downloadInfo 下载信息
  * @param { string } filePath 文件路径
+ * @param { boolean } isUseOtherSource 使用的其他来源
  * @param { boolean } isEmbedPic 是否嵌入图片
  */
 const saveMeta = function(downloadInfo, filePath, isUseOtherSource, isEmbedPic, isEmbedLyric) {
@@ -405,9 +405,9 @@ const downloadLyric = (downloadInfo, filePath) => {
 
 /**
  * 刷新网址
- * @param {*} commit
- * @param {*} downloadInfo
- * @param {*} isUseOtherSource
+ * @param { LxMusic.Renderer.DownloadStatusStateInfoStore["commit"] } commit
+ * @param { LxMusic.Renderer.DownloadInfo } downloadInfo 下载信息
+ * @param { boolean } isUseOtherSource 使用的其他来源
  */
 const refreshUrl = function(commit, downloadInfo, isUseOtherSource) {
   commit('setStatusText', { downloadInfo, text: '链接失效，正在刷新链接' })
@@ -432,7 +432,7 @@ const refreshUrl = function(commit, downloadInfo, isUseOtherSource) {
 
 /**
  * 删除文件
- * @param {*} path
+ * @param { string } path 被删除路径
  */
 const deleteFile = path => new Promise((resolve, reject) => {
   fs.access(path, fs.constants.F_OK, err => {
@@ -445,11 +445,18 @@ const deleteFile = path => new Promise((resolve, reject) => {
 })
 
 
-// actions
+/** 行动 */
 const actions = {
+
+  /**
+   * 创建下载
+   * @param { LxMusic.Renderer.DownloadStatusStateInfoStore } param0
+   * @param { LxMusic.Renderer.DownloadMusicInfo } param1
+   */
   async createDownload({ state, rootState, commit, dispatch }, { musicInfo, type }) {
     let ext = getExt(type)
     if (checkList(state.list, musicInfo, type, ext)) return
+    /** @type { LxMusic.Renderer.DownloadInfo } */
     const downloadInfo = {
       isComplate: false,
       status: state.downloadStatus.WAITING,
@@ -485,6 +492,12 @@ const actions = {
       dispatch('startTask', downloadInfo)
     }
   },
+
+  /**
+   * 创建多下载
+   * @param { LxMusic.Renderer.DownloadStatusStateInfoStore } store 存储器
+   * @param { LxMusic.Renderer.DownloadMusicListInfo } param1
+   */
   createDownloadMultiple(store, { list, type }) {
     if (!list.length || isRuningActionTask) return
     isRuningActionTask = true
@@ -492,6 +505,13 @@ const actions = {
       isRuningActionTask = false
     })
   },
+
+  /**
+   * 处理开始任务
+   * @param { LxMusic.Renderer.DownloadStatusStateInfoStore } param0
+   * @param { LxMusic.Renderer.DownloadInfo } downloadInfo 下载信息
+   * @returns
+   */
   async handleStartTask({ commit, dispatch, rootState }, downloadInfo) {
     // 开始任务
     commit('onStart', downloadInfo)
@@ -505,6 +525,10 @@ const actions = {
       return
     }
     const _this = this
+    /**
+     * 下载歌词参数
+     * @type { LxMusic.Renderer.DownloadOptionInfo }
+     */
     const options = {
       url: downloadInfo.url,
       path: rootState.setting.download.savePath,
@@ -594,6 +618,12 @@ const actions = {
       dispatch('startTask')
     })
   },
+
+  /**
+   * 移除任务
+   * @param { LxMusic.Renderer.DownloadStatusStateInfoStore } param0
+   * @param { LxMusic.Renderer.DownloadInfo } item
+   */
   async removeTask({ commit, state, dispatch }, item) {
     if (dls[item.key]) {
       if (item.status == state.downloadStatus.RUN) {
@@ -615,6 +645,12 @@ const actions = {
         await dispatch('startTask')
     }
   },
+
+  /**
+   * 移除任务
+   * @param { LxMusic.Renderer.DownloadStatusStateInfoStore } store 储存桶
+   * @param { LxMusic.Renderer.DownloadInfo[] } list 下载列表
+   */
   removeTasks(store, list) {
     let { rootState, state } = store
     if (isRuningActionTask) return
@@ -628,6 +664,12 @@ const actions = {
       isRuningActionTask = false
     })
   },
+
+  /**
+   * 开始任务
+   * @param { LxMusic.Renderer.DownloadStatusStateInfoStore } param0 储存桶
+   * @param { LxMusic.Renderer.DownloadInfo } downloadInfo 下载信息
+   */
   async startTask({ state, rootState, commit, dispatch }, downloadInfo) {
     // 检查是否可以开始任务
     let result = getStartTask(state.list, state.downloadStatus, rootState.setting.download.maxDownloadNum)
@@ -659,6 +701,12 @@ const actions = {
       await dispatch('handleStartTask', downloadInfo)
     }
   },
+
+  /**
+   * 开始任务列表
+   * @param { LxMusic.Renderer.DownloadStatusStateInfoStore } store 储存桶
+   * @param { LxMusic.Renderer.DownloadInfo[] } list 下载列表
+   */
   startTasks(store, list) {
     if (isRuningActionTask) return
     isRuningActionTask = true
@@ -666,6 +714,12 @@ const actions = {
       isRuningActionTask = false
     })
   },
+
+  /**
+   * 暂停任务
+   * @param { LxMusic.Renderer.DownloadStatusStateInfoStore } store 储存桶
+   * @param { LxMusic.Renderer.DownloadInfo } item 下载信息
+   */
   async pauseTask(store, item) {
     if (item.isComplate) return
     let dl = dls[item.key]
@@ -676,6 +730,12 @@ const actions = {
     }
     store.commit('pauseTask', item)
   },
+
+  /**
+   * 暂停任务列表
+   * @param { LxMusic.Renderer.DownloadStatusStateInfoStore } store 储存桶
+   * @param { LxMusic.Renderer.DownloadInfo[] } list 下载列表
+   */
   pauseTasks(store, list) {
     if (isRuningActionTask) return
     isRuningActionTask = true
@@ -687,16 +747,36 @@ const actions = {
 
 // mitations
 const mutations = {
+  /**
+   * 添加任务
+   * @param { LxMusic.Renderer.DownloadStatusStateInfo } state
+   * @param { LxMusic.Renderer.DownloadInfo } downloadInfo
+   */
   addTask(state, downloadInfo) {
     state.list.unshift(downloadInfo)
   },
+  /**
+   * 移除任务
+   * @param { LxMusic.Renderer.DownloadStatusStateInfo } param0
+   * @param { LxMusic.Renderer.DownloadInfo } downloadInfo
+   */
   removeTask({ list }, downloadInfo) {
     list.splice(list.indexOf(downloadInfo), 1)
   },
+  /**
+   * 暂停任务
+   * @param { LxMusic.Renderer.DownloadStatusStateInfo } state
+   * @param { LxMusic.Renderer.DownloadInfo } downloadInfo
+   */
   pauseTask(state, downloadInfo) {
     downloadInfo.status = state.downloadStatus.PAUSE
     downloadInfo.statusText = '暂停下载'
   },
+  /**
+   * 设置状态文本
+   * @param { LxMusic.Renderer.DownloadStatusStateInfo } state
+   * @param { LxMusic.Renderer.DownloadSetStatusInfo } param1
+   */
   setStatusText(state, { downloadInfo, index, text }) { // 设置状态文本
     if (downloadInfo) {
       downloadInfo.statusText = text
@@ -704,6 +784,11 @@ const mutations = {
       state.list[index].statusText = text
     }
   },
+  /**
+   * 设置状态
+   * @param { LxMusic.Renderer.DownloadStatusStateInfo } state
+   * @param { LxMusic.Renderer.DownloadSetStatusInfo } param1
+   */
   setStatus(state, { downloadInfo, index, status }) { // 设置状态及状态文本
     let text
     switch (status) {
@@ -731,33 +816,73 @@ const mutations = {
       state.list[index].status = status
     }
   },
+  /**
+   * 若完成
+   * @param { LxMusic.Renderer.DownloadStatusStateInfo } state
+   * @param { LxMusic.Renderer.DownloadInfo } downloadInfo
+   */
   onCompleted(state, downloadInfo) {
     downloadInfo.isComplate = true
     downloadInfo.status = state.downloadStatus.COMPLETED
     downloadInfo.statusText = '下载完成'
   },
+  /**
+   * 若错误
+   * @param { LxMusic.Renderer.DownloadStatusStateInfo } state
+   * @param { LxMusic.Renderer.DownloadSetStatusInfo } param1
+   */
   onError(state, { downloadInfo, errorMsg }) {
     downloadInfo.status = state.downloadStatus.ERROR
     downloadInfo.statusText = errorMsg || '任务出错'
   },
+  /**
+   * 若开始
+   * @param { LxMusic.Renderer.DownloadStatusStateInfo } state
+   * @param { LxMusic.Renderer.DownloadInfo } downloadInfo
+   */
   onStart(state, downloadInfo) {
     downloadInfo.status = state.downloadStatus.RUN
     downloadInfo.statusText = '正在下载'
   },
+  /**
+   * 若进度
+   * @param { LxMusic.Renderer.DownloadStatusStateInfo } state
+   * @param { LxMusic.Renderer.DownloadSetStatusInfo } param1
+   */
   onProgress(state, { downloadInfo, status }) {
     downloadInfo.progress.progress = status.progress
     downloadInfo.progress.downloaded = status.downloaded
     downloadInfo.progress.total = status.total
   },
+  /**
+   * 设置总数
+   * @param { LxMusic.Renderer.DownloadStatusStateInfo } state
+   * @param { LxMusic.Renderer.DownloadSetStatusInfo } param1
+   */
   setTotal(state, { order, downloadInfo }) {
     downloadInfo.order = order
   },
+  /**
+   * 更新下载列表
+   * @param { LxMusic.Renderer.DownloadStatusStateInfo } state
+   * @param { LxMusic.Renderer.DownloadInfo[] } list
+   */
   updateDownloadList(state, list) {
     state.list = list
   },
+  /**
+   * 设置网址
+   * @param { LxMusic.Renderer.DownloadStatusStateInfo } state
+   * @param { LxMusic.Renderer.DownloadSetStatusInfo } param1
+   */
   updateUrl(state, { downloadInfo, url }) {
     downloadInfo.url = url
   },
+  /**
+   * 设置网址
+   * @param { LxMusic.Renderer.DownloadStatusStateInfo } state
+   * @param { LxMusic.Renderer.DownloadSetStatusInfo } param1
+   */
   updateFilePath(state, { downloadInfo, filePath }) {
     if (downloadInfo.filePath === filePath) return
     downloadInfo.filePath = filePath
