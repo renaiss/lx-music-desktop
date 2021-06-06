@@ -1,8 +1,18 @@
 const fs = require('fs')
 const path = require('path')
 
+/**
+ * 合并
+ * @param  { string[] } p 被合并项
+ */
 exports.jp = (...p) => p.length ? path.join(__dirname, ...p) : __dirname
 
+/**
+ * 复制文件
+ * @param { string } source 源地址
+ * @param { string } target 目标地址
+ * @returns { Promise<void> }
+ */
 exports.copyFile = (source, target) => new Promise((resolve, reject) => {
   const rd = fs.createReadStream(source)
   rd.on('error', err => reject(err))
@@ -14,23 +24,33 @@ exports.copyFile = (source, target) => new Promise((resolve, reject) => {
 
 /**
  * 时间格式化
- * @param {Date} d 格式化的时间
- * @param {boolean} b 是否精确到秒
+ * @param { Date } date 格式化的时间
+ * @param { boolean } isFromatData 格式化为时间[否为日期]
  */
-exports.formatTime = (d, b) => {
-  const _date = d == null ? new Date() : typeof d == 'string' ? new Date(d) : d
+exports.formatTime = (date, isFromatData) => {
+  const _date = date == null ? new Date() : typeof date == 'string' ? new Date(date) : date
   const year = _date.getFullYear()
   const month = fm(_date.getMonth() + 1)
   const day = fm(_date.getDate())
-  if (!b) return year + '-' + month + '-' + day
+  if (!isFromatData) return year + '-' + month + '-' + day
   return year + '-' + month + '-' + day + ' ' + fm(_date.getHours()) + ':' + fm(_date.getMinutes()) + ':' + fm(_date.getSeconds())
 }
 
+/**
+ * 格式化日期值
+ * @param { number } value 值
+ * @returns { `${number}` }
+ */
 function fm(value) {
   if (value < 10) return '0' + value
   return value
 }
 
+/**
+ * 格式化大小
+ * @param { number } size 大小
+ * @returns { `${number}${'b'|'kB'|'MB'|'GB'|'TB'}` }
+ */
 exports.sizeFormate = size => {
   // https://gist.github.com/thomseddon/3511330
   if (!size) return '0 b'
@@ -39,6 +59,10 @@ exports.sizeFormate = size => {
   return `${(size / Math.pow(1024, Math.floor(number))).toFixed(2)} ${units[number]}`
 }
 
+/**
+ * 格式化程序参数
+ * @param { LxMusic.Publish.ArgvParams } argv
+ */
 exports.parseArgv = argv => {
   const params = {}
   argv.forEach(item => {

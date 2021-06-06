@@ -8,6 +8,10 @@ const changeLog = fs.readFileSync(jp('../changeLog.md'), 'utf-8')
 
 const assetsDir = '../assets'
 
+/**
+ * 取打包文件
+ * @returns { string[] }
+ */
 const getBuildFiles = () => {
   const files = []
   const pathRegExp = [

@@ -3,6 +3,10 @@ const { mainSend, NAMES: { mainWindow: ipcMainWindowNames } } = require('../../c
 global.isQuitting = false
 global.isTrafficLightClose = false // 是否点击软件上的关闭按钮关闭
 
+/**
+ * 窗体事件
+ * @param { Electron.BrowserWindow } mainWindow 主窗体
+*/
 module.exports = mainWindow => {
   mainWindow.on('close', event => {
     if (global.isQuitting || !global.appSetting.tray.isToTray || (!isWin && !global.isTrafficLightClose)) {

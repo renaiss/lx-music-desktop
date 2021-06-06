@@ -9,4 +9,8 @@ const names = {
 for (const key of Object.keys(names)) {
   names[key] = `userApi_${key}`
 }
-module.exports = names
+
+/** @type { LxMusic.UserApiEvent.ParseNames } */
+const parseNames = names
+
+module.exports = parseNames

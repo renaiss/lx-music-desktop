@@ -1,12 +1,12 @@
 import crypto from 'crypto'
 
+const types = ['flac', 'wav', 'ape', '320k', '192k', '128k']
+
 /**
  * 获取音乐音质
- * @param {*} info
- * @param {*} type
+ * @param { LxMusic.UserApiEvent.SongInfo } info
+ * @param { LxMusic.Renderer.MusicQualityType } type
  */
-
-const types = ['flac', 'wav', 'ape', '320k', '192k', '128k']
 export const getMusicType = (info, type) => {
   let list = window.globalObj.qualityList[info.source]
   if (!list) return '128k'

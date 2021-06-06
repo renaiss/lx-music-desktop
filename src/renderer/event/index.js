@@ -7,6 +7,7 @@ import { common as hotKeyNamesCommon } from '../../common/hotKey'
 const eventHub = window.eventHub = new Vue()
 
 window.isEditingHotKey = false
+/** @type { LxMusic.Common.DefaultHotKey } */
 let appHotKeyConfig = {
   local: {},
   global: {},

@@ -6,18 +6,18 @@ const {
 } = require('../../../common/ipc')
 const { init, registerHotkey, unRegisterHotkey, unRegisterHotkeyAll } = require('./utils')
 
-mainHandle(ipcHotKeyNames.set_config, async(event, { action, data, source }) => {
-  switch (action) {
+mainHandle(ipcHotKeyNames.set_config, async(event, info) => {
+  switch (info.action) {
     case 'config':
-      global.lx_event.hotKey.saveConfig(data, source)
+      global.lx_event.hotKey.saveConfig(info.data, info.source)
       return true
     case 'enable':
-      data ? init(true) : unRegisterHotkeyAll()
+      info.data ? init(true) : unRegisterHotkeyAll()
       return true
     case 'register':
-      return registerHotkey(data)
+      return registerHotkey(info.data)
     case 'unregister':
-      return unRegisterHotkey(data)
+      return unRegisterHotkey(info.data)
   }
 })
 

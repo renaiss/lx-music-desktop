@@ -1,13 +1,25 @@
 const MetaDataBlock = require('./MetaDataBlock')
 
+/** 音频评论元数据块 */
 class MetaDataBlockVorbisComment extends MetaDataBlock {
+  /**
+   * 创建音频评论元数据块
+   * @param { boolean } isLast 是最后一项
+   */
   constructor(isLast) {
     super(isLast, 4)
 
-    this.vendor = ''
-    this.comments = []
+    /** 卖方 */ this.vendor = ''
+    /** 评论 */ this.comments = []
   }
 
+  /**
+   * 创建音频评论元数据块
+   * @param { boolean } isLast 是最后一项
+   * @param { string } vendor 卖方
+   * @param { string[] } comments 评论
+   * @returns
+   */
   static create(isLast, vendor, comments) {
     let mdb = new MetaDataBlockVorbisComment(isLast)
     mdb.vendor = vendor
@@ -16,6 +28,10 @@ class MetaDataBlockVorbisComment extends MetaDataBlock {
     return mdb
   }
 
+  /**
+   * @override
+   * @param { Buffer } buffer 数据
+   */
   parse(buffer) {
     try {
       let pos = 0
@@ -42,6 +58,7 @@ class MetaDataBlockVorbisComment extends MetaDataBlock {
     }
   }
 
+  /** 公布 */
   publish() {
     let pos = 0
     let size = this.getSize()
@@ -72,6 +89,7 @@ class MetaDataBlockVorbisComment extends MetaDataBlock {
     return buffer
   }
 
+  /** 取大小 */
   getSize() {
     let size = 8 + Buffer.byteLength(this.vendor)
     for (let i = 0; i < this.comments.length; i++) {
@@ -80,6 +98,7 @@ class MetaDataBlockVorbisComment extends MetaDataBlock {
     return size
   }
 
+  /** @override */
   toString() {
     let str = '[MetaDataBlockVorbisComment]'
     str += ' type: ' + this.type

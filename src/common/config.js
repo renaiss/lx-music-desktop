@@ -1,3 +1,4 @@
+/** @type { LxMusic.Common.WindiwConfig } */
 module.exports = {
   windowSizeList: [
     {

@@ -20,13 +20,13 @@ const handleSaveList = ({ defaultList, loveList, userList }) => {
   if (userList != null) data.userList = userList
   getStore('playList').set(data)
 }
-mainOn(ipcMainWindowNames.save_playlist, (event, { type, data }) => {
-  switch (type) {
+mainOn(ipcMainWindowNames.save_playlist, (event, info) => {
+  switch (info.type) {
     case 'myList':
-      handleSaveList(data)
+      handleSaveList(info.data)
       break
     case 'downloadList':
-      getStore('downloadList').set('list', data)
+      getStore('downloadList').set('list', info.data)
       break
   }
 })

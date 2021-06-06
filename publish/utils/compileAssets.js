@@ -2,6 +2,7 @@ const { spawn } = require('child_process')
 const { jp } = require('./index')
 const chalk = require('chalk')
 
+/** 编译资源 */
 module.exports = () => new Promise((resolve, reject) => {
   const pack = spawn('node', [jp('../../build-config/pack.js')])
 

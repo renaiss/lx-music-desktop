@@ -1,3 +1,9 @@
+/**
+ * 解析命令行参数
+ *
+ * "-a -b=c" => { a: true, b: "c" }
+ * @return { { [key: string]: string; } }
+ * */
 const parseEnv = () => {
   const params = {}
   const rx = /^-\w+/

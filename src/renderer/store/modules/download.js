@@ -13,7 +13,7 @@ import {
   assertApiSupport,
 } from '../../utils'
 
-// state
+/** @type { LxMusic.Renderer.DownloadStatusStateInfo } */
 const state = {
   list: [],
   waitingList: [],
@@ -39,6 +39,11 @@ const getters = {
   downloadStatus: state => state.downloadStatus,
 }
 
+/**
+ * 判断路径存在
+ * @param { string } path
+ * @returns { Promise<void> }
+ */
 const checkPath = path => new Promise((resolve, reject) => {
   fs.access(path, fs.constants.F_OK | fs.constants.W_OK, err => {
     if (err) {
@@ -55,6 +60,7 @@ const checkPath = path => new Promise((resolve, reject) => {
   })
 })
 
+/** @param { LxMusic.Renderer.MusicQualityType } type */
 const getExt = type => {
   switch (type) {
     case '128k':
@@ -70,8 +76,21 @@ const getExt = type => {
   }
 }
 
+/**
+ * 检查列表
+ * @param { LxMusic.Renderer.DownloadInfo[] } list 歌曲列表
+ * @param { LxMusic.UserApiEvent.SongInfo } musicInfo 歌曲信息
+ * @param { LxMusic.Renderer.MusicQualityType } type 音质类型
+ * @param { LxMusic.Renderer.MusicQualityExtType } ext 音质提取类型
+ */
 const checkList = (list, musicInfo, type, ext) => list.some(s => s.musicInfo.songmid === musicInfo.songmid && (s.type === type || s.ext === ext))
 
+/**
+ * 取开始任务
+ * @param { LxMusic.Renderer.DownloadInfo[] } list 列表
+ * @param { LxMusic.Renderer.DownloadStatusInfo } downloadStatus 下载状态
+ * @param { number } maxDownloadNum 最大下载数
+ */
 const getStartTask = (list, downloadStatus, maxDownloadNum) => {
   let downloadCount = 0
   const waitList = list.filter(item => item.status == downloadStatus.WAITING ? true : (item.status === downloadStatus.RUN && ++downloadCount && false))
@@ -79,8 +98,18 @@ const getStartTask = (list, downloadStatus, maxDownloadNum) => {
   return downloadCount < maxDownloadNum ? waitList.shift() || null : false
 }
 
+/**
+ * 等待请求动画帧
+ * @returns { Promise<void> }
+ */
 const awaitRequestAnimationFrame = () => new Promise(resolve => window.requestAnimationFrame(() => resolve()))
 
+/**
+ * 添加任务
+ * @param { LxMusic.Renderer.DownloadStatusStateInfoStore } store 存储器
+ * @param { LxMusic.UserApiEvent.SongInfo[] } list 列表
+ * @param { LxMusic.Renderer.MusicQualityType } type 类型
+ */
 const addTasks = async(store, list, type) => {
   if (list.length == 0) return
   let num = 3
@@ -95,6 +124,12 @@ const addTasks = async(store, list, type) => {
   await awaitRequestAnimationFrame()
   await addTasks(store, list, type)
 }
+
+/**
+ * 移除任务
+ * @param { LxMusic.Renderer.DownloadStatusStateInfoStore } store 存储器
+ * @param { LxMusic.Renderer.DownloadInfo[] } list 列表
+ */
 const removeTasks = async(store, list) => {
   let num = 20
   while (num-- > 0) {
@@ -108,6 +143,11 @@ const removeTasks = async(store, list) => {
   await removeTasks(store, list)
 }
 
+/**
+ * 开始任务
+ * @param { LxMusic.Renderer.DownloadStatusStateInfoStore } store 存储器
+ * @param { LxMusic.Renderer.DownloadInfo[] } list 列表
+ */
 const startTasks = async(store, list) => {
   let num = 5
   while (num-- > 0) {
@@ -122,6 +162,12 @@ const startTasks = async(store, list) => {
   await startTasks(store, list)
 }
 
+/**
+ * 暂停任务
+ * @param { LxMusic.Renderer.DownloadStatusStateInfoStore } store 存储器
+ * @param { LxMusic.Renderer.DownloadInfo[] } list 列表
+ * @param { LxMusic.Renderer.DownloadInfo[] } runs 运行列表
+ */
 const pauseTasks = async(store, list, runs = []) => {
   let num = 6
   let index
@@ -155,6 +201,15 @@ const pauseTasks = async(store, list, runs = []) => {
   await pauseTasks(store, list, runs)
 }
 
+/**
+ * 处理获取音乐路径
+ * @type { (this:LxMusic.Renderer.DownloadStatusStateInfoStore) => void }
+ * @param { LxMusic.Renderer.DownloadStatusStateInfoStore } this 音乐信息
+ * @param { LxMusic.UserApiEvent.SongInfo } musicInfo 音乐信息
+ * @param { LxMusic.Renderer.MusicQualityType } type 音质类型
+ * @param { LxMusic.UserApiEvent.SongInfo["source"][] } retryedSource 复述来源
+ * @param { LxMusic.UserApiEvent.SongInfo } originMusic 来源音乐
+ */
 const handleGetMusicUrl = function(musicInfo, type, retryedSource = [], originMusic) {
   // console.log(musicInfo.source)
   if (!originMusic) originMusic = musicInfo
@@ -166,7 +221,7 @@ const handleGetMusicUrl = function(musicInfo, type, retryedSource = [], originMu
   }
   return reqPromise.catch(err => {
     if (!retryedSource.includes(musicInfo.source)) retryedSource.push(musicInfo.source)
-    return this.dispatch('list/getOtherSource', originMusic).then(otherSource => {
+    return this.dispatch('list/getOtherSource', originMusic).then(/** @param { LxMusic.UserApiEvent.SongInfo[] } otherSource */otherSource => {
       console.log('find otherSource', otherSource)
       if (otherSource.length) {
         for (const item of otherSource) {
@@ -180,6 +235,13 @@ const handleGetMusicUrl = function(musicInfo, type, retryedSource = [], originMu
   })
 }
 
+/**
+ * 取音乐路径
+ * @type { (this:LxMusic.Renderer.DownloadStatusStateInfoStore) => void }
+ * @param { LxMusic.Renderer.DownloadInfo } downloadInfo 下载信息
+ * @param { boolean } isUseOtherSource 使用的其他来源
+ * @param { boolean } isRefresh 要刷新
+ */
 const getMusicUrl = async function(downloadInfo, isUseOtherSource, isRefresh) {
   const cachedUrl = await getMusicUrlFormStorage(downloadInfo.musicInfo, downloadInfo.type)
   if (!downloadInfo.musicInfo._types[downloadInfo.type]) {
@@ -199,10 +261,17 @@ const getMusicUrl = async function(downloadInfo, isUseOtherSource, isRefresh) {
       return url
     })
 }
+
+/**
+ * 获取图片
+ * @param { LxMusic.UserApiEvent.SongInfo } musicInfo 音乐信息
+ * @param { LxMusic.UserApiEvent.SongInfo["source"][] } retryedSource 复述来源
+ * @param { LxMusic.UserApiEvent.SongInfo } originMusic 来源音乐
+ */
 const getPic = function(musicInfo, retryedSource = [], originMusic) {
   // console.log(musicInfo.source)
   if (!originMusic) originMusic = musicInfo
-  let reqPromise
+  /** @type { Promise<never> } */ let reqPromise
   try {
     reqPromise = music[musicInfo.source].getPic(musicInfo).promise
   } catch (err) {
@@ -210,7 +279,7 @@ const getPic = function(musicInfo, retryedSource = [], originMusic) {
   }
   return reqPromise.catch(err => {
     if (!retryedSource.includes(musicInfo.source)) retryedSource.push(musicInfo.source)
-    return this.dispatch('list/getOtherSource', originMusic).then(otherSource => {
+    return this.dispatch('list/getOtherSource', originMusic).then(/** @param { LxMusic.UserApiEvent.SongInfo[] } otherSource */otherSource => {
       console.log('find otherSource', otherSource)
       if (otherSource.length) {
         for (const item of otherSource) {
@@ -223,9 +292,16 @@ const getPic = function(musicInfo, retryedSource = [], originMusic) {
     })
   })
 }
+
+/**
+ * 获取歌词
+ * @param { LxMusic.UserApiEvent.SongInfo } musicInfo 音乐信息
+ * @param { LxMusic.UserApiEvent.SongInfo["source"][] } retryedSource 复述来源
+ * @param { LxMusic.UserApiEvent.SongInfo } originMusic 来源音乐
+ */
 const getLyric = function(musicInfo, retryedSource = [], originMusic) {
   if (!originMusic) originMusic = musicInfo
-  let reqPromise
+  /** @type { Promise<never> } */ let reqPromise
   try {
     reqPromise = music[musicInfo.source].getLyric(musicInfo).promise
   } catch (err) {
@@ -233,7 +309,7 @@ const getLyric = function(musicInfo, retryedSource = [], originMusic) {
   }
   return reqPromise.catch(err => {
     if (!retryedSource.includes(musicInfo.source)) retryedSource.push(musicInfo.source)
-    return this.dispatch('list/getOtherSource', originMusic).then(otherSource => {
+    return this.dispatch('list/getOtherSource', originMusic).then(/** @param { LxMusic.UserApiEvent.SongInfo[] } otherSource */otherSource => {
       console.log('find otherSource', otherSource)
       if (otherSource.length) {
         for (const item of otherSource) {
@@ -248,13 +324,17 @@ const getLyric = function(musicInfo, retryedSource = [], originMusic) {
 }
 
 // 修复 1.1.x版本 酷狗源歌词格式
+/**
+ * 修复KG歌词
+ * @param { string } lrc 歌词
+ */
 const fixKgLyric = lrc => /\[00:\d\d:\d\d.\d+\]/.test(lrc) ? lrc.replace(/(?:\[00:(\d\d:\d\d.\d+\]))/gm, '[$1') : lrc
 
 /**
- * 设置歌曲meta信息
- * @param {*} downloadInfo
- * @param {*} filePath
- * @param {*} isEmbedPic // 是否嵌入图片
+ * 设置歌曲元信息
+ * @param { LxMusic.Renderer.DownloadInfo } downloadInfo 下载信息
+ * @param { string } filePath 文件路径
+ * @param { boolean } isEmbedPic 是否嵌入图片
  */
 const saveMeta = function(downloadInfo, filePath, isUseOtherSource, isEmbedPic, isEmbedLyric) {
   if (downloadInfo.type === 'ape') return
@@ -302,9 +382,9 @@ const saveMeta = function(downloadInfo, filePath, isUseOtherSource, isEmbedPic, 
 }
 
 /**
- * 保存歌词
- * @param {*} downloadInfo
- * @param {*} filePath
+ * 下载歌词
+ * @param { LxMusic.Renderer.DownloadInfo } downloadInfo 下载信息
+ * @param { string } filePath 文件路径
  */
 const downloadLyric = (downloadInfo, filePath) => {
   const promise = getLyric(downloadInfo.musicInfo).then(lrcInfo => {
@@ -323,6 +403,12 @@ const downloadLyric = (downloadInfo, filePath) => {
   })
 }
 
+/**
+ * 刷新网址
+ * @param {*} commit
+ * @param {*} downloadInfo
+ * @param {*} isUseOtherSource
+ */
 const refreshUrl = function(commit, downloadInfo, isUseOtherSource) {
   commit('setStatusText', { downloadInfo, text: '链接失效，正在刷新链接' })
   getMusicUrl.call(this, downloadInfo, isUseOtherSource, true).then(url => {

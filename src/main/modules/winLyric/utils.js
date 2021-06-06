@@ -1,11 +1,18 @@
 // 设置窗口位置、大小
-let winX
-let winY
-let wasW
-let wasH
-let offset = 8
-let minWidth = 380
-let minHeight = 80
+
+/** 窗体横坐标 */ let winX
+/** 窗体纵坐标 */ let winY
+/** 工作区宽度 */ let wasW
+/** 工作区高度 */ let wasH
+/** 偏移值 */ let offset = 8
+/** 最小宽度 */ let minWidth = 380
+/** 最小高度 */ let minHeight = 80
+
+/**
+ * 取歌词窗口边界
+ * @param { Electron.Rectangle } bounds 边界
+ * @param { Electron.Point & { w:number; h:number; } } param1 位置
+ */
 exports.getLyricWindowBounds = (bounds, { x = 0, y = 0, w = 0, h = 0 }) => {
   if (w < minWidth) w = minWidth
   if (h < minHeight) h = minHeight

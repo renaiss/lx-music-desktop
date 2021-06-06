@@ -1,8 +1,13 @@
 const { userApis: defaultUserApis } = require('../config')
 const getStore = require('@common/store')
 
+/**
+ * 用户网络接口
+ * @type { LxMusic.UserApi.ApiInfo[] }
+ */
 let userApis
 
+/** 取用户网络接口 */
 exports.getUserApis = () => {
   const electronStore_userApi = getStore('userApi')
   if (userApis) return userApis
@@ -14,6 +19,11 @@ exports.getUserApis = () => {
   return userApis
 }
 
+/**
+ * 引入网络接口
+ * @param { string } script 脚本
+ * @returns { LxMusic.UserApi.ApiInfo }
+ */
 exports.importApi = script => {
   let scriptInfo = script.split(/\r?\n/)
   let name = scriptInfo[1] || ''
@@ -33,6 +43,10 @@ exports.importApi = script => {
   return apiInfo
 }
 
+/**
+ * 引入网络接口
+ * @param { LxMusic.UserApi.ApiInfo["id"][] } ids 编号组
+ */
 exports.removeApi = ids => {
   for (let index = userApis.length - 1; index > -1; index--) {
     if (ids.includes(userApis[index].id)) {

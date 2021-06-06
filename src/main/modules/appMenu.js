@@ -2,6 +2,7 @@ const { app, Menu } = require('electron')
 const { isMac } = require('../../common/utils')
 
 if (isMac) {
+  /** @type { (Electron.MenuItemConstructorOptions | Electron.MenuItem)[] } */
   const template = [
     {
       label: app.getName(),

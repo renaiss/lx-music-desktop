@@ -78,6 +78,9 @@ for (const type of Object.keys(hotKey)) {
   }
 }
 
-exports.common = hotKey.common
-exports.player = hotKey.player
-exports.desktop_lyric = hotKey.desktop_lyric
+/** @type { LxMusic.Common.ParseHotKey } */
+const parseHotKey = hotKey
+
+exports.common = parseHotKey.common
+exports.player = parseHotKey.player
+exports.desktop_lyric = parseHotKey.desktop_lyric

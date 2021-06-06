@@ -1,6 +1,10 @@
 const path = require('path')
 const os = require('os')
 
+/**
+ * 默认设置
+ * @type { LxMusic.Common.Setting }
+ */
 const defaultSetting = {
   version: '1.0.41',
   player: {
@@ -97,6 +101,10 @@ const defaultSetting = {
   controlBtnPosition: process.platform === 'darwin' ? 'left' : 'right',
 }
 
+/**
+ * 覆盖设置
+ * @type { LxMusic.Common.Setting }
+ */
 const overwriteSetting = {
 
 }

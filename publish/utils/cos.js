@@ -6,18 +6,23 @@ const config = require('./cosConfig')
 const MultiProgress = require('multi-progress')
 const multi = new MultiProgress(process.stderr)
 
+/** 腾讯云储信息 */
 const cos = new COS({
   SecretId: config.secretId,
   SecretKey: config.secretKey,
   KeepAlive: false,
 })
 
+/**
+ * 取腾讯云储文件
+ * @returns { string[] }
+ */
 const getCosFileList = () => new Promise((resolve, reject) => {
   cos.getBucket({
     Bucket: config.bucket,
     Region: config.region,
     Prefix: config.prefix,
-  }, function(err, data) {
+  }, function (err, data) {
     if (err) {
       console.log(err)
       reject(err)
@@ -27,8 +32,15 @@ const getCosFileList = () => new Promise((resolve, reject) => {
   })
 })
 
+/** 取本地文件列表 */
 const getLocalFileList = () => fs.readdirSync(jp('../assets'), 'utf8')
 
+/**
+ * 取差异列表
+ * @param { string[] } localFiles 本地文件列表
+ * @param { string[] } cosFiles 腾讯云储列表
+ * @returns { string[] } 差异文件列表
+ */
 const diffFileList = (localFiles, cosFiles) => {
   const removeFiles = []
   cosFiles.forEach(file => {
@@ -47,13 +59,18 @@ const diffFileList = (localFiles, cosFiles) => {
   return removeFiles
 }
 
+/**
+ * 删除腾讯云储文件
+ * @param { string[] } files 文件列表
+ * @returns { Promise<void> }
+ */
 const deleteCosFiles = files => new Promise((resolve, reject) => {
   files = files.map(f => ({ Key: config.prefix + f }))
   cos.deleteMultipleObject({
     Bucket: config.bucket,
     Region: config.region,
     Objects: files,
-  }, function(err, data) {
+  }, function (err, data) {
     if (err) {
       console.log(err)
       reject(err)
@@ -62,15 +79,26 @@ const deleteCosFiles = files => new Promise((resolve, reject) => {
   })
 })
 
+/**
+ * 创建进度条
+ * @param { string } name 名称
+ * @param { number } spacekLen 分段数
+ * @param { number } total 总数
+ */
 const createProgressBar = (name, spacekLen, total) => multi.newBar(
   `${`  ${name}`.padEnd(spacekLen, ' ')} :status [:bar] :current/:total  :percent  :speed`, {
-    complete: '=',
-    incomplete: ' ',
-    width: 30,
-    total,
-  })
+  complete: '=',
+  incomplete: ' ',
+  width: 30,
+  total,
+})
 
-
+/**
+ * 上传文件
+ * @param { string } fileName 文件名称
+ * @param { number } len 长度
+ * @returns { Promise<SliceUploadResult> }
+ */
 const uploadFile = (fileName, len) => new Promise((resolve, reject) => {
   const filePath = jp('../assets', fileName)
   // let size = fs.statSync(filePath).size
@@ -124,8 +152,8 @@ const uploadFile = (fileName, len) => new Promise((resolve, reject) => {
   })
 })
 
-
-module.exports = async() => {
+/** 腾讯云储同步 */
+module.exports = async () => {
   console.log(chalk.blue('正在获取COS文件列表...'))
   const cosFiles = await getCosFileList()
   console.log(chalk.green('COS文件列表获取成功'))

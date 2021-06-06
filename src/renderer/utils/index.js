@@ -88,7 +88,7 @@ const easeInOutQuad = (t, b, c, d) => {
   t--
   return (-c / 2) * (t * (t - 2) - 1) + b
 }
-const handleScroll = (element, to, duration = 300, fn = () => {}) => {
+const handleScroll = (element, to, duration = 300, fn = () => { }) => {
   if (!element) return fn()
   const start = element.scrollTop || element.scrollY || 0
   let cancel = false
@@ -133,7 +133,7 @@ const handleScroll = (element, to, duration = 300, fn = () => {}) => {
  * @param {*} fn 滚动完成后的回调
  * @param {*} delay 延迟执行时间
  */
-export const scrollTo = (element, to, duration = 300, fn = () => {}, delay = 0) => {
+export const scrollTo = (element, to, duration = 300, fn = () => { }, delay = 0) => {
   let cancelFn
   let timeout
   if (delay) {
@@ -164,19 +164,19 @@ export const checkPath = (path) => new Promise(resolve => {
 
 /**
  * 选择路径
- * @param {*} 选项
+ * @param { Electron.OpenDialogOptions } options 选项
  */
 export const selectDir = options => rendererInvoke(NAMES.mainWindow.select_dir, options)
 
 /**
  * 打开保存对话框
- * @param {*} 选项
+ * @param { Electron.SaveDialogOptions } options 选项
  */
 export const openSaveDir = options => rendererInvoke(NAMES.mainWindow.show_save_dialog, options)
 
 /**
  * 在资源管理器中打开目录
- * @param {*} dir
+ * @param { string } dir
  */
 export const openDirInExplorer = dir => {
   shell.showItemInFolder(dir)

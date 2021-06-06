@@ -7,13 +7,14 @@ const dir = global.isDev ? __userApi : path.join(__dirname, 'userApi')
 
 const wait = time => new Promise(resolve => setTimeout(() => resolve(), time))
 
-let html = ''
+/** 页面 */ let html = ''
 
 fs.readFile(path.join(dir, 'renderer/user-api.html'), 'utf8', (err, data) => {
   if (err) throw new Error('api html read failed, info: ' + err.message)
   html = data
 })
 
+/** 拒绝事件 */
 const denyEvents = [
   'new-window',
   'will-navigate',
@@ -23,12 +24,20 @@ const denyEvents = [
   'media-started-playing',
 ]
 
+/**
+ * 窗体事件
+ * @param { any } win // TODO 未知
+ */
 const winEvent = win => {
   win.on('closed', () => {
     win = global.modules.userApiWindow = null
   })
 }
 
+/**
+ * 创建窗体
+ * @param { LxMusic.UserApi.ApiInfo } userApi 用户网络接口
+ */
 exports.createWindow = async userApi => {
   if (global.modules.userApiWindow) return
   while (true) {
@@ -76,6 +85,7 @@ exports.createWindow = async userApi => {
   // global.modules.userApiWindow.webContents.openDevTools()
 }
 
+/** 关闭窗体 */
 exports.closeWindow = async() => {
   if (!global.modules.userApiWindow) return
   await Promise.all([

@@ -1,8 +1,10 @@
+/** @type { LxMusic.MainName.common } */
 exports.common = {
   initConfig: 'initConfig',
   configStatus: 'config',
 }
 
+/** @type { LxMusic.MainName.mainWindow } */
 exports.mainWindow = {
   name: 'mainWindow',
   setLyricInfo: 'setLyricInfo',
@@ -15,18 +17,21 @@ exports.mainWindow = {
   hide: 'hide',
 }
 
+/** @type { LxMusic.MainName.tray } */
 exports.tray = {
   name: 'tray',
   create: 'create',
   destroy: 'destroy',
 }
 
+/** @type { LxMusic.MainName.winLyric } */
 exports.winLyric = {
   name: 'winLyric',
   create: 'create',
   close: 'close',
 }
 
+/** @type { LxMusic.MainName.hotKey } */
 exports.hotKey = {
   name: 'hotKey',
   init: 'init',

@@ -90,6 +90,9 @@ for (const item of Object.keys(names)) {
   }
 }
 
-exports.mainWindow = names.mainWindow
-exports.winLyric = names.winLyric
-exports.hotKey = names.hotKey
+/** @type { LxMusic.Common.IpcNameMap } */
+const ipc_name = names
+
+exports.mainWindow = ipc_name.mainWindow
+exports.winLyric = ipc_name.winLyric
+exports.hotKey = ipc_name.hotKey

@@ -14,8 +14,10 @@ global.lx_event.winLyric.on(WIN_LYRIC_EVENT_NAME.close, () => {
   closeWindow()
 })
 
+/** 窗体路径 */
 let winURL = global.isDev ? 'http://localhost:9081/lyric.html' : `file://${path.join(__dirname, 'lyric.html')}`
 
+/** 设置歌词配置 */
 const setLyricsConfig = debounce(config => {
   // if (x != null) bounds.x = x
   // if (y != null) bounds.y = y
@@ -24,6 +26,10 @@ const setLyricsConfig = debounce(config => {
   global.lx_core.setAppConfig({ desktopLyric: config }, WIN_LYRIC_EVENT_NAME.name)
 }, 500)
 
+/**
+ * 窗体事件
+ * @param { NodeJS.Global["modules"]["lyricWindow"] } lyricWindow 歌词窗口
+ */
 const winEvent = lyricWindow => {
   // let bounds
   // lyricWindow.on('close', event => {
@@ -69,6 +75,7 @@ const winEvent = lyricWindow => {
   })
 }
 
+/** 创建窗口 */
 const createWindow = () => {
   if (global.modules.lyricWindow) return
   if (!global.appSetting.desktopLyric.enable) return
@@ -121,6 +128,7 @@ const createWindow = () => {
   // mainWindow.webContents.openDevTools()
 }
 
+/** 关闭窗口 */
 const closeWindow = () => {
   if (!global.modules.lyricWindow) return
   global.modules.lyricWindow.close()

@@ -3,10 +3,12 @@ const { mainSend, NAMES: { winLyric: ipcWinLyricNames } } = require('../../../co
 const { desktop_lyric } = require('../../../common/hotKey')
 const { getLyricWindowBounds } = require('./utils')
 
-let isLock = null
-let isEnable = null
-let isAlwaysOnTop = null
-let isLockScreen = null
+/** 锁定 */ let isLock = null
+/** 启用 */ let isEnable = null
+/** 置顶 */ let isAlwaysOnTop = null
+/** 锁屏 */ let isLockScreen = null
+
+/** 设置歌词配置 */
 const setLrcConfig = () => {
   let desktopLyric = global.appSetting.desktopLyric
   if (global.modules.lyricWindow) {
@@ -49,6 +51,7 @@ const setLrcConfig = () => {
     }
   }
 }
+
 global.lx_event.common.on(COMMON_EVENT_NAME.configStatus, name => {
   if (WIN_LYRIC_EVENT_NAME.name === name) return
   setLrcConfig()

@@ -27,6 +27,11 @@ mainOn(ipcMainWindowNames.cancel_request, (event, index) => {
   tasks[index] = null
 })
 
+/**
+ * 获取数据
+ * @param { LxMusic.Renderer.HandleRequestInfo } options 参数
+ * @param { (err:Error, req:request.Response) => void } callback 回调函数
+ */
 const fetchData = (options, callback) => pushTask(tasks, request(options.url, {
   method: options.method,
   headers: options.headers,

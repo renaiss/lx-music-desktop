@@ -9,18 +9,28 @@ let userApiId
 
 exports.Event = Event
 exports.eventNames = eventNames
-
 exports.getApiList = getUserApis
+
+/**
+ * 引入网络接口
+ * @param { string } script 脚本
+ */
 exports.importApi = script => {
   return {
     apiInfo: importApi(script),
     apiList: getUserApis(),
   }
 }
+
 exports.request = request
 exports.cancelRequest = cancelRequest
 exports.getStatus = getStatus
 
+/**
+ * 删除网络接口
+ * @param { LxMusic.UserApi.ApiInfo["id"][] } ids 编号组
+ * @returns
+ */
 exports.removeApi = async ids => {
   if (userApiId && ids.includes(userApiId)) {
     userApiId = null
@@ -30,6 +40,10 @@ exports.removeApi = async ids => {
   return getUserApis()
 }
 
+/**
+ * 设置网络接口
+ * @param { LxMusic.UserApi.ApiInfo["id"] } id 编号
+ */
 exports.setApi = async id => {
   if (userApiId) {
     userApiId = null

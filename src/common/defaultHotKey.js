@@ -1,5 +1,6 @@
 const { player: hotKeyPlayer, common: hotKeyCommon, desktop_lyric: hotKeyDesktopLyric } = require('./hotKey')
 
+/** @type { LxMusic.Common.DefaultHotKey } */
 module.exports = {
   local: {
     enable: true,

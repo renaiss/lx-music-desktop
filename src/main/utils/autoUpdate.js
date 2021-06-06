@@ -59,7 +59,13 @@ function sendStatusToWindow(text) {
 
 // })
 
-let waitEvent = []
+/** 等待事件 */ let waitEvent = []
+
+/**
+ * 处理发送消息
+ * @param { { type:T; info:LxMusic.Common.MainSendDataMap[T]; } } action 消息动作
+ * @template T 类型
+ */
 const handleSendEvent = action => {
   if (global.modules.mainWindow) {
     setTimeout(() => { // 延迟发送事件，过早发送可能渲染进程还没启动完成
@@ -71,6 +77,7 @@ const handleSendEvent = action => {
   }
 }
 
+/** 自动更新 */
 module.exports = () => {
   if (!isFirstCheckedUpdate) {
     if (waitEvent.length) {

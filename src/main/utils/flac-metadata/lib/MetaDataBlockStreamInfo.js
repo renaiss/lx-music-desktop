@@ -5,27 +5,37 @@ function pad(n, width) {
   return (n.length >= width) ? n : new Array(width - n.length + 1).join('0') + n
 }
 
+/** 流信息元数据块 */
 class MetaDataBlockStreamInfo extends MetaDataBlock {
+  /**
+   * 创建流信息元数据块
+   * @param { boolean } isLast 是最后一项
+   */
   constructor(isLast) {
     super(isLast, 0)
 
-    this.minBlockSize = 0
-    this.maxBlockSize = 0
-    this.minFrameSize = 0
-    this.maxFrameSize = 0
-    this.sampleRate = 0
-    this.channels = 0
-    this.bitsPerSample = 0
-    this.samples = 0
-    this.checksum = null
-    this.duration = 0
-    this.durationStr = '0:00.000'
+    /** 块最小值 */ this.minBlockSize = 0
+    /** 块最大值 */ this.maxBlockSize = 0
+    /** 最小帧数 */ this.minFrameSize = 0
+    /** 最大帧数 */ this.maxFrameSize = 0
+    /** 采样率 */ this.sampleRate = 0
+    /** 通道 */ this.channels = 0
+    /** 采样量 */ this.bitsPerSample = 0
+    /** 样本 */ this.samples = 0
+    /** 校验和 */ this.checksum = null
+    /** 持续时间 */ this.duration = 0
+    /** 持续时间文本 */ this.durationStr = '0:00.000'
   }
 
+  /** @override */
   remove() {
     console.error("WARNING: Can't remove StreamInfo block!")
   }
 
+  /**
+   * @override
+   * @param { Buffer } buffer 数据
+   */
   parse(buffer) {
     try {
       let pos = 0
@@ -58,6 +68,7 @@ class MetaDataBlockStreamInfo extends MetaDataBlock {
     }
   }
 
+  /** @override */
   toString() {
     let str = '[MetaDataBlockStreamInfo]'
     str += ' type: ' + this.type

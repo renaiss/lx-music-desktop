@@ -15,7 +15,12 @@ const STATE_MDB_HEADER = 2
 const STATE_MDB = 3
 const STATE_PASS_THROUGH = 4
 
+/** 处理器 */
 class Processor extends Transform {
+  /**
+   * 创建处理器
+   * @param { import('stream').TransformOptions } options 转换参数
+   */
   constructor(options) {
     super(options)
     // MDB types
@@ -51,6 +56,10 @@ class Processor extends Transform {
     if (options && !!options.parseMetaDataBlocks) { this.parseMetaDataBlocks = true }
   }
 
+  /**
+   * 写入元数据
+   * @param {*} param0 // TODO 未知
+   */
   writeMeta({ vorbis, picture }) {
     if (vorbis != null) {
       this.waitWriteVorbis = vorbis
@@ -66,11 +75,21 @@ class Processor extends Transform {
   //   this.mdbLastWritten = true
   // }
 
+  /**
+   * 取元数据
+   * @param {*} callback
+   */
   readMeta(callback) {
     this.parseMetaDataBlocks = true
     this.readCallBack = callback
   }
 
+  /**
+   * 变换
+   * @param {*} chunk
+   * @param {*} enc
+   * @param {*} done
+   */
   _transform(chunk, enc, done) {
     let chunkPos = 0
     let chunkLen = chunk.length
@@ -167,12 +186,24 @@ class Processor extends Transform {
     done()
   }
 
+  /**
+   * 验证标记
+   * @param {*} slice
+   * @param {*} isDone
+   * @returns
+   */
   _validateMarker(slice, isDone) {
     this.isFlac = (slice.toString('utf8', 0) === 'fLaC')
     // TODO: completely bail out if file is not a FLAC?
     return true
   }
 
+  /**
+   * 验证消息头信息
+   * @param {*} slice
+   * @param {*} isDone
+   * @returns
+   */
   _validateMDBHeader(slice, isDone) {
     // Parse MDB header
     let header = slice.readUInt32BE(0)
@@ -233,6 +264,12 @@ class Processor extends Transform {
     return this.mdbPush
   }
 
+  /**
+   * 检验消息
+   * @param {*} slice
+   * @param {*} isDone
+   * @returns
+   */
   _validateMDB(slice, isDone) {
     // Parse the MDB if parseMetaDataBlocks option is set to true
     if (this.parseMetaDataBlocks && isDone) {
@@ -241,6 +278,10 @@ class Processor extends Transform {
     return this.mdbPush
   }
 
+  /**
+   * 缓存清空
+   * @param {*} done
+   */
   _flush(done) {
     // All chunks have been processed
     // Clean up
@@ -253,6 +294,7 @@ class Processor extends Transform {
     done()
   }
 
+  /** 写入音频评论 */
   _writeVorbisComment() {
     if (this.waitWriteVorbis == null) return
     let isLast = this.mdbLast && this.tasks === 1
@@ -261,6 +303,7 @@ class Processor extends Transform {
     this.waitWriteVorbis = null
   }
 
+  /** 写入图片 */
   _writePicture() {
     if (this.waitWritePicture == null) return
     let isLast = this.mdbLast && this.tasks === 1

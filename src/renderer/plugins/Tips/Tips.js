@@ -3,6 +3,7 @@ import Vue from 'vue'
 
 const TipsConstructor = Vue.extend(Tips)
 
+/** @param { LxMusic.Renderer.TipsVue } instance */
 const addAutoCloseTimer = (instance, time) => {
   if (!time) return
   if (instance.autoCloseTimer) clearTimeout(instance.autoCloseTimer)
@@ -10,14 +11,17 @@ const addAutoCloseTimer = (instance, time) => {
     instance.cancel()
   }, time)
 }
+/** @param { LxMusic.Renderer.TipsVue } instance */
 const clearAutoCloseTimer = instance => {
   if (!instance.autoCloseTimer) return
   clearTimeout(instance.autoCloseTimer)
   instance.autoCloseTimer = null
 }
 
-export default ({ position, message, autoCloseTime } = {}) => {
+/** @param { LxMusic.Renderer.TipsVue } param1 */
+export default ({ position, message, autoCloseTimer } = {}) => {
   if (!position) return
+  /** @type { LxMusic.Renderer.TipsVue } */
   let instance = new TipsConstructor().$mount(document.createElement('div'))
 
   // Tips实例挂载到刚创建的div
@@ -38,11 +42,11 @@ export default ({ position, message, autoCloseTime } = {}) => {
   }
 
   instance.setTips = tips => {
-    addAutoCloseTimer(instance, autoCloseTime)
+    addAutoCloseTimer(instance, autoCloseTimer)
     instance.message = tips
   }
 
-  addAutoCloseTimer(instance, autoCloseTime)
+  addAutoCloseTimer(instance, autoCloseTimer)
 
   return instance
 }

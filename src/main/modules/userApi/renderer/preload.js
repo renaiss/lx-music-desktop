@@ -3,20 +3,38 @@ const needle = require('needle')
 const { createCipheriv, publicEncrypt, constants, randomBytes, createHash } = require('crypto')
 const USER_API_RENDERER_EVENT_NAME = require('../rendererEvent/name')
 
+/**
+ * 发送信息
+ * @param { string } action 行为
+ * @param { boolean } status 状态
+ * @param { any } data 数据
+ * @param { string } message 信息
+ */
 const sendMessage = (action, status, data, message) => {
   ipcRenderer.send(action, { status, data, message })
 }
+/** 初始化API */ let isInitedApi = false
 
-let isInitedApi = false
+/** 事件名称 */
 const EVENT_NAMES = {
   request: 'request',
   inited: 'inited',
 }
-const eventNames = Object.values(EVENT_NAMES)
-const events = {
-  request: null,
-}
+
+/** 事件名称 */ const eventNames = Object.values(EVENT_NAMES)
+
+/** 事件 */ const events = { request: null }
+
+/**
+ * 所有来源
+ * @type { LxMusic.Common.SourcesId[] }
+ */
 const allSources = ['kw', 'kg', 'tx', 'wy', 'mg']
+
+/**
+ * 支持的质量
+ * @type { LxMusic.UserApi.SupportQualitys }
+ */
 const supportQualitys = {
   kw: ['128k', '320k', 'flac'],
   kg: ['128k', '320k', 'flac'],
@@ -24,6 +42,11 @@ const supportQualitys = {
   wy: ['128k', '320k', 'flac'],
   mg: ['128k', '320k', 'flac'],
 }
+
+/**
+ * 支持操作
+ * @type { LxMusic.UserApi.SupportActions }
+ */
 const supportActions = {
   kw: ['musicUrl'],
   kg: ['musicUrl'],
@@ -33,6 +56,12 @@ const supportActions = {
   xm: ['musicUrl'],
 }
 
+/**
+ * 处理请求
+ * @param {*} context 内容
+ * @param {*} param1
+ * @returns
+ */
 const handleRequest = (context, { requestKey, data }) => {
   // console.log(data)
   if (!events.request) return sendMessage(USER_API_RENDERER_EVENT_NAME.response, false, { requestKey }, 'Request event is not defined')
@@ -63,19 +92,9 @@ const handleRequest = (context, { requestKey, data }) => {
 }
 
 /**
- *
+ * 处理初始化
  * @param {*} context
- * @param {*} info {
- *                    status: true,
- *                    message: 'xxx',
- *                    sources: {
- *                         kw: ['128k', '320k', 'flac'],
- *                         kg: ['128k', '320k', 'flac'],
- *                         tx: ['128k', '320k', 'flac'],
- *                         wy: ['128k', '320k', 'flac'],
- *                         mg: ['128k', '320k', 'flac'],
- *                     }
- *                 }
+ * @param { LxMusic.UserApi.InitInfo } info 初始化信息
  */
 const handleInit = (context, info) => {
   if (!info) {
@@ -141,7 +160,7 @@ contextBridge.exposeInMainWorld('lx', {
         body = resp.body = resp.raw.toString()
         try {
           resp.body = JSON.parse(resp.body)
-        } catch (_) {}
+        } catch (_) { }
         body = resp.body
       }
       callback(err, {

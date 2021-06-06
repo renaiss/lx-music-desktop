@@ -1,19 +1,35 @@
+/**
+ * 元数据块
+ * @abstract
+ */
 class MetaDataBlock {
+  /**
+   * 创建元数据块
+   * @param { boolean } isLast 是最后一项
+   * @param { string } type 类型
+   */
   constructor(isLast, type) {
-    this.isLast = isLast
-    this.type = type
-    this.error = null
-    this.hasData = false
-    this.removed = false
+    /** 是最后一项 */ this.isLast = isLast
+    /** 类型 */ this.type = type
+    /** 错误 */ this.error = null
+    /** 有数据 */ this.hasData = false
+    /** 已移除 */ this.removed = false
   }
 
+  /** 移除 */
   remove() {
     this.removed = true
   }
 
+  /**
+   * 格式化
+   * @param { Buffer } buffer 数据
+   * @abstract
+   */
   parse(buffer) {
   }
 
+  /** @override */
   toString() {
     let str = '[MetaDataBlock]'
     str += ' type: ' + this.type

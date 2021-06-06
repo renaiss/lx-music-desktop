@@ -2,6 +2,11 @@ const { inflate } = require('zlib')
 const iconv = require('iconv-lite')
 const { mainHandle, NAMES: { mainWindow: ipcMainWindowNames } } = require('../../common/ipc')
 
+/**
+ * 解压处理
+ * @param { string } data 被解压项
+ * @returns { Promise<Buffer> }
+*/
 const handleInflate = data => new Promise((resolve, reject) => {
   inflate(data, (err, result) => {
     if (err) return reject(err)
@@ -12,6 +17,11 @@ const handleInflate = data => new Promise((resolve, reject) => {
 const buf_key = Buffer.from('yeelion')
 const buf_key_len = buf_key.length
 
+/**
+ * 歌词解码
+ * @param { Buffer } buf 数据
+ * @param { boolean } isGetLyricx 获取歌词
+ */
 const decodeLyric = async(buf, isGetLyricx) => {
   // const info = buf.slice(0, index).toString()
   // if (!info.startsWith('tp=content')) return null

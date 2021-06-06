@@ -1,19 +1,36 @@
 const MetaDataBlock = require('./MetaDataBlock')
 
+/** 图片元数据块 */
 class MetaDataBlockPicture extends MetaDataBlock {
+  /**
+   * 创建图片元数据块
+   * @param { boolean } isLast 是最后一项
+   */
   constructor(isLast) {
     super(isLast, 6)
 
-    this.pictureType = 0
-    this.mimeType = ''
-    this.description = ''
-    this.width = 0
-    this.height = 0
-    this.bitsPerPixel = 0
-    this.colors = 0
-    this.pictureData = null
+    /** 图片类型 */ this.pictureType = 0
+    /** MIME类型 */ this.mimeType = ''
+    /** 描述 */ this.description = ''
+    /** 宽度 */ this.width = 0
+    /** 高度 */ this.height = 0
+    /** 像素位数 */ this.bitsPerPixel = 0
+    /** 颜色 */ this.colors = 0
+    /** 图片数据 */ this.pictureData = null
   }
 
+  /**
+   * 创建图片元数据块
+   * @param { boolean } isLast 是最后一项
+   * @param { number } pictureType 图片类型
+   * @param { string } mimeType MIME类型
+   * @param { string } description 描述
+   * @param { number } width 宽度
+   * @param { number } height 高度
+   * @param { number } bitsPerPixel 像素位数
+   * @param { number } colors 颜色
+   * @param { null } pictureData 图片数据
+   */
   static create(isLast, pictureType, mimeType, description, width, height, bitsPerPixel, colors, pictureData) {
     let mdb = new MetaDataBlockPicture(isLast)
     mdb.pictureType = pictureType
@@ -28,7 +45,10 @@ class MetaDataBlockPicture extends MetaDataBlock {
     return mdb
   }
 
-
+  /**
+   * @override
+   * @param { Buffer } buffer 数据
+   */
   parse(buffer) {
     try {
       let pos = 0
@@ -61,6 +81,7 @@ class MetaDataBlockPicture extends MetaDataBlock {
     }
   }
 
+  /** 公布 */
   publish() {
     let pos = 0
     let size = this.getSize()
@@ -97,6 +118,7 @@ class MetaDataBlockPicture extends MetaDataBlock {
     return buffer
   }
 
+  /** 取大小 */
   getSize() {
     let size = 4
     size += 4 + Buffer.byteLength(this.mimeType)
@@ -106,6 +128,7 @@ class MetaDataBlockPicture extends MetaDataBlock {
     return size
   }
 
+  /** @override */
   toString() {
     let str = '[MetaDataBlockPicture]'
     str += ' type: ' + this.type

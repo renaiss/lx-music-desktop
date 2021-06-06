@@ -39,6 +39,7 @@ global.lx_event.mainWindow.on(MAIN_WINDOW_NAME.hide, () => {
   createMenu(global.modules.tray)
 })
 
+/** 创建托盘 */
 const createTray = () => {
   if ((global.modules.tray && !global.modules.tray.isDestroyed()) || !global.appSetting.tray || !global.appSetting.tray.isShow) return
 
@@ -61,12 +62,17 @@ const createTray = () => {
   })
 }
 
+/** 销毁托盘 */
 const destroyTray = () => {
   if (!global.modules.tray) return
   global.modules.tray.destroy()
   global.modules.tray = null
 }
 
+/**
+ * 创建托盘菜单
+ * @param { Electron.Tray } tray 托盘信息
+*/
 const createMenu = tray => {
   if (!global.modules.tray) return
   let menu = []

@@ -54,6 +54,10 @@ export const getToken = (retryNum = 0) => new Promise((resolve, reject) => {
   })
 })
 
+/**
+ *
+ * @param { LxMusic.Renderer.KwDecodeLyricInfo } base64Data
+ */
 export const decodeLyric = base64Data => rendererInvoke(NAMES.mainWindow.handle_kw_decode_lyric, base64Data)
 
 export const tokenRequest = async(url, options = {}) => {

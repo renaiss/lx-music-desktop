@@ -1,9 +1,10 @@
 import tips from './Tips'
 import { debounce } from '../../utils'
 
-let instance
+/** @type { LxMusic.Renderer.TipsVue } */ let instance
 let prevTips
 
+/** @param { HTMLElement } el */
 const getTips = el =>
   el
     ? el.getAttribute('tips')
@@ -13,24 +14,28 @@ const getTips = el =>
         : getTips(el.parentNode)
     : null
 
-const showTips = debounce(event => {
-  let msg = getTips(event.target)
-  if (!msg) return
-  prevTips = msg
-  instance = tips({
-    message: msg,
-    autoCloseTime: 10000,
-    position: {
-      top: event.y + 12,
-      left: event.x + 8,
-    },
-  })
-  instance.$on('beforeClose', closeInstance => {
-    if (instance !== closeInstance) return
-    prevTips = null
-    instance = null
-  })
-}, 400)
+const showTips = debounce(
+/**
+ * @param { MouseEvent } event
+ */
+  event => {
+    let msg = getTips(event.target)
+    if (!msg) return
+    prevTips = msg
+    instance = tips({
+      message: msg,
+      autoCloseTime: 10000,
+      position: {
+        top: event.y + 12,
+        left: event.x + 8,
+      },
+    })
+    instance.$on('beforeClose', closeInstance => {
+      if (instance !== closeInstance) return
+      prevTips = null
+      instance = null
+    })
+  }, 400)
 
 const hideTips = () => {
   if (!instance) return

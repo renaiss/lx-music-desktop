@@ -1,18 +1,24 @@
 const log = require('electron-log')
-const { defaultSetting, overwriteSetting } = require('./defaultSetting')
+const {
+  defaultSetting,
+  overwriteSetting,
+} = require('./defaultSetting')
 // const apiSource = require('../renderer/utils/music/api-source-info')
 const getStore = require('./store')
 const defaultHotKey = require('./defaultHotKey')
 
+/** 是Linux设备 */
 exports.isLinux = process.platform == 'linux'
+/** 是Windiw设备 */
 exports.isWin = process.platform == 'win32'
+/** 是Mac设备 */
 exports.isMac = process.platform == 'darwin'
 
 
 /**
  * 生成节流函数
- * @param {*} fn
- * @param {*} delay
+ * @param { (...args:any[]) => void } fn 回调函数
+ * @param { number } delay 时间间隔
  */
 exports.throttle = (fn, delay = 100) => {
   let timer = null
@@ -29,8 +35,8 @@ exports.throttle = (fn, delay = 100) => {
 
 /**
  * 生成防抖函数
- * @param {*} fn
- * @param {*} delay
+ * @param { (...args:any[]) => void } fn 回调函数
+ * @param { number } delay 时间间隔
  */
 exports.debounce = (fn, delay = 100) => {
   let timer = null
@@ -45,10 +51,16 @@ exports.debounce = (fn, delay = 100) => {
   }
 }
 
-
+/** 打印日志 */
 exports.log = log
 
 // https://stackoverflow.com/a/53387532
+/**
+ * 比较版本
+ * @param { string | number } currentVer 当前版本
+ * @param { string | number } targetVer 目标版本
+ * @returns { 0 | 1 | -1 }
+ */
 exports.compareVer = (currentVer, targetVer) => {
   // treat non-numerical characters as lower version
   // replacing them with a negative number based on charcode of each character
@@ -67,12 +79,13 @@ exports.compareVer = (currentVer, targetVer) => {
   return 0
 }
 
+/** 判断为对象(排除数组) */
 exports.isObject = item => item && typeof item === 'object' && !Array.isArray(item)
 
 /**
  * 对象深度合并
- * @param  {} target 要合并源对象
- * @param  {} source 要合并目标对象
+ * @param  { any } target 要合并源对象
+ * @param  { any } source 要合并目标对象
  */
 exports.objectDeepMerge = (target, source, mergedObj) => {
   if (!mergedObj) {
@@ -93,8 +106,16 @@ exports.objectDeepMerge = (target, source, mergedObj) => {
   Object.assign(target, base)
 }
 
+/**
+ * 合并设置
+ * @param { LxMusic.Common.Setting } setting 设置
+ * @param { string } version 版本
+ * @returns
+ */
 exports.mergeSetting = (setting, version) => {
+  /** @type { LxMusic.Common.Setting } */
   let defaultSettingCopy = JSON.parse(JSON.stringify(defaultSetting))
+  /** @type { LxMusic.Common.Setting } */
   let overwriteSettingCopy = JSON.parse(JSON.stringify(overwriteSetting))
   const defaultVersion = defaultSettingCopy.version
   if (!version) {
@@ -117,13 +138,15 @@ exports.mergeSetting = (setting, version) => {
   //   if (api) setting.apiSource = api.id
   // }
 
-  return { setting, version: defaultVersion }
+  return {
+    setting,
+    version: defaultVersion,
+  }
 }
 
 /**
  * 初始化设置
- * @param {*} setting
- * @param {*} isShowErrorAlert
+ * @param { boolean } isShowErrorAlert 是否显示错误弹窗
  */
 exports.initSetting = isShowErrorAlert => {
   const electronStore_list = getStore('playList', true, isShowErrorAlert)
@@ -173,14 +196,23 @@ exports.initSetting = isShowErrorAlert => {
     electronStore_list.delete('downloadList')
   }
 
-  const { version: settingVersion, setting: newSetting } = exports.mergeSetting(setting, electronStore_config.get('version'))
+  const {
+    version: settingVersion,
+    setting: newSetting,
+  } = exports.mergeSetting(setting, electronStore_config.get('version'))
 
   // 重置 ^0.18.2 排行榜ID
   if (!newSetting.leaderboard.tabId.includes('__')) newSetting.leaderboard.tabId = 'kw__16'
 
   // newSetting.controlBtnPosition = 'right'
-  electronStore_config.set({ version: settingVersion, setting: newSetting })
-  return { version: settingVersion, setting: newSetting }
+  electronStore_config.set({
+    version: settingVersion,
+    setting: newSetting,
+  })
+  return {
+    version: settingVersion,
+    setting: newSetting,
+  }
 }
 
 /**

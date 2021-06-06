@@ -4,14 +4,18 @@ const path = require('path')
 const fs = require('fs')
 const log = require('electron-log')
 
+/**
+ * 数据表
+ * @type { { [name: string]: Store } }
+ */
 const stores = {}
 
 /**
- * 获取 Store 对象
- * @param {*} name store 名
- * @param {*} isIgnoredError 是否忽略错误
- * @param {*} isShowErrorAlert 是否显示错误弹窗
- * @returns Store
+ * 按名称获取数据
+ * @param { string } name 数据名称
+ * @param { boolean } isIgnoredError 是否忽略错误
+ * @param { boolean } isShowErrorAlert 是否显示错误弹窗
+ * @returns { Store }
  */
 module.exports = (name, isIgnoredError = true, isShowErrorAlert = true) => {
   if (stores[name]) return stores[name]

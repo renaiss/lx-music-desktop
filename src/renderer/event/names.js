@@ -1,3 +1,4 @@
+/** @type { LxMusic.Renderer.HotKeyEventNameMap } */
 const names = {
   base: {
     key_down: 'key_down',
