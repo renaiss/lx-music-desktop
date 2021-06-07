@@ -11,6 +11,7 @@ import {
 } from '../../utils'
 
 // state
+/** @type { LxMusic.Renderer.PlayerState } */
 const state = {
   listInfo: {
     list: [],
@@ -142,9 +143,11 @@ const getLyric = function(musicInfo, retryedSource = [], originMusic) {
 }
 
 // getters
+/** @type { LxMusic.Renderer.PlayerModule["getters"] } */
 const getters = {
   list: state => state.listInfo.list,
   changePlay: satte => satte.changePlay,
+  /** @returns { LxMusic.Renderer.PlayMusicInfo } */
   playInfo(state) {
     if (state.playMusicInfo == null) return { listId: null, playIndex: -1, playListId: null, listPlayIndex: -1, isPlayList: false, musicInfo: null }
     const playListId = state.listInfo.id
@@ -189,7 +192,14 @@ const getters = {
 }
 
 // actions
+/** @type { LxMusic.Renderer.PlayerModule["actions"] } */
 const actions = {
+
+  /**
+   * 播放器取网址
+   * @param { LxMusic.Renderer.PlayerActionContext } param0
+   * @param { LxMusic.Renderer.PlayerGetUrlInfo } param1
+   */
   async getUrl({ commit, state }, { musicInfo, type, isRefresh, onToggleSource = () => {} }) {
     // if (!musicInfo._types[type]) {
     //   // 兼容旧版酷我源搜索列表过滤128k音质的bug
@@ -207,6 +217,12 @@ const actions = {
       return Promise.reject(err)
     })
   },
+
+  /**
+   * 播放器取图片
+   * @param { LxMusic.Renderer.PlayerActionContext } param0
+   * @param { LxMusic.UserApiEvent.SongInfo } musicInfo
+   */
   getPic({ commit, state }, musicInfo) {
     // if (picRequest && picRequest.cancelHttp) picRequest.cancelHttp()
     // picRequest = music[musicInfo.source].getPic(musicInfo)
@@ -218,6 +234,12 @@ const actions = {
       return Promise.reject(err)
     })
   },
+
+  /**
+   * 播放器获取歌词
+   * @param { LxMusic.Renderer.PlayerActionContext } param0
+   * @param { LxMusic.UserApiEvent.SongInfo } musicInfo
+   */
   async getLrc({ commit, state }, musicInfo) {
     const lrcInfo = await getStoreLyric(musicInfo)
     // if (lrcRequest && lrcRequest.cancelHttp) lrcRequest.cancelHttp()
@@ -244,6 +266,10 @@ const actions = {
     })
   },
 
+  /**
+   * 播放器上一曲
+   * @param { LxMusic.Renderer.PlayerActionContext } param0
+   */
   async playPrev({ state, rootState, commit, getters }) {
     const currentListId = state.listInfo.id
     const currentList = state.listInfo.list
@@ -299,6 +325,11 @@ const actions = {
       listId: currentListId,
     })
   },
+
+  /**
+   * 播放器下一曲
+   * @param { LxMusic.Renderer.PlayerActionContext } param0
+   */
   async playNext({ state, rootState, commit, getters }) {
     if (state.tempPlayList.length) {
       const playMusicInfo = state.tempPlayList[0]
@@ -363,13 +394,31 @@ const actions = {
 
 
 // mitations
+/** @type { LxMusic.Renderer.PlayerModule["mutations"] } */
 const mutations = {
+  /**
+   * 播放器设置网址
+   * @param { LxMusic.Renderer.PlayerState } state
+   * @param { LxMusic.Renderer.PlayerSetUrlInfo } param1
+   */
   setUrl(state, { musicInfo, type, url }) {
     setMusicUrl(musicInfo, type, url)
   },
+
+  /**
+   * 播放器获取图片
+   * @param { LxMusic.Renderer.PlayerState } state
+   * @param { LxMusic.Renderer.PlayerMusicInfo } datas
+   */
   getPic(state, datas) {
     datas.musicInfo.img = datas.url
   },
+
+  /**
+   * 播放器设置歌词
+   * @param { LxMusic.Renderer.PlayerState } state
+   * @param { LxMusic.Renderer.PlayerMusicInfo } datas
+   */
   setLrc(state, datas) {
     // datas.musicInfo.lrc = datas.lyric
     // datas.musicInfo.tlrc = datas.tlyric
@@ -380,6 +429,13 @@ const mutations = {
       lxlyric: datas.lxlyric,
     })
   },
+
+  /**
+   * 播放器设置列表
+   * @param { LxMusic.Renderer.PlayerState } state
+   * @param { LxMusic.Renderer.PlayerSetListInfo } param1
+   * @returns
+   */
   setList(state, { list, index }) {
     if (!(list && list.list && list.list[index])) return
     state.playMusicInfo = {
@@ -393,40 +449,89 @@ const mutations = {
     if (state.playedList.length) this.commit('player/clearPlayedList')
     if (state.tempPlayList.length) this.commit('player/clearTempPlayeList')
   },
+
+  /**
+   * 播放器设置播放序号
+   * @param { LxMusic.Renderer.PlayerState } state
+   * @param { number } index
+   */
   setPlayIndex(state, index) {
     state.playIndex = index
   },
+
+  /** 播放器更改播放 */
   setChangePlay(state) {
     state.changePlay = true
   },
+  /** 播放器重置更改播放 */
   resetChangePlay(state) {
     state.changePlay = false
   },
+
+  /**
+   * 播放器设置播放列表
+   * @param { LxMusic.Renderer.PlayerState } state
+   * @param { LxMusic.UserApiEvent.SongInfo } item
+   * @returns
+   */
   setPlayedList(state, item) {
     // console.log(item)
     if (state.playedList.includes(item)) return
     state.playedList.push(item)
   },
+
+  /**
+   * 移除播放列表
+   * @param { LxMusic.Renderer.PlayerState } state
+   * @param { number } index
+   */
   removePlayedList(state, index) {
     state.playedList.splice(index, 1)
   },
+
+  /** 清除播放列表 */
   clearPlayedList(state) {
     state.playedList.splice(0, state.playedList.length)
   },
+
+  /**
+   * 显示播放明细
+   * @param { LxMusic.Renderer.PlayerState } state
+   * @param { boolean } visible
+   */
   visiblePlayerDetail(state, visible) {
     state.isShowPlayerDetail = visible
   },
+
+  /**
+   * 设置播放历史列表
+   * @param { LxMusic.Renderer.PlayerState } state
+   * @param { LxMusic.Renderer.PlayMusicInfo } list
+   */
   setTempPlayList(state, list) {
     state.tempPlayList.push(...list.map(({ musicInfo, listId }) => ({ musicInfo, listId, isTempPlay: true })))
     if (!state.playMusicInfo) this.commit('player/playNext')
   },
+
+  /**
+   * 移除播放历史列表
+   * @param { LxMusic.Renderer.PlayerState } state
+   * @param { number } index
+   */
   removeTempPlayList(state, index) {
     state.tempPlayList.splice(index, 1)
   },
+
+  /** 清除播放历史列表 */
   clearTempPlayeList(state) {
     state.tempPlayList.splice(0, state.tempPlayList.length)
   },
 
+  /**
+   * 设置播放音乐信息
+   * @param { LxMusic.Renderer.PlayerState } state
+   * @param { LxMusic.Renderer.PlayMusicInfo } playMusicInfo
+   */
   setPlayMusicInfo(state, playMusicInfo) {
     let playIndex = state.playIndex
     if (playMusicInfo == null) {
@@ -442,6 +547,7 @@ const mutations = {
   },
 }
 
+/** @type { LxMusic.Renderer.PlayerModule } */
 export default {
   namespaced: true,
   state,
