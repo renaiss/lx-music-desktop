@@ -14,7 +14,7 @@ sources.push({
 })
 
 // state
-/** @type { LxMusic.Renderer.HotSearchState } */
+/** @type { LxMusic.Renderer.HotSearchModule["state"] } */
 const state = {
   list: {
     ...sourceList,
@@ -24,27 +24,21 @@ const state = {
 }
 
 // getters
+/** @type { LxMusic.Renderer.HotSearchModule["getters"] } */
 const getters = {
-  /**
-   * @param { LxMusic.Renderer.HotSearchState } state
-   * @param { LxMusic.Renderer.HotSearchActionContext["getters"] } getters
-   * @param { LxMusic.Renderer.HotSearchActionContext["rootState"] } rootState
-   * @param { { sourceNames: LxMusic.Renderer.SearchMap; } } param3
-   */
   sources(state, getters, rootState, { sourceNames }) {
     return sources.map(item => ({ id: item.id, name: sourceNames[item.id] }))
   },
-  /** @param { LxMusic.Renderer.HotSearchState } state */
   list: state => state.list,
 }
 
 // actions
+/** @type { LxMusic.Renderer.HotSearchModule["actions"] } */
 const actions = {
   /**
    * 获取列表
    * @param { LxMusic.Renderer.HotSearchActionContext } param0
    * @param { LxMusic.Renderer.SearchType } source
-   * @returns
    */
   getList({ state, commit }, source) {
     if (source == 'all') {
@@ -110,6 +104,7 @@ const mutations = {
   },
 }
 
+/** @type { LxMusic.Renderer.HotSearchModule } */
 export default {
   namespaced: true,
   state,

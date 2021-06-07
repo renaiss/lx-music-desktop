@@ -1,7 +1,7 @@
 import music from '../../utils/music'
-const sourceList = {}
-const sources = []
-const cache = new Map()
+/** @type { LxMusic.Renderer.MusicSourcesMap } */ const sourceList = {}
+/** @type { LxMusic.Renderer.MusicSources } */ const sources = []
+/** @type { LxMusic.Renderer.LeaderboardCacheMap } */ const cache = new Map()
 for (const source of music.sources) {
   const leaderboard = music[source.id].leaderboard
   if (!leaderboard || !leaderboard.getBoards) continue
@@ -10,6 +10,7 @@ for (const source of music.sources) {
 }
 
 // state
+/** @type { LxMusic.Renderer.LeaderboardModule["state"] } */
 const state = {
   boards: sourceList,
   list: [],
@@ -20,6 +21,7 @@ const state = {
 }
 
 // getters
+/** @type { LxMusic.Renderer.LeaderboardModule["getters"] } */
 const getters = {
   sources(state, getters, rootState, { sourceNames }) {
     return sources.map(item => ({ id: item.id, name: sourceNames[item.id] }))
@@ -40,7 +42,9 @@ const getters = {
 }
 
 // actions
+/** @type { LxMusic.Renderer.LeaderboardModule["actions"] } */
 const actions = {
+  /** 取排行榜列表 */
   getBoardsList({ state, rootState, commit }) {
     // if (state.boards.length)
     let source = rootState.setting.leaderboard.source
@@ -51,6 +55,12 @@ const actions = {
     if (state.boards[source].length) return
     return music[source].leaderboard.getBoards().then(result => commit('setBoardsList', { boards: result, source }))
   },
+
+  /**
+   * 获取列表
+   * @param { LxMusic.Renderer.LeaderboardActionContext } param0
+   * @param { number } page
+  */
   getList({ state, rootState, commit }, page) {
     // let source = rootState.setting.leaderboard.source
     let tabId = rootState.setting.leaderboard.tabId
@@ -65,6 +75,12 @@ const actions = {
     // ).then(result => commit('setList', { result, key }))
     return music[source].leaderboard.getList(bangId, page).then(result => commit('setList', { result, key }))
   },
+
+  /**
+   * 获取全部列表
+   * @param { LxMusic.Renderer.LeaderboardActionContext } param0
+   * @param { string } id
+   */
   getListAll({ state, rootState }, id) {
     // console.log(source, id)
     let [source, bangId] = id.split('__')
@@ -92,10 +108,21 @@ const actions = {
 }
 
 // mitations
+/** @type { LxMusic.Renderer.LeaderboardModule["mutations"] } */
 const mutations = {
+  /**
+   * 设置排行榜
+   * @param { LxMusic.Renderer.LeaderboardState } state
+   * @param { LxMusic.Renderer.LeaderboardSetInfo } param1
+   */
   setBoardsList(state, { boards, source }) {
     state.boards[source] = boards.list
   },
+  /**
+   * 设置列表
+   * @param { LxMusic.Renderer.LeaderboardState } state
+   * @param { LxMusic.Renderer.LeaderboardSetInfo } param1
+   */
   setList(state, { result, key }) {
     state.list = result.list
     state.total = result.total
@@ -110,6 +137,7 @@ const mutations = {
   },
 }
 
+/** @type { LxMusic.Renderer.LeaderboardModule } */
 export default {
   namespaced: true,
   state,
