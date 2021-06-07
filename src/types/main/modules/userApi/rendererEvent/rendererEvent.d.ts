@@ -18,15 +18,15 @@ export interface ResponseInfo {
 
 /** 歌曲信息 */
 export interface SongInfo {
-  /** 歌手 */ singer: string;
-  /** 歌名 */ name: string;
+  /** 歌曲歌手 */ singer: string;
+  /** 歌曲歌名 */ name: string;
   /** 唱片名称 */ albumName: string;
   /** 唱片编号 */ albumId: string;
-  /** 来源 */ source: LxMusic.Renderer.MusicSourcesId;
-  /** 间隔 */ interval: string | null;
+  /** 歌曲来源 */ source: LxMusic.Renderer.MusicSourcesId;
+  /** 音乐时间 */ interval: string | null;
   /** 歌曲编号 */ songmid: string;
-  /** 图片 */ img: string;
-  /** 歌词 */ lrc: string | null;
+  /** 歌曲图片 */ img: string;
+  /** 歌曲歌词 */ lrc: string | null;
   /** 其它资源 */ otherSource: LxMusic.Renderer.MusicSourcesId | null;
   /** 音质组 */ types: [
     { type: flac, size: null; },
@@ -39,6 +39,10 @@ export interface SongInfo {
     '128k': { size: string; };
   };
   /** 类型链接 */ typeUrl: {};
+
+  /** 分类歌手 */ sortedSinger:?string;
+  /** 小写名称 */ lowerCaseName:?string;
+  /** 小写相册名称 */ lowerCaseAlbumName:?string;
 }
 
 /** 歌曲表 */

@@ -7,7 +7,7 @@ import bd from './bd'
 import xm from './xm'
 import { supportQuality } from './api-source'
 
-
+/** @type { LxMusic.Renderer.MusicPlatformSources } */
 const sources = {
   sources: [
     {
@@ -59,8 +59,12 @@ export default {
   },
   supportQuality,
 
+  /**
+   * 寻找音乐
+   * @param { LxMusic.UserApiEvent.SongInfo } musicInfo
+   */
   async findMusic(musicInfo) {
-    const tasks = []
+    /** @type { Promise<LxMusic.UserApiEvent.SongInfo | null>[] } */ const tasks = []
     const sortSingle = singer => singer.includes('、') ? singer.split('、').sort((a, b) => a.charCodeAt(0) - b.charCodeAt(0)).join('、') : singer
     const sortMusic = (arr, callback) => {
       const tempResult = []
@@ -75,7 +79,7 @@ export default {
       tempResult.reverse()
       return tempResult
     }
-    const trimStr = str => typeof str == 'string' ? str.trim() : str
+    /** @param { string } str */ const trimStr = str => typeof str == 'string' ? str.trim() : str
     const sortedSinger = String(sortSingle(musicInfo.singer)).toLowerCase()
     const musicName = trimStr(musicInfo.name)
     const lowerCaseName = String(musicName).toLowerCase()
@@ -122,7 +126,7 @@ export default {
       }).catch(_ => null))
     }
     const result = (await Promise.all(tasks)).filter(s => s)
-    const newResult = []
+    /** @type { LxMusic.UserApiEvent.SongInfo[] } */ const newResult = []
     if (result.length) {
       newResult.push(...sortMusic(result, item => item.sortedSinger === sortedSinger && item.lowerCaseName === lowerCaseName && item.interval === musicInfo.interval))
       newResult.push(...sortMusic(result, item => item.lowerCaseName === lowerCaseName && item.sortedSinger === sortedSinger && item.lowerCaseAlbumName === lowerCaseAlbumName))

@@ -44,6 +44,8 @@ const defaultHeaders = {
  * promise 形式的请求方法
  * @param {*} url
  * @param {*} options
+ * @return { LxMusic.Renderer.HttpPromoseResult<T> }
+ * @template T
  */
 const buildHttpPromose = (url, options) => {
   let obj = {
