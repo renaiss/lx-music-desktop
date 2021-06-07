@@ -12,8 +12,8 @@ export type SavePlayListInfo = {
   /** 下载列表 */ data: unknown;
 }
 
-/** 播放列表信息 */
-export interface PlayListInfo {
+/** 播放列表列表信息 */
+export interface PlayListListInfo {
   /** 默认列表 */ defaultList: unknown;
   /** 喜爱列表 */ loveList: unknown;
   /** 用户列表 */ userList: unknown;

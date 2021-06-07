@@ -41,6 +41,9 @@ export interface SongInfo {
   /** 类型链接 */ typeUrl: {};
 }
 
+/** 歌曲表 */
+export type SongMap = { [id in SongInfo["albumId"]]: SongInfo };
+
 /** 请求信息 */
 export interface RequestData {
   /** 来源 */ source: LxMusic.Renderer.MusicSourcesId;
