@@ -13,7 +13,7 @@ export type SearchMap = { [id in SearchSources[number]["id"]]: string[] }
 /** 歌曲表 */
 export type MusicSourcesMap = { [id in LxMusic.Renderer.MusicSources[number]["id"]]: string[] }
 
-/** 热搜状态 */
+/** 热搜数据 */
 export interface HotSearchState {
   /** 搜索列表 */ list: SearchMap;
 }

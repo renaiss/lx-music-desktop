@@ -10,7 +10,7 @@ for (const source of music.sources) {
 }
 
 // state
-/** @type { LxMusic.Renderer.LeaderboardModule["state"] } */
+/** @type { LxMusic.Renderer.LeaderboardState } */
 const state = {
   boards: sourceList,
   list: [],
@@ -21,17 +21,20 @@ const state = {
 }
 
 // getters
-/** @type { LxMusic.Renderer.LeaderboardModule["getters"] } */
 const getters = {
+  /** @param { LxMusic.Renderer.LeaderboardState } state */
   sources(state, getters, rootState, { sourceNames }) {
     return sources.map(item => ({ id: item.id, name: sourceNames[item.id] }))
   },
+  /** @param { LxMusic.Renderer.LeaderboardState } state */
   boards(state) {
     return state.boards
   },
+  /** @param { LxMusic.Renderer.LeaderboardState } state */
   list(state) {
     return state.list
   },
+  /** @param { LxMusic.Renderer.LeaderboardState } state */
   info(state) {
     return {
       total: state.total,
@@ -42,9 +45,11 @@ const getters = {
 }
 
 // actions
-/** @type { LxMusic.Renderer.LeaderboardModule["actions"] } */
 const actions = {
-  /** 取排行榜列表 */
+  /**
+   * 取排行榜列表
+   * @param { LxMusic.Renderer.LeaderboardActionContext } param0
+   */
   getBoardsList({ state, rootState, commit }) {
     // if (state.boards.length)
     let source = rootState.setting.leaderboard.source
@@ -64,6 +69,7 @@ const actions = {
   getList({ state, rootState, commit }, page) {
     // let source = rootState.setting.leaderboard.source
     let tabId = rootState.setting.leaderboard.tabId
+    /** @type { [LxMusic.Renderer.MusicSourcesId,string] } */
     let [source, bangId] = tabId.split('__')
     let key = `${source}${tabId}${page}`
     if (state.list.length && state.key == key) return Promise.resolve()
@@ -83,6 +89,7 @@ const actions = {
    */
   getListAll({ state, rootState }, id) {
     // console.log(source, id)
+    /** @type { [LxMusic.Renderer.MusicSourcesId,string] } */
     let [source, bangId] = id.split('__')
     const loadData = (id, page) => {
       let key = `${source}${id}${page}`
@@ -97,6 +104,7 @@ const actions = {
       if (result.total <= result.limit) return result.list
 
       let maxPage = Math.ceil(result.total / result.limit)
+      /** @returns { Promise<LxMusic.UserApiEvent.SongInfo[]> } */
       const load = (loadPage = 2) => {
         return loadPage == maxPage
           ? loadData(id, loadPage).then(result => result.list)
@@ -108,7 +116,6 @@ const actions = {
 }
 
 // mitations
-/** @type { LxMusic.Renderer.LeaderboardModule["mutations"] } */
 const mutations = {
   /**
    * 设置排行榜
@@ -137,7 +144,6 @@ const mutations = {
   },
 }
 
-/** @type { LxMusic.Renderer.LeaderboardModule } */
 export default {
   namespaced: true,
   state,

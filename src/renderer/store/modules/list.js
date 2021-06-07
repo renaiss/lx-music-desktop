@@ -17,7 +17,7 @@ const allListRemove = list => {
 }
 
 // state
-/** @type { LxMusic.Renderer.PlayListModule["state"] } */
+/** @type { LxMusic.Renderer.PlayListState } */
 const state = {
   isInitedList: false,
   defaultList: {
@@ -42,17 +42,15 @@ const state = {
 }
 
 // getters
-/** @type { LxMusic.Renderer.PlayListModule["getters"] } */
 const getters = {
-  isInitedList: state => state.isInitedList,
-  defaultList: state => state.defaultList || {},
-  loveList: state => state.loveList || {},
-  userList: state => state.userList,
-  allList: () => allList,
+  /** @param { LxMusic.Renderer.PlayListState } state */ isInitedList: state => state.isInitedList,
+  /** @param { LxMusic.Renderer.PlayListState } state */ defaultList: state => state.defaultList || {},
+  /** @param { LxMusic.Renderer.PlayListState } state */ loveList: state => state.loveList || {},
+  /** @param { LxMusic.Renderer.PlayListState } state */ userList: state => state.userList,
+  /** @param { LxMusic.Renderer.PlayListState } state */ allList: () => allList,
 }
 
 // actions
-/** @type { LxMusic.Renderer.PlayListModule["actions"] } */
 const actions = {
   /**
    * 取其它来源
@@ -68,7 +66,6 @@ const actions = {
 }
 
 // mitations
-/** @type { LxMusic.Renderer.PlayListModule["mutations"] } */
 const mutations = {
   /**
    * 初始化列表
@@ -341,7 +338,6 @@ const mutations = {
   },
 }
 
-/** @type { LxMusic.Renderer.PlayListModule } */
 export default {
   namespaced: true,
   state,

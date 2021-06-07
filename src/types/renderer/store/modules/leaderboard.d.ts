@@ -1,7 +1,7 @@
 /** 排行榜数据 */
 export interface LeaderboardState {
   /** 排行榜 */ boards: LxMusic.Renderer.MusicSourcesMap;
-  /** 列表 */ list: [];
+  /** 列表 */ list: LxMusic.UserApiEvent.SongInfo[];
   /** 总页 */ total: number;
   /** 页数 */ page: number;
   /** 个数 */ limit: number;
@@ -23,4 +23,4 @@ export interface LeaderboardSetInfo{
 }
 
 /** 排行缓存表 */
-export type LeaderboardCacheMap = Map<string, LeaderboardState>;
+export type LeaderboardCacheMap = Map<string, LxMusic.Renderer.MusicPlatformMusicSearchResult>;

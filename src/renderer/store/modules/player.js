@@ -26,7 +26,10 @@ const state = {
   tempPlayList: [],
 }
 
-
+/**
+ * 过滤列表
+ * @param { LxMusic.Renderer.PlayerState } param0
+ */
 const filterList = async({ playedList, listInfo, savePath, commit }) => {
   // if (this.list.listName === null) return
   let list
@@ -68,6 +71,16 @@ const filterList = async({ playedList, listInfo, savePath, commit }) => {
   return list
 }
 
+/**
+ * 获取音乐网址
+ * @this LxMusic.Renderer.PlayerActionContext
+ * @param { LxMusic.UserApiEvent.SongInfo } musicInfo
+ * @param { Promise<LxMusic.Renderer.MusicQualityType } type
+ * @param { () => void } onToggleSource
+ * @param { LxMusic.Renderer.MusicSourcesId[] } retryedSource
+ * @param { LxMusic.UserApiEvent.SongInfo } originMusic
+ * @returns { Promise<LxMusic.Renderer.MusicPlatformMusicUrlInfo> }
+ */
 const getMusicUrl = function(musicInfo, type, onToggleSource, retryedSource = [], originMusic) {
   // console.log(musicInfo.source)
   if (!originMusic) originMusic = musicInfo
@@ -94,6 +107,13 @@ const getMusicUrl = function(musicInfo, type, onToggleSource, retryedSource = []
   })
 }
 
+/**
+ * 获取图片
+ * @param { LxMusic.UserApiEvent.SongInfo } musicInfo
+ * @param { LxMusic.Renderer.MusicSourcesId[] } retryedSource
+ * @param { LxMusic.UserApiEvent.SongInfo } originMusic
+ * @returns { Promise<string> }
+ */
 const getPic = function(musicInfo, retryedSource = [], originMusic) {
   // console.log(musicInfo.source)
   if (!originMusic) originMusic = musicInfo
@@ -118,6 +138,14 @@ const getPic = function(musicInfo, retryedSource = [], originMusic) {
     })
   })
 }
+
+/**
+ * 获取歌词
+ * @param { LxMusic.UserApiEvent.SongInfo } musicInfo
+ * @param { LxMusic.Renderer.MusicSourcesId[] } retryedSource
+ * @param { LxMusic.UserApiEvent.SongInfo } originMusic
+ * @returns { Promise<LxMusic.Renderer.MusicPlatformLyricInfo> }
+ */
 const getLyric = function(musicInfo, retryedSource = [], originMusic) {
   if (!originMusic) originMusic = musicInfo
   let reqPromise
@@ -143,11 +171,13 @@ const getLyric = function(musicInfo, retryedSource = [], originMusic) {
 }
 
 // getters
-/** @type { LxMusic.Renderer.PlayerModule["getters"] } */
 const getters = {
-  list: state => state.listInfo.list,
-  changePlay: satte => satte.changePlay,
-  /** @returns { LxMusic.Renderer.PlayMusicInfo } */
+  /** @param { LxMusic.Renderer.PlayerState } state */ list: state => state.listInfo.list,
+  /** @param { LxMusic.Renderer.PlayerState } satte */ changePlay: satte => satte.changePlay,
+  /**
+   * @param { LxMusic.Renderer.PlayerState } state
+   * @returns { LxMusic.Renderer.PlayMusicInfo }
+   */
   playInfo(state) {
     if (state.playMusicInfo == null) return { listId: null, playIndex: -1, playListId: null, listPlayIndex: -1, isPlayList: false, musicInfo: null }
     const playListId = state.listInfo.id
@@ -185,20 +215,19 @@ const getters = {
       musicInfo: state.playMusicInfo.musicInfo,
     }
   },
-  isShowPlayerDetail: state => state.isShowPlayerDetail,
-  playMusicInfo: state => state.playMusicInfo,
-  playedList: state => state.playedList,
-  tempPlayList: state => state.tempPlayList,
+  /** @param { LxMusic.Renderer.PlayerState } state */ isShowPlayerDetail: state => state.isShowPlayerDetail,
+  /** @param { LxMusic.Renderer.PlayerState } state */ playMusicInfo: state => state.playMusicInfo,
+  /** @param { LxMusic.Renderer.PlayerState } state */ playedList: state => state.playedList,
+  /** @param { LxMusic.Renderer.PlayerState } state */ tempPlayList: state => state.tempPlayList,
 }
 
 // actions
-/** @type { LxMusic.Renderer.PlayerModule["actions"] } */
 const actions = {
-
   /**
    * 播放器取网址
    * @param { LxMusic.Renderer.PlayerActionContext } param0
    * @param { LxMusic.Renderer.PlayerGetUrlInfo } param1
+   * @returns { Promise<string> }
    */
   async getUrl({ commit, state }, { musicInfo, type, isRefresh, onToggleSource = () => {} }) {
     // if (!musicInfo._types[type]) {
@@ -222,6 +251,7 @@ const actions = {
    * 播放器取图片
    * @param { LxMusic.Renderer.PlayerActionContext } param0
    * @param { LxMusic.UserApiEvent.SongInfo } musicInfo
+   * @returns { Promise<void> }
    */
   getPic({ commit, state }, musicInfo) {
     // if (picRequest && picRequest.cancelHttp) picRequest.cancelHttp()
@@ -239,6 +269,7 @@ const actions = {
    * 播放器获取歌词
    * @param { LxMusic.Renderer.PlayerActionContext } param0
    * @param { LxMusic.UserApiEvent.SongInfo } musicInfo
+   * @returns { Promise<LxMusic.Renderer.MusicPlatformLyricInfo> }
    */
   async getLrc({ commit, state }, musicInfo) {
     const lrcInfo = await getStoreLyric(musicInfo)
@@ -394,7 +425,6 @@ const actions = {
 
 
 // mitations
-/** @type { LxMusic.Renderer.PlayerModule["mutations"] } */
 const mutations = {
   /**
    * 播放器设置网址
@@ -547,7 +577,6 @@ const mutations = {
   },
 }
 
-/** @type { LxMusic.Renderer.PlayerModule } */
 export default {
   namespaced: true,
   state,

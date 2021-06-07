@@ -101,5 +101,5 @@ export interface PlayListSortInfo {
 /** 播放列表设置其它来源信息 */
 export interface PlayListSetOtherSourceInfo {
   /** 音乐信息 */ musicInfo: LxMusic.UserApiEvent.SongInfo;
-  /** 其它资源 */ otherSource: LxMusic.Renderer.MusicSourcesId | null;
+  /** 其它资源 */ otherSource: LxMusic.UserApiEvent.SongInfo[] | null;
 }

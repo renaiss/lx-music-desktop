@@ -18,15 +18,15 @@ export type DownloadStatusTextInfo =
   { [name in DownloadStatusInfo["ERROR"]]: "任务出错"; } &
   { [name in DownloadStatusInfo["COMPLETED"]]: "下载完成"; };
 
-/** 下载状态状态信息 */
-export interface DownloadStatusStateInfo {
+/** 下载状态数据 */
+export interface DownloadStatusState {
   /** 下载列表 */ list: DownloadInfo[];
   /** 等待列表 */ waitingList: DownloadInfo[];
   /** 下载状态信息 */ downloadStatus: DownloadStatusInfo;
 }
 
-/** 下载状态状态信息存储 */
-export type DownloadStatusStateInfoStore = import("Vuex").ActionContext<DownloadStatusStateInfo, { setting: LxMusic.Common.Setting; }>;
+/** 下载状态激活内容 */
+export type DownloadStatusActionContext = import("Vuex").ActionContext<DownloadStatusState, { setting: LxMusic.Common.Setting; }>;
 
 /** 下载信息 */
 export interface DownloadInfo<

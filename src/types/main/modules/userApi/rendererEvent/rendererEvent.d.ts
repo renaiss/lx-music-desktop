@@ -27,7 +27,7 @@ export interface SongInfo {
   /** 歌曲编号 */ songmid: string;
   /** 歌曲图片 */ img: string;
   /** 歌曲歌词 */ lrc: string | null;
-  /** 其它资源 */ otherSource: LxMusic.Renderer.MusicSourcesId | null;
+  /** 其它资源 */ otherSource: SongInfo[] | null;
   /** 音质组 */ types: [
     { type: flac, size: null; },
     { type: '320k', size: string; },

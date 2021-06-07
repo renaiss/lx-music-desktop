@@ -63,7 +63,7 @@ export interface MusicPlatformLeaderboard {
   /** 取数据 */ getData: (url: string) => Promise<any>;
   /** 过滤数据 */ filterData: (rawList: any) => LxMusic.UserApiEvent.SongInfo;
   /** 过滤榜单数据 */ filterBoardsData: (rawList: MusicPlatformLeaderboardInfo[]) => MusicPlatformLeaderboardInfo[];
-  /** 取榜单 */ getBoards: (retryNum: string = 0) => MusicPlatformLeaderboardBoardsInfo;
+  /** 取榜单 */ getBoards: (retryNum: string = 0) => Promise<MusicPlatformLeaderboardBoardsInfo>;
   /** 取列表 */ getList: (id: string | number, page: number, ...args: any[]) => Promise<MusicPlatformMusicSearchResult>;
 }
 
@@ -161,7 +161,7 @@ export interface MusicPlatformHotSearchInfo {
 /** 音乐平台_热门搜索 */
 export interface MusicPlatformHotSearch {
   /** 过滤列表 */ filterList: (rawList: any[]) => string[];
-  /** 取列表 */ getList: (rawList: any[]) => Promise<MusicPlatformHotSearchInfo[]>;
+  /** 取列表 */ getList: () => Promise<MusicPlatformHotSearchInfo[]>;
 }
 
 /** 音乐平台_过滤评论 */
@@ -201,6 +201,12 @@ export interface MusicPlatformLyricInfo {
   /** 歌词 */ lxlyric: string;
 }
 
+/** 音乐平台_音乐路径 */
+export interface MusicPlatformMusicUrlInfo {
+  /** 来源 */ type: LxMusic.Renderer.MusicQualityType;
+  /** 网址 */ url: string
+}
+
 /** 音乐平台 */
 export interface MusicPlatform {
   /** 临时搜索 */ tempSearch: MusicPlatformTempSearch;
@@ -210,7 +216,7 @@ export interface MusicPlatform {
   /** 热门搜索 */ hotSearch: MusicPlatformHotSearch;
   /** 评论 */ comment: MusicPlatformComment;
   /** 获取歌词 */ getLyric: (songInfo: LxMusic.UserApiEvent.SongInfo, isGetLyricx: boolean) => LxMusic.Renderer.HttpPromoseResult<MusicPlatformLyricInfo>;
-  /** 获取音乐网址 */ getMusicUrl: (songInfo: LxMusic.UserApiEvent.SongInfo, type: unknown) => string;
+  /** 获取音乐网址 */ getMusicUrl: (songInfo: LxMusic.UserApiEvent.SongInfo, type: LxMusic.Renderer.MusicQualityType) => LxMusic.Renderer.HttpPromoseResult<MusicPlatformMusicUrlInfo>;
   /** 取音乐封面 */ getPic: (songInfo: LxMusic.UserApiEvent.SongInfo) => LxMusic.Renderer.HttpPromoseResult<string>;
   /** 取音乐明细网址 */ getMusicDetailPageUrl: (songInfo: LxMusic.UserApiEvent.SongInfo) => string;
 
