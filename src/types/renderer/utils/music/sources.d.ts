@@ -118,18 +118,18 @@ export interface MusicPlatformGetListInfo {
 
 /** 音乐平台_获取标签 */
 export interface MusicPlatformGetTagInfo {
-  /** 来源 */ tags: MusicPlatformTagInfo[];
-  /** 来源 */ hotTag: MusicPlatformHotTagInfo[];
+  /** 标签组 */ tags: MusicPlatformTagInfo[];
+  /** 热门标签 */ hotTag: MusicPlatformHotTagInfo[];
   /** 来源 */ source: MusicSourcesId;
 }
 
 
 /** 音乐平台_明细信息 */
 export interface MusicPlatformDetailInfo {
-  /** 列表 */ list: string;
-  /** 页面 */ page: string;
-  /** 显数 */ limit: string;
-  /** 总数 */ total: string;
+  /** 列表 */ list: unknown[];
+  /** 页面 */ page: number;
+  /** 显数 */ limit: number;
+  /** 总数 */ total: number;
   /** 来源 */ source: MusicSourcesId;
   /** 信息 */
   info: {
@@ -150,7 +150,7 @@ export interface MusicPlatformSongList {
   /** 过滤列表 */ filterList: (rawData: any[]) => MusicPlatformFilterListInfo[];
   /** 取列表 */ getList: (sortId: string, tagId: string, page: number) => Promise<MusicPlatformGetListInfo[]>;
   /** 取标签 */ getTags: () => Promise<MusicPlatformGetTagInfo[]>;
-  /** 取明细 */ getListDetail: (id: string, page: number) => Promise<MusicPlatformDetailInfo[]>;
+  /** 取明细 */ getListDetail: (id: string, page: number) => Promise<MusicPlatformDetailInfo>;
 }
 
 /** 音乐平台_热搜信息 */

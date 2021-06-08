@@ -1,7 +1,7 @@
 import music from '../../utils/music'
-const sortList = {}
-const sources = []
-const cache = new Map()
+/** @type { LxMusic.Renderer.SortListSortMap } */ const sortList = {}
+/** @type { LxMusic.Renderer.MusicSources } */ const sources = []
+/** @type { LxMusic.Renderer.SongListCacheMap } */ const cache = new Map()
 for (const source of music.sources) {
   const songList = music[source.id].songList
   if (!songList) continue
@@ -9,6 +9,10 @@ for (const source of music.sources) {
   sources.push(source)
 }
 
+/**
+ * 过滤列表
+ * @param { LxMusic.UserApiEvent.SongInfo[] } list
+ */
 const filterList = list => {
   const keys = new Set()
   return list.filter(item => {
@@ -19,6 +23,7 @@ const filterList = list => {
 }
 
 // state
+/** @type { LxMusic.Renderer.SongListState } */
 const state = {
   tags: {},
   list: {
@@ -48,26 +53,30 @@ sources.forEach(source => {
 
 // getters
 const getters = {
-  sourceInfo(state, getters, rootState, { sourceNames }) {
-    return { sources: sources.map(item => ({ id: item.id, name: sourceNames[item.id] })), sortList }
-  },
-  tags: state => state.tags,
-  isVisibleListDetail: state => state.isVisibleListDetail,
-  selectListInfo: state => state.selectListInfo,
-  listData(state) {
-    return state.list
-  },
-  listDetail(state) {
-    return state.listDetail
-  },
+  /** @param { LxMusic.Renderer.SongListState } state */ sourceInfo(state, getters, rootState, { sourceNames }) { return { sources: sources.map(item => ({ id: item.id, name: sourceNames[item.id] })), sortList } },
+  /** @param { LxMusic.Renderer.SongListState } state */ tags: state => state.tags,
+  /** @param { LxMusic.Renderer.SongListState } state */ isVisibleListDetail: state => state.isVisibleListDetail,
+  /** @param { LxMusic.Renderer.SongListState } state */ selectListInfo: state => state.selectListInfo,
+  /** @param { LxMusic.Renderer.SongListState } state */ listData(state) { return state.list },
+  /** @param { LxMusic.Renderer.SongListState } state */ listDetail(state) { return state.listDetail },
 }
 
 // actions
 const actions = {
+  /**
+   * 获取标签组
+   * @param { LxMusic.Renderer.SongListActionContext } param0
+   */
   getTags({ state, rootState, commit }) {
     let source = rootState.setting.songList.source
     return music[source].songList.getTags().then(result => commit('setTags', { tags: result, source }))
   },
+
+  /**
+   * 获取列表
+   * @param { LxMusic.Renderer.SongListActionContext } param0
+   * @param { number } page
+   */
   getList({ state, rootState, commit }, page) {
     let source = rootState.setting.songList.source
     let tabId = rootState.setting.songList.tagInfo.id
@@ -79,6 +88,12 @@ const actions = {
     commit('clearList')
     return music[source].songList.getList(sortId, tabId, page).then(result => commit('setList', { result, key, page }))
   },
+
+  /**
+   * 取列表明细
+   * @param { LxMusic.Renderer.SongListActionContext } param0
+   * @param { LxMusic.Renderer.SongListGetDetailInfo } param1
+   */
   getListDetail({ state, rootState, commit }, { id, page }) {
     let source = rootState.setting.songList.source
     let key = `sdetail__${source}__${id}__${page}`
@@ -90,6 +105,13 @@ const actions = {
         : music[source].songList.getListDetail(id, page).then(result => ({ ...result, list: filterList(result.list) }))
     ).then(result => commit('setListDetail', { result, key, source, id, page }))
   },
+
+  /**
+   * 取列表全部明细
+   * @param { LxMusic.Renderer.SongListActionContext } param0
+   * @param { LxMusic.Renderer.SongListGetDetailInfo } param1
+   * @returns { unknown } // TODO 未知
+   */
   getListDetailAll({ state, rootState }, { source, id }) {
     // console.log(source, id)
     const loadData = (id, page) => {
@@ -117,13 +139,29 @@ const actions = {
 
 // mitations
 const mutations = {
+  /**
+   * 设置标签组
+   * @param { LxMusic.Renderer.SongListState } state
+   * @param { LxMusic.Renderer.MusicPlatformGetTagInfo } param1
+   */
   setTags(state, { tags, source }) {
     state.tags[source] = tags
   },
+
+  /**
+   * 清除列表
+   * @param { LxMusic.Renderer.SongListState } state
+   */
   clearList(state) {
     state.list.list = []
     state.list.total = 0
   },
+
+  /**
+   * 设置列表
+   * @param { LxMusic.Renderer.SongListState } state
+   * @param { LxMusic.Renderer.SongListGetDetailInfo } param1
+   */
   setList(state, { result, key, page }) {
     state.list.list = result.list
     state.list.total = result.total
@@ -132,6 +170,12 @@ const mutations = {
     state.list.key = key
     cache.set(key, result)
   },
+
+  /**
+   * 设置列表明细
+   * @param { LxMusic.Renderer.SongListState } state
+   * @param { LxMusic.Renderer.SongListGetDetailInfo } param1
+   */
   setListDetail(state, { result, key, source, id, page }) {
     state.listDetail.list = result.list
     state.listDetail.id = id
@@ -149,13 +193,30 @@ const mutations = {
     }
     cache.set(key, result)
   },
+
+  /**
+   * 设置显示列表明细
+   * @param { LxMusic.Renderer.SongListState } state
+   * @param { boolean } bool
+   */
   setVisibleListDetail(state, bool) {
     if (!bool) state.listDetail.list = []
     state.isVisibleListDetail = bool
   },
+
+  /**
+   * 设置选择列表信息
+   * @param { LxMusic.Renderer.SongListState } state
+   * @param { LxMusic.Renderer.MusicPlatformDetailInfo["info"] } info
+   */
   setSelectListInfo(state, info) {
     state.selectListInfo = info
   },
+
+  /**
+   * 清除列表明细
+   * @param { LxMusic.Renderer.SongListState } state
+   */
   clearListDetail(state) {
     state.listDetail = {
       id: null,

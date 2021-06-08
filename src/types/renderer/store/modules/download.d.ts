@@ -25,7 +25,7 @@ export interface DownloadStatusState {
   /** 下载状态信息 */ downloadStatus: DownloadStatusInfo;
 }
 
-/** 下载状态激活内容 */
+/** 下载状态动作内容 */
 export type DownloadStatusActionContext = LxMusic.Renderer.ActionContext<"download", DownloadStatusState>;
 
 /** 下载信息 */

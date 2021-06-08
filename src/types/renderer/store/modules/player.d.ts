@@ -25,7 +25,7 @@ export interface PlayerState {
   /** 播放历史列表 */ tempPlayList: LxMusic.UserApiEvent.SongInfo[];
 }
 
-/** 播放器活跃内容 */
+/** 播放器动作内容 */
 export type PlayerActionContext = LxMusic.Renderer.ActionContext<"player", PlayerState>
 
 /** 播放器取网址信息 */

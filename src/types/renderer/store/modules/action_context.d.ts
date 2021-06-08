@@ -6,7 +6,7 @@ import player from "../../../../renderer/store/modules/player";
 import search from "../../../../renderer/store/modules/search";
 import songList from "../../../../renderer/store/modules/songList";
 
-import { ActionContext as ActionContext2 } from "vuex";
+import { ActionContext as VuexActionContext } from "vuex";
 
 type ParametersOther<T extends (...args: any) => any> = T extends (a: any, ...args: infer P) => any ? P : never;
 
@@ -21,15 +21,21 @@ export interface StoreModuleMap {
   /** 歌曲列表 */ songList: typeof songList;
 }
 
+/** 存储模块名称 */
 type StoreModuleName = keyof StoreModuleMap;
 
 // action
+
+/** 存储模块行为名称 */
 type StoreModuleActionName = { [name in StoreModuleName]: keyof StoreModuleMap[name]["actions"]; }[StoreModuleName];
 
+/** 存储模块行为参反表 */
 type ActionsParamRetMap<T> = { [name in keyof T]: { param: ParametersOther<T[name]>; return: ReturnType<T[name]>; } };
 
+/** 存储模块行为参反数据 */
 type ActionParamRet = { [name in StoreModuleName]: ActionsParamRetMap<StoreModuleMap[name]["actions"]>; };
 
+/** 存储模块派遣 */
 type StoreModuleDispatch<M2 extends StoreModuleName> = <
   M extends StoreModuleName,
   H extends StoreModuleActionName,
@@ -41,12 +47,17 @@ type StoreModuleDispatch<M2 extends StoreModuleName> = <
   `${M}/${H}` extends never ? ActionParamRet[M2][H2]["return"] : ActionParamRet[M][H]["return"];
 
 // mitations
+
+/** 存储模块变化名称 */
 type StoreModuleMutationsName = { [name in StoreModuleName]: keyof StoreModuleMap[name]["mutations"]; }[StoreModuleName];
 
+/** 存储模块变化参反表 */
 type MutationsParamRetMap<T> = { [name in keyof T]: { param: ParametersOther<T[name]>; return: ReturnType<T[name]>; } };
 
+/** 存储模块变化参反数据 */
 type MutationsParamRet = { [name in StoreModuleName]: ActionsParamRetMap<StoreModuleMap[name]["mutations"]>; };
 
+/** 存储模块提交 */
 type StoreModuleCommit<M2 extends StoreModuleName> = <
   M extends StoreModuleName,
   H extends StoreModuleMutationsName,
@@ -58,9 +69,10 @@ type StoreModuleCommit<M2 extends StoreModuleName> = <
   `${M}/${H}` extends never ? MutationsParamRet[M2][H2]["return"] : MutationsParamRet[M][H]["return"];
 
 // action_context
-type ActionContextR = { setting: LxMusic.Common.Setting; }
 
-export interface ActionContext<M extends StoreModuleName, S> extends ActionContext2<S, ActionContextR> {
+type ActionContextRootState = { setting: LxMusic.Common.Setting; }
+
+export interface ActionContext<M extends StoreModuleName, S> extends VuexActionContext<S, ActionContextRootState> {
   dispatch: StoreModuleDispatch<M>;
   commit: StoreModuleCommit<M>;
 }

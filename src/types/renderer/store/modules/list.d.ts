@@ -20,7 +20,7 @@ export interface PlayListState {
 /** 播放列表字典 */
 export type PlayListMap = { [id in string]: PlayListInfo; };
 
-/** 播放列表活跃内容 */
+/** 播放列表动作内容 */
 export type PlayListActionContext = LxMusic.Renderer.ActionContext<"list", PlayListState>
 
 /** 播放列表初始化信息 */

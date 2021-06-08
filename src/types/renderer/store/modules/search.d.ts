@@ -23,7 +23,7 @@ export interface SearchState {
   /** 历史列表 */ historyList: string[];
 }
 
-/** 搜索活跃内容 */
+/** 搜索动作内容 */
 export type SearchActionContext = LxMusic.Renderer.ActionContext<"search", SearchState>
 
 /** 搜索结果列表信息 */
