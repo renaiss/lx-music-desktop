@@ -224,7 +224,7 @@ const handleGetMusicUrl = function(musicInfo, type, retryedSource = [], originMu
   }
   return reqPromise.catch(err => {
     if (!retryedSource.includes(musicInfo.source)) retryedSource.push(musicInfo.source)
-    return this.dispatch('list/getOtherSource', originMusic).then(/** @param { LxMusic.UserApiEvent.SongInfo[] } otherSource */otherSource => {
+    return this.dispatch('list/getOtherSource', originMusic).then(otherSource => {
       console.log('find otherSource', otherSource)
       if (otherSource.length) {
         for (const item of otherSource) {
@@ -268,6 +268,7 @@ const getMusicUrl = async function(downloadInfo, isUseOtherSource, isRefresh) {
 
 /**
  * 获取图片
+ * @this LxMusic.Renderer.DownloadStatusActionContext
  * @param { LxMusic.UserApiEvent.SongInfo } musicInfo 音乐信息
  * @param { LxMusic.UserApiEvent.SongInfo["source"][] } retryedSource 复述来源
  * @param { LxMusic.UserApiEvent.SongInfo } originMusic 来源音乐
@@ -284,7 +285,7 @@ const getPic = function(musicInfo, retryedSource = [], originMusic) {
   }
   return reqPromise.catch(err => {
     if (!retryedSource.includes(musicInfo.source)) retryedSource.push(musicInfo.source)
-    return this.dispatch('list/getOtherSource', originMusic).then(/** @param { LxMusic.UserApiEvent.SongInfo[] } otherSource */otherSource => {
+    return this.dispatch('list/getOtherSource', originMusic).then(otherSource => {
       console.log('find otherSource', otherSource)
       if (otherSource.length) {
         for (const item of otherSource) {
@@ -300,6 +301,7 @@ const getPic = function(musicInfo, retryedSource = [], originMusic) {
 
 /**
  * 获取歌词
+ * @this LxMusic.Renderer.DownloadStatusActionContext
  * @param { LxMusic.UserApiEvent.SongInfo } musicInfo 音乐信息
  * @param { LxMusic.UserApiEvent.SongInfo["source"][] } retryedSource 复述来源
  * @param { LxMusic.UserApiEvent.SongInfo } originMusic 来源音乐
@@ -315,7 +317,7 @@ const getLyric = function(musicInfo, retryedSource = [], originMusic) {
   }
   return reqPromise.catch(err => {
     if (!retryedSource.includes(musicInfo.source)) retryedSource.push(musicInfo.source)
-    return this.dispatch('list/getOtherSource', originMusic).then(/** @param { LxMusic.UserApiEvent.SongInfo[] } otherSource */otherSource => {
+    return this.dispatch('list/getOtherSource', originMusic).then(otherSource => {
       console.log('find otherSource', otherSource)
       if (otherSource.length) {
         for (const item of otherSource) {
@@ -338,6 +340,7 @@ const fixKgLyric = lrc => /\[00:\d\d:\d\d.\d+\]/.test(lrc) ? lrc.replace(/(?:\[0
 
 /**
  * 设置歌曲元信息
+ * @this LxMusic.Renderer.DownloadStatusActionContext
  * @param { LxMusic.Renderer.DownloadInfo } downloadInfo 下载信息
  * @param { string } filePath 文件路径
  * @param { boolean } isUseOtherSource 使用的其他来源
@@ -413,6 +416,7 @@ const downloadLyric = (downloadInfo, filePath) => {
 
 /**
  * 刷新网址
+ * @this LxMusic.Renderer.DownloadStatusActionContext
  * @param { LxMusic.Renderer.DownloadStatusActionContext["commit"] } commit
  * @param { LxMusic.Renderer.DownloadInfo } downloadInfo 下载信息
  * @param { boolean } isUseOtherSource 使用的其他来源
@@ -516,6 +520,7 @@ const actions = {
 
   /**
    * 处理开始任务
+   * @this LxMusic.Renderer.DownloadStatusActionContext
    * @param { LxMusic.Renderer.DownloadStatusActionContext } param0
    * @param { LxMusic.Renderer.DownloadInfo } downloadInfo 下载信息
    * @returns

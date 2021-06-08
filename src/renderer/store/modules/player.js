@@ -28,7 +28,7 @@ const state = {
 
 /**
  * 过滤列表
- * @param { LxMusic.Renderer.PlayerState } param0
+ * @param { LxMusic.Renderer.PlayerFilterListInfo } param0
  */
 const filterList = async({ playedList, listInfo, savePath, commit }) => {
   // if (this.list.listName === null) return
@@ -109,6 +109,7 @@ const getMusicUrl = function(musicInfo, type, onToggleSource, retryedSource = []
 
 /**
  * 获取图片
+ * @this LxMusic.Renderer.PlayerActionContext
  * @param { LxMusic.UserApiEvent.SongInfo } musicInfo
  * @param { LxMusic.Renderer.MusicSourcesId[] } retryedSource
  * @param { LxMusic.UserApiEvent.SongInfo } originMusic
@@ -141,6 +142,7 @@ const getPic = function(musicInfo, retryedSource = [], originMusic) {
 
 /**
  * 获取歌词
+ * @this LxMusic.Renderer.PlayerActionContext
  * @param { LxMusic.UserApiEvent.SongInfo } musicInfo
  * @param { LxMusic.Renderer.MusicSourcesId[] } retryedSource
  * @param { LxMusic.UserApiEvent.SongInfo } originMusic
@@ -225,6 +227,7 @@ const getters = {
 const actions = {
   /**
    * 播放器取网址
+   * @this LxMusic.Renderer.PlayerActionContext
    * @param { LxMusic.Renderer.PlayerActionContext } param0
    * @param { LxMusic.Renderer.PlayerGetUrlInfo } param1
    * @returns { Promise<string> }
@@ -249,6 +252,7 @@ const actions = {
 
   /**
    * 播放器取图片
+   * @this LxMusic.Renderer.PlayerActionContext
    * @param { LxMusic.Renderer.PlayerActionContext } param0
    * @param { LxMusic.UserApiEvent.SongInfo } musicInfo
    * @returns { Promise<void> }
@@ -267,6 +271,7 @@ const actions = {
 
   /**
    * 播放器获取歌词
+   * @this LxMusic.Renderer.PlayerActionContext
    * @param { LxMusic.Renderer.PlayerActionContext } param0
    * @param { LxMusic.UserApiEvent.SongInfo } musicInfo
    * @returns { Promise<LxMusic.Renderer.MusicPlatformLyricInfo> }
@@ -462,9 +467,9 @@ const mutations = {
 
   /**
    * 播放器设置列表
+   * @this LxMusic.Renderer.PlayerActionContext
    * @param { LxMusic.Renderer.PlayerState } state
    * @param { LxMusic.Renderer.PlayerSetListInfo } param1
-   * @returns
    */
   setList(state, { list, index }) {
     if (!(list && list.list && list.list[index])) return
@@ -535,12 +540,13 @@ const mutations = {
 
   /**
    * 设置播放历史列表
+   * @this LxMusic.Renderer.PlayerActionContext
    * @param { LxMusic.Renderer.PlayerState } state
    * @param { LxMusic.Renderer.PlayMusicInfo } list
    */
   setTempPlayList(state, list) {
     state.tempPlayList.push(...list.map(({ musicInfo, listId }) => ({ musicInfo, listId, isTempPlay: true })))
-    if (!state.playMusicInfo) this.commit('player/playNext')
+    if (!state.playMusicInfo) this.dispatch('player/playNext')
   },
 
   /**

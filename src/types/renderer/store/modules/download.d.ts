@@ -26,7 +26,7 @@ export interface DownloadStatusState {
 }
 
 /** 下载状态激活内容 */
-export type DownloadStatusActionContext = import("Vuex").ActionContext<DownloadStatusState, { setting: LxMusic.Common.Setting; }>;
+export type DownloadStatusActionContext = LxMusic.Renderer.ActionContext<"download", DownloadStatusState>;
 
 /** 下载信息 */
 export interface DownloadInfo<

@@ -155,6 +155,7 @@ const mutations = {
 
   /**
    * 列表批量移动
+   * @this LxMusic.Renderer.PlayListActionContext
    * @param { LxMusic.Renderer.PlayListState } state
    * @param { LxMusic.Renderer.PlayListStateMoveMultipleInfo } param1
    */
@@ -222,6 +223,7 @@ const mutations = {
 
   /**
    * 创建用户列表
+   * @this LxMusic.Renderer.PlayListActionContext
    * @param { LxMusic.Renderer.PlayListState } state
    * @param { LxMusic.Renderer.PlayListInfo } param1
    */
@@ -297,6 +299,7 @@ const mutations = {
 
   /**
    * 排序列表
+   * @this LxMusic.Renderer.PlayListActionContext
    * @param { LxMusic.Renderer.PlayListState } state
    * @param { LxMusic.Renderer.PlayListSortInfo } param1
    */

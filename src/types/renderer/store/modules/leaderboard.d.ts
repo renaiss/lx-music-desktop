@@ -8,11 +8,8 @@ export interface LeaderboardState {
   /** 关键 */ key: string;
 }
 
-/** 排行榜模块 */
-export type LeaderboardModule = import("Vuex").Module<LeaderboardState, { setting: LxMusic.Common.Setting; }>;
-
 /** 排行榜内容 */
-export type LeaderboardActionContext = import("Vuex").ActionContext<LeaderboardState, { setting: LxMusic.Common.Setting; }>;
+export type LeaderboardActionContext = LxMusic.Renderer.ActionContext<"leaderboard",LeaderboardState>;
 
 /** 排行榜设置信息 */
 export interface LeaderboardSetInfo{

@@ -25,8 +25,5 @@ export interface HotSearchSetListInfo {
   /** 列表 */ list: string[];
 }
 
-/** 热搜模块 */
-export type HotSearchModule = import("Vuex").Module<HotSearchState, { setting: LxMusic.Common.Setting; }>;
-
 /** 热搜动作内容 */
-export type HotSearchActionContext = import("Vuex").ActionContext<HotSearchState, { setting: LxMusic.Common.Setting; }>;
+export type HotSearchActionContext = LxMusic.Renderer.ActionContext<"hotSearch", HotSearchState>;
