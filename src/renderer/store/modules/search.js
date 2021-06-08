@@ -1,8 +1,8 @@
 import music from '../../utils/music'
 
-const sources = []
-const sourceList = {}
-const sourceMaxPage = {}
+/** @type { LxMusic.Renderer.MusicSources } */ const sources = []
+/** @type { LxMusic.Renderer.SearchSourcePageInfoMap } */ const sourceList = {}
+/** @type { LxMusic.Renderer.SearchSourceMaxPageMap } */ const sourceMaxPage = {}
 for (const source of music.sources) {
   const musicSearch = music[source.id].musicSearch
   if (!musicSearch) continue
@@ -18,6 +18,10 @@ for (const source of music.sources) {
 }
 
 // https://blog.csdn.net/xcxy2015/article/details/77164126#comments
+/**
+ * @param { string } a
+ * @param { string } b
+ */
 const similar = (a, b) => {
   if (!a || !b) return 0
   if (a.length > b.length) { // 保证 a <= b
@@ -43,6 +47,10 @@ const similar = (a, b) => {
   return 1 - (mp[bl] / bl)
 }
 
+/**
+ * @param { number[] } arr
+ * @param { LxMusic.Renderer.SearchSortInfo } data
+ */
 const sortInsert = (arr, data) => {
   let key = data.num
   let left = 0
@@ -67,7 +75,12 @@ const sortInsert = (arr, data) => {
   arr.splice(left, 0, data)
 }
 
+/**
+ * @param { LxMusic.UserApiEvent.SongInfo[] } list
+ * @param {*} keyword
+ */
 const handleSortList = (list, keyword) => {
+  /** @type { LxMusic.UserApiEvent.SongInfo[] } */
   let arr = []
   for (const item of list) {
     sortInsert(arr, {
@@ -75,6 +88,7 @@ const handleSortList = (list, keyword) => {
       data: item,
     })
   }
+  // TODO SongInfo 的 Data
   return arr.map(item => item.data).reverse()
 }
 
@@ -84,6 +98,7 @@ sources.push({
 })
 
 // state
+/** @type { LxMusic.Renderer.SearchState } */
 const state = {
   sourceList,
   list: [],
@@ -98,17 +113,20 @@ const state = {
 
 // getters
 const getters = {
-  sources(state, getters, rootState, { sourceNames }) {
-    return sources.map(item => ({ id: item.id, name: sourceNames[item.id] }))
-  },
-  sourceList: state => state.sourceList || [],
-  searchText: state => state.text,
-  historyList: state => state.historyList,
-  allList: state => ({ list: state.list, allPage: state.allPage, page: state.page, total: state.total, limit: state.limit, sourceMaxPage: state.sourceMaxPage }),
+  /** @param { LxMusic.Renderer.SearchState } state */ sources(state, getters, rootState, { sourceNames }) { return sources.map(item => ({ id: item.id, name: sourceNames[item.id] })) },
+  /** @param { LxMusic.Renderer.SearchState } state */ sourceList: state => state.sourceList || [],
+  /** @param { LxMusic.Renderer.SearchState } state */ searchText: state => state.text,
+  /** @param { LxMusic.Renderer.SearchState } state */ historyList: state => state.historyList,
+  /** @param { LxMusic.Renderer.SearchState } state */ allList: state => ({ list: state.list, allPage: state.allPage, page: state.page, total: state.total, limit: state.limit, sourceMaxPage: state.sourceMaxPage }),
 }
 
 // actions
 const actions = {
+  /**
+   * 搜素
+   * @param { LxMusic.Renderer.SearchActionContext } param0
+   * @param { LxMusic.Renderer.SearchState } param1
+   */
   search({ commit, rootState }, { text, page, limit }) {
     commit('setText', text)
     commit('addHistory', text)
@@ -145,9 +163,20 @@ const actions = {
 
 // mitations
 const mutations = {
+  /**
+   * 设置文本
+   * @param { LxMusic.Renderer.SearchState } state
+   * @param { LxMusic.Renderer.SearchState["text"] } text
+   */
   setText(state, text) {
     state.text = text
   },
+
+  /**
+   * 设置列表
+   * @param { LxMusic.Renderer.SearchState } state
+   * @param { LxMusic.Renderer.MusicPlatformMusicSearchResult } datas
+   */
   setList(state, datas) {
     let source = state.sourceList[datas.source]
     source.list = datas.list
@@ -156,6 +185,12 @@ const mutations = {
     source.page = datas.page
     source.limit = datas.limit
   },
+
+  /**
+   * 设置一组列表
+   * @param { LxMusic.Renderer.SearchState } state
+   * @param { LxMusic.Renderer.SearchResultListInfo } param1
+   */
   setLists(state, { results, page }) {
     let pages = []
     let total = 0
@@ -175,6 +210,11 @@ const mutations = {
     state.page = page
     state.list = handleSortList(list, state.text)
   },
+
+  /**
+   * 清除列表
+   * @param { LxMusic.Renderer.SearchState } state
+   */
   clearList(state) {
     for (const source of Object.keys(state.sourceList)) {
       state.sourceList[source].list = []
@@ -189,18 +229,41 @@ const mutations = {
     state.total = 0
     state.text = ''
   },
+
+  /**
+   * 添加搜索历史
+   * @param { LxMusic.Renderer.SearchState } state
+   * @param { string } text
+   */
   addHistory(state, text) {
     let index = state.historyList.indexOf(text)
     if (index > -1) state.historyList.splice(index, 1)
     if (state.historyList.length >= 15) state.historyList = state.historyList.slice(0, 14)
     state.historyList.unshift(text)
   },
+
+  /**
+   * 移除搜索历史
+   * @param { LxMusic.Renderer.SearchState } state
+   * @param { number } index
+   */
   removeHistory(state, index) {
     state.historyList.splice(index, 1)
   },
+
+  /**
+   * 清除搜索历史
+   * @param { LxMusic.Renderer.SearchState } state
+   */
   clearHistory(state) {
     state.historyList = []
   },
+
+  /**
+   * 设置搜索历史
+   * @param { LxMusic.Renderer.SearchState } state
+   * @param { string[] } list
+   */
   setHistory(state, list) {
     state.historyList = list
   },

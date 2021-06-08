@@ -24,9 +24,10 @@ export interface MusicPlatformTempSearch {
 /** 音乐平台_音乐搜索_结果 */
 export interface MusicPlatformMusicSearchResult {
   /** 列表 */ list: LxMusic.UserApiEvent.SongInfo[];
+  /** 页面 */ page: number;
   /** 页数 */ allPage: number;
-  /** 总数 */ total: number;
   /** 显数 */ limit: number;
+  /** 总数 */ total: number;
   /** 来源 */ source: MusicSourcesId;
 }
 
