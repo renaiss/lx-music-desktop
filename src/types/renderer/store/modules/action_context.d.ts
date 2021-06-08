@@ -70,7 +70,7 @@ type StoreModuleCommit<M2 extends StoreModuleName> = <
 
 // action_context
 
-type ActionContextRootState = { setting: LxMusic.Common.Setting; }
+type ActionContextRootState = LxMusic.Renderer.StoreRootState;
 
 export interface ActionContext<M extends StoreModuleName, S> extends VuexActionContext<S, ActionContextRootState> {
   dispatch: StoreModuleDispatch<M>;

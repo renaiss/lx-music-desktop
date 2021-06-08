@@ -8,7 +8,7 @@ export interface PlayerInfo {
   /** 显示任务进度 */ isShowTaskProgess: boolean;
   /** 音量 */ volume: number;
   /** 静音 */ isMute: boolean;
-  /** 媒体设备ID */ mediaDeviceId: string;
+  /** 媒体设备编号 */ mediaDeviceId: string;
   /** 媒体设备是否已删除停止播放 */ isMediaDeviceRemovedStopPlay: boolean;
   /** 是否显示歌词翻译 */ isShowLyricTranslation: boolean;
   /** 播放歌词文件 */ isPlayLxlrc: boolean;
@@ -41,7 +41,7 @@ export interface DesktopLyric {
 export interface List {
   /** 显示相册名称 */ isShowAlbumName: boolean;
   /** 显示来源 */ isShowSource: boolean;
-  /** 上个列表ID */ prevSelectListId: string;
+  /** 上个列表编号 */ prevSelectListId: string;
   /** 保存滚动位置 */ isSaveScrollLocation: boolean;
 }
 
@@ -60,7 +60,7 @@ export interface Download {
 /** 排行榜 */
 export interface Leaderboard {
   /** 来源 */ source: LxMusic.Renderer.MusicSourcesId;
-  /** 列表ID */ tabId: string;
+  /** 列表编号 */ tabId: string;
 }
 
 /** 标签信息 */
@@ -72,7 +72,7 @@ export interface SongListTagInfo {
 /** 歌曲列表 */
 export interface SongList {
   /** 来源 */ source: LxMusic.Renderer.MusicSourcesId,
-  /** 排序ID */ sortId: string,
+  /** 排序编号 */ sortId: string,
   /** 目标信息 */ tagInfo: SongListTagInfo;
 }
 
@@ -107,7 +107,7 @@ export interface Network {
 export interface Tray {
   /** 托盘显示 */ isShow: boolean,
   /** 开启最小化托盘 */ isToTray: boolean,
-  /** 主题ID */ themeId: number,
+  /** 主题编号 */ themeId: number,
 }
 
 /** 默认设置 */
@@ -123,11 +123,11 @@ export interface Setting {
   /** 搜素 */ search: Search;
   /** 网络 */ network: Network;
   /** 托盘 */ tray: Tray;
-  /** 窗口规格ID */ windowSizeId: number;
-  /** 主题ID */ themeId: number;
-  /** 语言ID */ langId: null;
-  /** 来源ID */ sourceId: LxMusic.Renderer.MusicSourcesId;
-  /** 网络接口ID */ apiSource: "test" | "temp";
+  /** 窗口规格编号 */ windowSizeId: number;
+  /** 主题编号 */ themeId: LxMusic.Renderer.StoreThemeId;
+  /** 语言编号 */ langId: null;
+  /** 来源编号 */ sourceId: LxMusic.Renderer.MusicSourcesId;
+  /** 网络接口编号 */ apiSource: "test" | "temp";
   /** 源名称类型 */ sourceNameType: "real" | "alias";
   /** 显示动画 */ isShowAnimation: boolean;
   /** 随机动画 */ randomAnimate: boolean;

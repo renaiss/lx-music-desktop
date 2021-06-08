@@ -4,7 +4,7 @@ import { version } from '../../../package.json'
 
 process.versions.app = version
 
-
+/** @type { LxMusic.Renderer.StoreRootState } */
 export default {
   themes: [
     {
