@@ -12,10 +12,7 @@ const stores = {}
 
 /**
  * 按名称获取数据
- * @param { string } name 数据名称
- * @param { boolean } isIgnoredError 是否忽略错误
- * @param { boolean } isShowErrorAlert 是否显示错误弹窗
- * @returns { Store }
+ * @type { LxMusic.Common.GetStoreFunc }
  */
 module.exports = (name, isIgnoredError = true, isShowErrorAlert = true) => {
   if (stores[name]) return stores[name]

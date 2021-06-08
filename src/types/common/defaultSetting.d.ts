@@ -134,4 +134,5 @@ export interface Setting {
   /** 忽略版本 */ ignoreVersion: boolean;
   /** 赞同协定 */ isAgreePact: boolean;
   /** 控制按钮位置 */ controlBtnPosition: "left" | "right";
+  /** 设置 */ setting?: Setting;
 }
