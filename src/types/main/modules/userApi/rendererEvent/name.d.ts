@@ -1,4 +1,4 @@
-export interface Names {
+interface Names {
   /** 初始化 */ init: never;
   /** 网络请求 */ request: never;
   /** 网络响应 */ response: never;

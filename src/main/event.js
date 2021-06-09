@@ -7,7 +7,7 @@ global.lx_event.common.on(COMMON_EVENT_NAME.configStatus, name => {
   if (global.modules.mainWindow) mainSend(global.modules.mainWindow, ipcMainWindowNames.set_config, global.appSetting)
 })
 
-global.lx_event.common.on(COMMON_EVENT_NAME.initHotKey, () => {
+global.lx_event.common.on(COMMON_EVENT_NAME.initConfig, () => {
   global.appHotKey.config = getAppHotKeyConfig()
 })
 

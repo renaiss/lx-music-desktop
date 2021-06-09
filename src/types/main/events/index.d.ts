@@ -1,2 +1,3 @@
-import "./_name"; export * from "./_name";
-import "./global"; export * from "./global";
+export * from "./_name";
+export * from "./global";
+export * from "./data";

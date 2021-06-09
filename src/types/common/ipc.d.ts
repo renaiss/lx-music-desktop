@@ -52,7 +52,7 @@ export type BaseDataMap =
   { /** 主窗口_清除歌曲地址     */[name in MAIN_WINDOW["clear_music_url"]]: never; } &
   { /** 主窗口_保存播放列表     */[name in MAIN_WINDOW["save_playlist"]]: LxMusic.Renderer.SavePlayListInfo; } &
   { /** 主窗口_进度条           */[name in MAIN_WINDOW["progress"]]: LxMusic.Renderer.ProgressInfo; } &
-  { /** 主窗口_用户网络接口状态 */[name in MAIN_WINDOW["user_api_status"]]: LxMusic.UserApiEvent.InitInfo; } &
+  { /** 主窗口_用户网络接口状态 */[name in MAIN_WINDOW["user_api_status"]]: LxMusic.UserApi.StatusInfo; } &
   { /** 主窗口_更新失败         */[name in MAIN_WINDOW["update_error"]]: Error["message"]; } &
   { /** 主窗口_可更新           */[name in MAIN_WINDOW["update_available"]]: LxMusic.Utils.UpdateInfo; } &
   { /** 主窗口_不可更新         */[name in MAIN_WINDOW["update_not_available"]]: LxMusic.Utils.UpdateInfo; } &

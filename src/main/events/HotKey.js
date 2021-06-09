@@ -2,7 +2,10 @@ const { EventEmitter } = require('events')
 const { hotKey: HOT_KEY_EVENT_NAME } = require('./_name')
 const { saveAppHotKeyConfig } = require('../utils')
 
-/** 热键事件 */
+/**
+ * 热键事件
+ * @extends { LxMusic.MainName.LxEventDataClass<"hotKey"> }
+ */
 class HotKey extends EventEmitter {
   /** 初始化 */
   init() {
@@ -11,8 +14,8 @@ class HotKey extends EventEmitter {
 
   /**
    * 保存配置
-   * @param { any } config
-   * @param { any } source
+   * @param { LxMusic.Renderer.HotKeyConfigInfo["config"] } config
+   * @param { LxMusic.Renderer.HotKeyConfigInfo["source"] } source
    */
   saveConfig(config, source) {
     if (config) saveAppHotKeyConfig(config)
@@ -21,7 +24,7 @@ class HotKey extends EventEmitter {
 
   /**
    * 按键按下
-   * @param { { type: string; key: string; } } info 信息
+   * @param { LxMusic.Renderer.KeyDownInfo } info 信息
    */
   keyDown(info) {
     this.emit(HOT_KEY_EVENT_NAME.keyDown, info)

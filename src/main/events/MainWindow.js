@@ -1,9 +1,15 @@
 const { EventEmitter } = require('events')
 const { mainWindow: MAIN_WINDOW_EVENT_NAME } = require('./_name')
 
-/** 主窗口事件 */
+/**
+ * 主窗口事件
+ * @extends { LxMusic.MainName.LxEventDataClass<"mainWindow"> }
+ */
 class MainWindow extends EventEmitter {
-  /** 设置歌词信息 */
+  /**
+   * 设置歌词信息
+   * @param { LxMusic.Renderer.SetLyricInfo } info
+   */
   setLyricInfo(info) {
     this.emit(MAIN_WINDOW_EVENT_NAME.setLyricInfo, info)
   }

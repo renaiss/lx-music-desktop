@@ -1,10 +1,10 @@
-/** @type { LxMusic.MainName.common } */
+/** @type { LxMusic.MainName.LxEventDataNameMap["common"] } */
 exports.common = {
   initConfig: 'initConfig',
   configStatus: 'config',
 }
 
-/** @type { LxMusic.MainName.mainWindow } */
+/** @type { LxMusic.MainName.LxEventDataNameMap["mainWindow"] } */
 exports.mainWindow = {
   name: 'mainWindow',
   setLyricInfo: 'setLyricInfo',
@@ -17,21 +17,21 @@ exports.mainWindow = {
   hide: 'hide',
 }
 
-/** @type { LxMusic.MainName.tray } */
+/** @type { LxMusic.MainName.LxEventDataNameMap["tray"] } */
 exports.tray = {
   name: 'tray',
   create: 'create',
   destroy: 'destroy',
 }
 
-/** @type { LxMusic.MainName.winLyric } */
+/** @type { LxMusic.MainName.LxEventDataNameMap["winLyric"] } */
 exports.winLyric = {
   name: 'winLyric',
   create: 'create',
   close: 'close',
 }
 
-/** @type { LxMusic.MainName.hotKey } */
+/** @type { LxMusic.MainName.LxEventDataNameMap["hotKey"] } */
 exports.hotKey = {
   name: 'hotKey',
   init: 'init',

@@ -1,7 +1,10 @@
 const { EventEmitter } = require('events')
 const { common: COMMON_EVENT_NAME } = require('./_name')
 
-/** 普通事件 */
+/**
+ * 普通事件
+ * @extends { LxMusic.MainName.LxEventDataClass<"common"> }
+ */
 class Common extends EventEmitter {
   /** 初始化设置 */
   initSetting() {

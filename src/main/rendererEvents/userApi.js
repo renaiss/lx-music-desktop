@@ -1,6 +1,10 @@
 const { mainSend, mainHandle, NAMES: { mainWindow: ipcMainWindowNames } } = require('@common/ipc')
 const { getApiList, importApi, removeApi, setApi, getStatus, request, cancelRequest, eventNames } = require('../modules/userApi')
 
+/**
+ * 处理状态变化
+ * @param { LxMusic.UserApi.StatusInfo } status
+ */
 const handleStatusChange = status => {
   mainSend(global.modules.mainWindow, ipcMainWindowNames.user_api_status, status)
 }

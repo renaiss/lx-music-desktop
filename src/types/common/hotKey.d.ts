@@ -84,8 +84,8 @@ type hotKey = {
 
 type keyName = {
   common: undefined;
-  player: LxMusic.MainName.mainWindow["name"];
-  desktop_lyric: LxMusic.MainName.winLyric["name"];
+  player: LxMusic.MainName.LxEventDataNameMap["mainWindow"]["name"];
+  desktop_lyric: LxMusic.MainName.LxEventDataNameMap["winLyric"]["name"];
 }
 
 type parseHotKey = {
