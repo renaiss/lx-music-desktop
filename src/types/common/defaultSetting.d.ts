@@ -125,7 +125,7 @@ export interface Setting {
   /** 托盘 */ tray: Tray;
   /** 窗口规格编号 */ windowSizeId: number;
   /** 主题编号 */ themeId: LxMusic.Renderer.StoreThemeId;
-  /** 语言编号 */ langId: null;
+  /** 语言编号 */ langId: string | number;
   /** 来源编号 */ sourceId: LxMusic.Renderer.MusicSourcesId;
   /** 网络接口编号 */ apiSource: "test" | "temp";
   /** 源名称类型 */ sourceNameType: "real" | "alias";

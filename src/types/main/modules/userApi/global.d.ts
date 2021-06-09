@@ -1,3 +1,17 @@
+type GlobalEnvParamsPlayType = "songList";
+type GlobalEnvParamsPlaySource = LxMusic.Renderer.MusicSourcesId | "myList";
+type GlobalEnvParamsPlayName = string | never;
+
+/** 全局环境参数 */
+interface GlobalEnvParams {
+  /** 以非透明模式启动 */ dt: boolean;
+  /** 已重命名为-dt */ nt: boolean;
+  /** 禁用硬件加速启动 */ dha: boolean;
+  /** 禁用硬件媒体密钥处理 */ dhmkh: boolean;
+  /** 搜索 */ search: string;
+  /** 播放信息 */ play: `type=${GlobalEnvParamsPlayType}&source=${GlobalEnvParamsPlaySource}&name${GlobalEnvParamsPlayName}&index=${number}`;
+}
+
 namespace NodeJS {
   interface Global {
 
@@ -14,12 +28,12 @@ namespace NodeJS {
 
     /** 环境参数 */
     envParams: {
-      /**  */ nt: boolean; // TODO 未知
-      /**  */ dt: boolean; // TODO 未知
-      /** 搜素 */ search: string;
-      /** 播放项 */ play: string;
+      /** 已重命名为-dt */ nt: GlobalEnvParams["nt"];
+      /** 以非透明模式启动 */ dt: GlobalEnvParams["dt"];
+      /** 搜素 */ search: GlobalEnvParams["search"];
+      /** 播放信息 */ play: GlobalEnvParams["play"];
       /** 工作区大小 */ workAreaSize: Electron.Size;
-      /** 命令行参数 */ cmdParams: { [key: string]: string; };
+      /** 命令行参数 */ cmdParams: GlobalEnvParams;
     };
   }
 }

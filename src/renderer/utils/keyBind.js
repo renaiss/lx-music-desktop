@@ -90,7 +90,8 @@ const handleKeyUp = event => {
 
 let handleSendEvent
 
-const bindKey = (handle = () => {}) => {
+/** @type { LxMusic.Renderer.EventHubKeyHanlde } handle */
+const bindKey = (handle = () => { }) => {
   handleSendEvent = handle
   document.addEventListener('keydown', handleKeyDown)
   document.addEventListener('keyup', handleKeyUp)

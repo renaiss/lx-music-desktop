@@ -85,7 +85,7 @@ export type MainHandleDataMap =
   { /** 主窗口_显示弹窗             */[name in MAIN_WINDOW["show_dialog"]]: ParamRet<Electron.MessageBoxSyncOptions, void>; } &
   { /** 主窗口_显示保存弹窗         */[name in MAIN_WINDOW["show_save_dialog"]]: ParamRet<Electron.SaveDialogOptions, Electron.SaveDialogReturnValue>; } &
   { /** 主窗口_获取数据             */[name in MAIN_WINDOW["get_data"]]: ParamRet<string, any>; } &
-  { /** 主窗口_取热键信息           */[name in MAIN_WINDOW["get_hot_key"]]: ParamRet<any, LxMusic.Common.DefaultHotKey>; } &
+  { /** 主窗口_取热键信息           */[name in MAIN_WINDOW["get_hot_key"]]: ParamRet<never, LxMusic.Common.DefaultHotKey>; } &
   { /** 主窗口_取播放列表           */[name in MAIN_WINDOW["get_playlist"]]: ParamRet<boolean, LxMusic.Renderer.PlayListInfo>; } &
   { /** 主窗口_设置程序配置         */[name in MAIN_WINDOW["set_app_setting"]]: ParamRet<LxMusic.Common.Setting, void>; } &
   { /** 主窗口_取配置               */[name in MAIN_WINDOW["get_setting"]]: ParamRet<never, LxMusic.Renderer.MainSettingInfo>; } &
@@ -96,7 +96,7 @@ export type MainHandleDataMap =
   { /** 主窗口_取环境参数           */[name in MAIN_WINDOW["handle_kw_decode_lyric"]]: ParamRet<LxMusic.Renderer.KwDecodeLyricInfo, string>; } &
   { /** 主窗口_取歌曲地址           */[name in MAIN_WINDOW["get_music_url"]]: ParamRet<LxMusic.Renderer.MusicUrlInfo["id"], string>; } &
   { /** 主窗口_取歌词               */[name in MAIN_WINDOW["get_lyric"]]: ParamRet<LxMusic.Renderer.SaveLyricInfo["id"], import("electron-store")>; } &
-  { /** 主窗口_请求用户网络接口     */[name in MAIN_WINDOW["request_user_api"]]: ParamRet<LxMusic.UserApiEvent.RequestInfo, any>; } &
+  { /** 主窗口_请求用户网络接口     */[name in MAIN_WINDOW["request_user_api"]]: ParamRet<LxMusic.UserApiEvent.RequestInfo, LxMusic.UserApiEvent.ResponseInfo["result"]>; } &
   { /** 主窗口_取消请求用户网络接口 */[name in MAIN_WINDOW["request_user_api_cancel"]]: ParamRet<string, void>; } &
   { /** 主窗口_引入用户网络接口     */[name in MAIN_WINDOW["import_user_api"]]: ParamRet<string, LxMusic.UserApi.ImportApiResult>; } &
   { /** 主窗口_移除用户网络接口     */[name in MAIN_WINDOW["remove_user_api"]]: ParamRet<LxMusic.UserApi.ApiInfo["id"][], LxMusic.UserApi.ApiInfo[]>; } &

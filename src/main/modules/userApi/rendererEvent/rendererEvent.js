@@ -111,6 +111,7 @@ exports.cancelRequest = requestKey => {
 /**
  * 网络请求
  * @param { LxMusic.UserApiEvent.RequestInfo } info 请求信息
+ * @returns { Promise<void> }
  */
 exports.request = ({ requestKey, data }) => new Promise((resolve, reject) => {
   if (!userApi) return reject(new Error('user api is not load'))

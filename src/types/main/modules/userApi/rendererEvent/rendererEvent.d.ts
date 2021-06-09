@@ -13,7 +13,13 @@ export type InitInfo = {
 /** 结果数据 */
 export interface ResponseInfo {
   /** 请求密钥 */ requestKey: string;
-  /** 结果 */ result: undefined;
+  /** 结果 */
+  result: {
+    /** 数据 */
+    data: {
+      /** 网址 */ url: string;
+    }
+  };
 }
 
 /** 歌曲信息 */
@@ -40,9 +46,9 @@ export interface SongInfo {
   };
   /** 类型链接 */ typeUrl: {};
 
-  /** 分类歌手 */ sortedSinger:?string;
-  /** 小写名称 */ lowerCaseName:?string;
-  /** 小写相册名称 */ lowerCaseAlbumName:?string;
+  /** 分类歌手 */ sortedSinger: ?string;
+  /** 小写名称 */ lowerCaseName: ?string;
+  /** 小写相册名称 */ lowerCaseAlbumName: ?string;
 }
 
 /** 歌曲表 */

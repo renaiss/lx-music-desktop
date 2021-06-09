@@ -6,7 +6,7 @@ autoUpdater.logger = log
 // autoUpdater.autoDownload = false
 autoUpdater.logger.transports.file.level = 'info'
 
-let isFirstCheckedUpdate = true
+/** 为第一次检查更新 */ let isFirstCheckedUpdate = true
 
 log.info('App starting...')
 
@@ -22,6 +22,10 @@ log.info('App starting...')
 // -------------------------------------------------------------------
 // let win
 
+/**
+ * 发送状态至窗体
+ * @param { string } text
+ */
 function sendStatusToWindow(text) {
   log.info(text)
   // ipcMain.send('message', text)
@@ -59,12 +63,17 @@ function sendStatusToWindow(text) {
 
 // })
 
-/** 等待事件 */ let waitEvent = []
+/**
+ * 等待事件
+ * @type { LxMusic.Utils.SendEventInfo<T>[] }
+ * @template T
+ */
+let waitEvent = []
 
 /**
  * 处理发送消息
- * @param { { type:T; info:LxMusic.Common.MainSendDataMap[T]; } } action 消息动作
- * @template T 类型
+ * @param { LxMusic.Utils.SendEventInfo<T> } action 消息动作
+ * @template T
  */
 const handleSendEvent = action => {
   if (global.modules.mainWindow) {

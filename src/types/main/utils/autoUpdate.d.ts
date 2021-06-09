@@ -20,3 +20,9 @@ export interface DownloadProgressInfo {
   /** 总数 */ total: number;
   /** 已更新 */ transferred: number;
 }
+
+/** 发送事件信息 */
+export interface SendEventInfo<T> {
+  /** 类型 */ type: T;
+  /** 信息 */ info: LxMusic.Common.MainDataMap[T];
+}

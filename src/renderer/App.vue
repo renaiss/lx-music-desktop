@@ -590,6 +590,7 @@ export default {
     unlistenEvent() {
       window.eventHub.$off('key_escape_down', this.handle_key_esc_down)
     },
+    /** @type { LxMusic.Renderer.EventHubBackCall<"key_escape_down"> } */
     handle_key_esc_down({ event }) {
       if (event.repeat) return
       if (event.target.tagName != 'INPUT' || event.target.classList.contains('ignore-esc')) return

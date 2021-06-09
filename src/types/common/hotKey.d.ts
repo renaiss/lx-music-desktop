@@ -88,7 +88,7 @@ type keyName = {
   desktop_lyric: LxMusic.MainName.LxEventDataNameMap["winLyric"]["name"];
 }
 
-type parseHotKey = {
+export type ParseHotKey = {
   [moudle in keyof hotKey]: {
     [type in keyof hotKey[moudle]]: {
       action: `${moudle}_${hotKey[moudle][type]["action"]}`;
@@ -98,10 +98,10 @@ type parseHotKey = {
   }
 }
 
-export type HotKeyInfo = { [key in keyof parseHotKey]: parseHotKey[key][keyof parseHotKey[key]] }[keyof parseHotKey];
+export type HotKeyInfo = { [key in keyof ParseHotKey]: ParseHotKey[key][keyof ParseHotKey[key]] }[keyof ParseHotKey];
 
 export type KeyNames = keyName[keyof keyName];
 
-export type ParseHotKey = parseHotKey;
+export type  HotKeyEventNameMap = { [key in keyof ParseHotKey]: { [name in keyof ParseHotKey[key]]:ParseHotKey[key][name]["action"]; }; };
 
-export =  ParseHotKey;
+export = ParseHotKey;

@@ -14,4 +14,4 @@ interface Names {
 }
 
 /** 热键事件名称表 */
-export type HotKeyEventNameMap = { [key in keyof Names]:{ [type in keyof Names[key]]:`${key}_${Names[key][type]}` } };
+export type HotKeyBaseEventNameMap = { [key in keyof Names]:{ [type in keyof Names[key]]:`${key}_${Names[key][type]}` } };

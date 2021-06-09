@@ -26,7 +26,7 @@ const denyEvents = [
 
 /**
  * 窗体事件
- * @param { any } win // TODO 未知
+ * @param { Electron.BrowserWindow } win
  */
 const winEvent = win => {
   win.on('closed', () => {

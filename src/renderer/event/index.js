@@ -4,6 +4,7 @@ import { rendererOn, rendererSend, NAMES, rendererInvoke } from '../../common/ip
 import { base as baseName } from './names'
 import { common as hotKeyNamesCommon } from '../../common/hotKey'
 
+/** @type { LxMusic.Renderer.WindowEventHub } */
 const eventHub = window.eventHub = new Vue()
 
 window.isEditingHotKey = false

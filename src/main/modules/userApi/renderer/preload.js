@@ -5,10 +5,11 @@ const USER_API_RENDERER_EVENT_NAME = require('../rendererEvent/name')
 
 /**
  * 发送信息
- * @param { string } action 行为
- * @param { boolean } status 状态
- * @param { any } data 数据
- * @param { string } message 信息
+ * @param { T } action 行为
+ * @param { LxMusic.Common.MainDataMap[T]["status"] } status 状态
+ * @param { LxMusic.Common.MainDataMap[T]["data"] } data 数据
+ * @param { LxMusic.Common.MainDataMap[T]["message"] } message 信息
+ * @template T
  */
 const sendMessage = (action, status, data, message) => {
   ipcRenderer.send(action, { status, data, message })

@@ -65,8 +65,8 @@ global.lx_event.mainWindow.on(MAIN_WINDOW_EVENT_NAME.setLyricInfo, info => {
 global.lx_event.hotKey.on(HOT_KEY_EVENT_NAME.keyDown, ({ type, key }) => {
   let info = global.appHotKey.config.global.keys[key]
   if (!info || info.type != WIN_LYRIC_EVENT_NAME.name) return
-  let desktopLyricSetting = JSON.parse(JSON.stringify(global.appSetting.desktopLyric))
-  let settingKey
+  /** @type { LxMusic.Common.DesktopLyric } */ let desktopLyricSetting = JSON.parse(JSON.stringify(global.appSetting.desktopLyric))
+  /** @type { "enable"| "isLock"| "isAlwaysOnTop" } */ let settingKey
   switch (info.action) {
     case desktop_lyric.toggle_visible.action:
       settingKey = 'enable'
