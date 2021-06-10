@@ -5,10 +5,14 @@ import list from "../../../../renderer/store/modules/list";
 import player from "../../../../renderer/store/modules/player";
 import search from "../../../../renderer/store/modules/search";
 import songList from "../../../../renderer/store/modules/songList";
+import { rootStoreOption } from "../../../../renderer/store/index";
 
 import { ActionContext as VuexActionContext } from "vuex";
 
 type ParametersOther<T extends (...args: any) => any> = T extends (a: any, ...args: infer P) => any ? P : never;
+
+/** 根存储模块 */
+export type RootStore = typeof rootStoreOption;
 
 /** 存储模块表 */
 export interface StoreModuleMap {
@@ -77,3 +81,11 @@ export interface ActionContext<M extends StoreModuleName, S> extends VuexActionC
   commit: StoreModuleCommit<M>;
 }
 
+declare module "vuex" {
+  declare const mapGetters:
+    (<T extends keyof RootStore["getters"]>(name: T[]) => { [name in T]: ReturnType<RootStore["getters"][name]>; }) &
+    (<M extends StoreModuleName, T extends keyof StoreModuleMap[M]["getters"]>(module: M, name: T[]) => { [name in T]: ReturnType<StoreModuleMap[M]["getters"][name]>; });
+  declare const mapMutations:
+    (<T extends keyof RootStore["mutations"]>(name: T[]) => { [name in T]: (...args: ParametersOther<RootStore["mutations"][name]>) => ReturnType<RootStore["mutations"][name]>; }) &
+    (<M extends StoreModuleName, T extends keyof StoreModuleMap[M]["mutations"]>(module: M, name: T[]) => { [name in T]: (...args: ParametersOther<StoreModuleMap[M]["mutations"][name]>) => ReturnType<StoreModuleMap[M]["mutations"][name]>; });
+}

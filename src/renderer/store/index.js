@@ -12,7 +12,7 @@ Vue.use(Vuex)
 
 const isDev = process.env.NODE_ENV === 'development'
 
-const store = new Vuex.Store({
+export const rootStoreOption = {
   strict: isDev,
   state: defaultState,
   modules,
@@ -20,7 +20,9 @@ const store = new Vuex.Store({
   getters,
   actions,
   // plugins: [createPersistedState(), createSharedMutations()],
-})
+}
+
+const store = new Vuex.Store(rootStoreOption)
 
 if (module.hot) {
   module.hot.accept([

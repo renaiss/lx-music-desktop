@@ -25,14 +25,14 @@ type HotKeyEventNames = { [name in keyof LxMusic.Common.HotKeyEventNameMap]: LxM
 type EventDataMap =
   { /** 基础_按键信息 */[name in KeyName]: [info: { event: KeyboardEvent }]; } &
   { /** 通用_热键信息 */[name in HotKeyEventNames]: never; } &
-  { /** 基础_设置配置 */[name in EventNameMap["base"]["set_config"]]: [config: LxMusic.Common.Setting]; } &
-  { /** 基础_设置热键配置 */[name in EventNameMap["base"]["set_hot_key_config"]]: [info: LxMusic.Common.DefaultHotKey]; } &
   { /** 基础_最小化 */[name in EventNameMap["base"]["min"]]: never; } &
   { /** 基础_最大化 */[name in EventNameMap["base"]["max"]]: never; } &
   { /** 基础_关闭 */[name in EventNameMap["base"]["close"]]: never; } &
   { /** 基础_绑定按键 */[name in EventNameMap["base"]["bindKey"]]: never; } &
   { /** 基础_解绑按键 */[name in EventNameMap["base"]["unbindKey"]]: never; } &
   { /** 基础_按下按键 */[name in EventNameMap["base"]["key_down"]]: [info: EventHubKeyInfo]; } &
+  { /** 基础_设置配置 */[name in EventNameMap["base"]["set_config"]]: [config: LxMusic.Common.Setting]; } &
+  { /** 基础_设置热键配置 */[name in EventNameMap["base"]["set_hot_key_config"]]: [info: LxMusic.Common.DefaultHotKey]; } &
   {};
 
 export type EventHubBackCall<T> = (...args: EventDataMap[T]) => void;
