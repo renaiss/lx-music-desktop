@@ -6,8 +6,8 @@ import { rendererSend, rendererInvoke, NAMES } from '../../common/ipc'
 
 /**
  * 获取两个数之间的随机整数，大于等于min，小于max
- * @param {*} min
- * @param {*} max
+ * @param { number } min
+ * @param { number } max
  */
 export const getRandom = (min, max) => Math.floor(Math.random() * (max - min)) + min
 

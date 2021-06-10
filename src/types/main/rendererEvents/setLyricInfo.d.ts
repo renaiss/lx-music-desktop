@@ -1,54 +1,48 @@
-/** 歌词信息 */
-export type LyricInfo = {
-  /** 类型 */ type: "info";
-  /** 数据 */
-  data: {
-    songmid: unknown;
-    singer: unknown;
-    name: unknown;
-    album: unknown;
-    lrc: unknown;
-    tlrc: unknown;
-    lxlrc: unknown;
-    isPlay: unknown;
-    line: unknown;
-    played_time: unknown;
+/** 歌词信息表 */
+interface LyricInfoMap {
+  play: number;
+  line: number;
+  pause: undefined;
+  lines: number[];
+
+  status: {
+    line: number;
+    isPlay: boolean;
+    played_time: number;
   };
-} | {
-  type: "status";
-  data: {
-    isPlay: unknown;
-    line: unknown;
-    played_time: unknown;
+
+  music_info: {
+    name: LxMusic.UserApiEvent.SongInfo["singer"];
+    album: LxMusic.UserApiEvent.SongInfo["albumId"];
+    singer: LxMusic.UserApiEvent.SongInfo["singer"];
+    songmid: LxMusic.UserApiEvent.SongInfo["songmid"];
   };
-} | {
-  type: "music_info";
-  data: {
-    songmid: unknown;
-    singer: unknown;
-    name: unknown;
-    album: unknown;
+
+  lyric: {
+    lrc: LxMusic.Renderer.MusicPlatformLyricInfo["lyric"];
+    tlrc: LxMusic.Renderer.MusicPlatformLyricInfo["tlyric"];
+    lxlrc: LxMusic.Renderer.MusicPlatformLyricInfo["lxlyric"];
   };
-} | {
-  type: "play";
-  data: number;
-} | {
-  type: "pause";
-  data: undefined;
-} | {
-  type: "lyric";
-  data: {
-    lrc: unknown;
-    tlrc: unknown;
-    lxlrc: unknown;
+
+  info: {
+    line: number;
+    isPlay: boolean;
+    played_time: number;
+    name: LxMusic.UserApiEvent.SongInfo["singer"];
+    album: LxMusic.UserApiEvent.SongInfo["albumId"];
+    singer: LxMusic.UserApiEvent.SongInfo["singer"];
+    songmid: LxMusic.UserApiEvent.SongInfo["songmid"];
+    lrc: LxMusic.Renderer.MusicPlatformLyricInfo["lyric"];
+    tlrc: LxMusic.Renderer.MusicPlatformLyricInfo["tlyric"];
+    lxlrc: LxMusic.Renderer.MusicPlatformLyricInfo["lxlyric"];
   };
-} | {
-  type: "lines";
-  data: number[];
-} | {
-  type: "line";
-  data: number;
 }
+
+/** 歌词信息类型 */
+type LyricInfoType = keyof LyricInfoMap;
+
+/** 歌词信息 */
+export type LyricInfo = { [name in LyricInfoType]: { type: name, data: LyricInfoMap[name] } }[LyricInfoType];
 
 /** 设置歌词信息 */
 export interface LyricInfoInfo {
@@ -59,3 +53,6 @@ export interface LyricInfoInfo {
 
 /** 设置歌词信息 */
 export type SetLyricInfo = LyricInfo & { /** 信息 */ info: LyricInfoInfo; }
+
+/** 设置歌词信息函数 */
+export type SetLyricInfoFunc = <T extends LyricInfoType>(type: T, data: LyricInfoMap[T], info: LyricInfoInfo) => void;

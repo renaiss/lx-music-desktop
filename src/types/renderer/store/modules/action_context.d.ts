@@ -95,5 +95,5 @@ declare module "vuex" {
     (<M extends StoreModuleName, T extends keyof StoreModuleMap[M]["mutations"]>(module: M, name: T[]) => { [name in T]: (...args: ParametersOther<StoreModuleMap[M]["mutations"][name]>) => ReturnType<StoreModuleMap[M]["mutations"][name]>; });
   const mapActions:
     (<T extends keyof RootStore["actions"]>(name: T[]) => { [name in T]: (...args: ParametersOther<RootStore["actions"][name]>) => ReturnType<RootStore["actions"][name]>; }) &
-    (<M extends StoreModuleName, T extends keyof StoreModuleMap[M]["actions"]>(module: M, name: T[]) => { [name in T]: (...args: ParametersOther<StoreModuleMap[M]["actions"][name]>) => ReturnType<StoreModuleMap[M]["mutations"][name]>; });
+    (<M extends StoreModuleName, T extends keyof StoreModuleMap[M]["actions"]>(module: M, name: T[]) => { [name in T]: (...args: ParametersOther<StoreModuleMap[M]["actions"][name]>) => ReturnType<StoreModuleMap[M]["actions"][name]>; });
 }

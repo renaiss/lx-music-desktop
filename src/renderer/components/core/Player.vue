@@ -94,7 +94,7 @@ import { requestMsg } from '../../utils/message'
 import { player as eventPlayerNames } from '../../../common/hotKey'
 import path from 'path'
 
-let audio
+/** @type { HTMLAudioElement | undefined } */ let audio
 
 const playNextModes = [
   'listLoop',
@@ -113,10 +113,12 @@ export default {
       status: '',
       statusText: '',
       musicInfo: {
-        songmid: null,
-        img: null,
-        lrc: null,
-        url: null,
+        /** @type { string } */ songmid: null,
+        /** @type { string } */ img: null,
+        /** @type { string } */ lrc: null,
+        /** @type { string } */ url: null,
+        /** @type { string } */ lxlrc: null,
+        /** @type { string } */ tlrc: null,
         name: '',
         singer: '',
         album: '',
@@ -127,7 +129,7 @@ export default {
         text: '',
         line: 0,
       },
-      delayNextTimeout: null,
+      /** @type { null | number } */ delayNextTimeout: null,
       restorePlayTime: 0,
       retryNum: 0,
       volumeEvent: {
@@ -137,10 +139,11 @@ export default {
       },
       isActiveTransition: false,
       mediaBuffer: {
-        timeout: null,
+        /** @type { null | NodeJS.Timeout } */ timeout: null,
         playTime: 0,
       },
       isShowAddMusicTo: false,
+        /** @type { null | NodeJS.Timeout } */ loadingTimeout: null,
     }
   },
   computed: {
@@ -149,29 +152,37 @@ export default {
     // pic() {
     //   return this.musicInfo.img ? this.musicInfo.img : ''
     // },
+    /** @returns { LxMusic.Renderer.PlayMusicInfo["listId"] } */
     listId() { // 当前播放歌曲的列表ID
       return this.playInfo.listId
     },
+    /** @returns { LxMusic.Renderer.PlayMusicInfo["playIndex"] } */
     playIndex() { // 当前播放歌曲所在列表的 播放列表的播放位置
       return this.playInfo.playIndex
     },
+    /** @returns { LxMusic.Renderer.PlayMusicInfo["musicInfo"] } */
     targetSong() {
       return this.playInfo.musicInfo
     },
+    /** @returns { string } */
     title() {
       return this.musicInfo.name
         ? this.setting.download.fileName.replace('歌名', this.musicInfo.name).replace('歌手', this.musicInfo.singer)
         : '^-^'
     },
+    /** @returns { string } */
     nowPlayTimeStr() {
       return this.nowPlayTime ? formatPlayTime2(this.nowPlayTime) : '00:00'
     },
+    /** @returns { string } */
     maxPlayTimeStr() {
       return this.maxPlayTime ? formatPlayTime2(this.maxPlayTime) : '00:00'
     },
+    /** @returns { number } */
     progress() {
       return this.nowPlayTime / this.maxPlayTime || 0
     },
+    /** @returns { import('vue-i18n').TranslateResult } */
     nextTogglePlayName() {
       switch (this.setting.player.togglePlayMethod) {
         case 'listLoop': return this.$t('core.player.play_toggle_mode_list_loop')
@@ -181,6 +192,7 @@ export default {
         default: return this.$t('core.player.play_toggle_mode_off')
       }
     },
+    /** @returns { string } */
     toggleDesktopLyricBtnTitle() {
       return `${
         this.setting.desktopLyric.enable
@@ -249,6 +261,7 @@ export default {
     this.handleRegisterEvent('off')
   },
   watch: {
+    /** @param { boolean } n */
     changePlay(n) {
       if (!n) return
       this.resetChangePlay()
@@ -262,11 +275,13 @@ export default {
       if (!this.playInfo.musicInfo) return
       this.play()
     },
+    /** @param { LxMusic.Common.Setting["player"]["togglePlayMethod"] } n */
     'setting.player.togglePlayMethod'(n) {
       audio.loop = n === 'singleLoop'
       if (this.playedList.length) this.clearPlayedList()
       if (n == 'random') this.setPlayedList(this.playMusicInfo)
     },
+    /** @param { LxMusic.Common.Setting["player"]["isMute"] } n */
     'setting.player.isMute'(n) {
       audio.muted = n
     },
@@ -279,6 +294,10 @@ export default {
     'setting.player.isPlayLxlrc'() {
       this.setLyric()
     },
+    /**
+     * @param { LxMusic.Renderer.PlayerState["listInfo"]["list"] } n
+     * @param { LxMusic.Renderer.PlayerState["listInfo"]["list"] } o
+     */
     async list(n, o) {
       if (this.playInfo.isTempPlay) return
       if (n === o && this.musicInfo.songmid) {
@@ -299,13 +318,22 @@ export default {
         // console.log(this.playIndex)
       }
     },
+    /**
+     * @param { number } n
+     * @param { number } o
+     */
     progress(n, o) {
       if (n.toFixed(2) === o.toFixed(2)) return
       this.sendProgressEvent(n, 'normal')
     },
+    /** @param { number } n */
     volume(n) {
       this.handleSaveVolume(n)
     },
+    /**
+     * @param { number } n
+     * @param { number } o
+     */
     nowPlayTime(n, o) {
       if (Math.abs(n - o) > 2) this.isActiveTransition = true
       if (this.setting.player.isSavePlayTime && !this.playInfo.isTempPlay) {
@@ -318,6 +346,7 @@ export default {
         })
       }
     },
+    /** @param { number } maxPlayTime */
     maxPlayTime(maxPlayTime) {
       if (!this.playInfo.isTempPlay) {
         this.savePlayInfo({
@@ -344,9 +373,11 @@ export default {
     ...mapMutations(['setVolume', 'setPlayNextMode', 'setVisibleDesktopLyric', 'setLockDesktopLyric']),
     ...mapMutations('list', ['updateMusicInfo']),
     ...mapMutations(['setMediaDeviceId']),
+
+    /** @param { "on" | "off" } action */
     handleRegisterEvent(action) {
       let eventHub = window.eventHub
-      let name = action == 'on' ? '$on' : '$off'
+      /** @type { "$on" | "$off" } */ let name = action == 'on' ? '$on' : '$off'
       eventHub[name](eventPlayerNames.toggle_play.action, this.togglePlay)
       eventHub[name](eventPlayerNames.next.action, this.playNext)
       eventHub[name](eventPlayerNames.prev.action, this.playPrev)
@@ -480,14 +511,13 @@ export default {
     },
     async play() {
       this.clearDelayNextTimeout()
-
-      const targetSong = this.targetSong
-
       if (this.setting.player.togglePlayMethod == 'random') this.setPlayedList(this.playMusicInfo)
       this.retryNum = 0
       this.restorePlayTime = 0
 
       if (this.listId == 'download') {
+        /** @type { LxMusic.Renderer.DownloadInfo } */
+        const targetSong = this.targetSong
         const filePath = path.join(this.setting.download.savePath, targetSong.fileName)
         // console.log(filePath)
         if (!await checkPath(filePath) || !targetSong.isComplate || /\.ape$/.test(filePath)) {
@@ -502,6 +532,8 @@ export default {
         this.setImg(targetSong.musicInfo)
         this.setLrc(targetSong.musicInfo)
       } else {
+        /** @type { LxMusic.UserApiEvent.SongInfo } */
+        const targetSong = this.targetSong
         // if (!this.assertApiSupport(targetSong.source)) return this.playNext()
         this.musicInfo.songmid = targetSong.songmid
         this.musicInfo.singer = targetSong.singer
@@ -541,7 +573,7 @@ export default {
         this.playNext()
       }, 5000)
     },
-
+    /** @deprecated */
     hanldeListRandom(list, index) {
       return getRandom(0, list.length)
     },
@@ -559,9 +591,11 @@ export default {
       this.sendProgressEvent(this.progress, 'paused')
       this.clearAppTitle()
     },
+    /** @param { MouseEvent } event */
     handleSetProgress(event) {
       this.setProgress(event.offsetX / this.pregessWidth)
     },
+    /** @param { number } pregress */
     setProgress(pregress) {
       if (!audio.src) return
       const time = pregress * this.maxPlayTime
@@ -595,16 +629,25 @@ export default {
         audio.play()
       }
     },
+    /** @param { Error } e */
     imgError(e) {
       // e.target.src = 'https://y.gtimg.cn/music/photo_new/T002R500x500M000002BMEC42fM8S3.jpg'
       this.musicInfo.img = null
     },
+    /**
+     * @param { LxMusic.Renderer.MusicQualityType } highQuality
+     * @param { LxMusic.UserApiEvent.SongInfo } songInfo
+     */
     getPlayType(highQuality, songInfo) {
       let type = '128k'
       let list = window.globalObj.qualityList[songInfo.source]
       if (highQuality && songInfo._types['320k'] && list && list.includes('320k')) type = '320k'
       return type
     },
+    /**
+     * @param { LxMusic.UserApiEvent.SongInfo } targetSong
+     * @param { boolean } isRefresh
+     */
     setUrl(targetSong, isRefresh, isRetryed = false) {
       let type = this.getPlayType(this.setting.player.highQuality, targetSong)
       // this.musicInfo.url = await getMusicUrl(targetSong, type)
@@ -629,6 +672,7 @@ export default {
         return Promise.reject(err)
       })
     },
+    /** @param { LxMusic.UserApiEvent.SongInfo } targetSong */
     setImg(targetSong) {
       this.musicInfo.img = targetSong.img
 
@@ -638,6 +682,7 @@ export default {
         })
       }
     },
+    /** @param { LxMusic.UserApiEvent.SongInfo } targetSong */
     setLrc(targetSong) {
       this.getLrc(targetSong).then(({ lyric, tlyric, lxlyric }) => {
         this.musicInfo.lrc = lyric
@@ -670,6 +715,11 @@ export default {
       this.handleUpdateWinLyricInfo('lines', [])
       this.handleUpdateWinLyricInfo('line', 0)
     },
+
+    /**
+     * @param { LxMusic.Renderer.ProgressInfo["status"] } status
+     * @param { LxMusic.Renderer.ProgressInfo["mode"] } mode
+    */
     sendProgressEvent(status, mode) {
       // console.log(status)
       this.setting.player.isShowTaskProgess && rendererSend(NAMES.mainWindow.progress, {
@@ -701,9 +751,11 @@ export default {
       audio.muted = !audio.muted
       this.setVolume(audio.muted)
     },
+    /** @param { MouseEvent } e */
     handleVolumeMsUp(e) {
       this.volumeEvent.isMsDown = false
     },
+    /** @param { MouseEvent } e */
     handleVolumeMsMove(e) {
       if (!this.volumeEvent.isMsDown) return
       this.handleSetVolume(this.volumeEvent.msDownVolume + (e.clientX - this.volumeEvent.msDownX) / 80)
@@ -714,10 +766,12 @@ export default {
     handleSetVolumeDown(step = 0.02) {
       this.handleSetVolume(this.volume - step)
     },
+    /** @param { number } num */
     handleSetVolume(num) {
       this.volume = num < 0 ? 0 : num > 1 ? 1 : num
       if (audio) audio.volume = this.volume
     },
+    /** @param { string } text */
     handleCopy(text) {
       clipboardWriteText(text)
     },
@@ -802,6 +856,10 @@ export default {
         this.setMediaDeviceId('default')
       })
     },
+    /**
+     * @param { MediaDeviceInfo  } device
+     * @param { string } mediaDeviceId
+     */
     handleDeviceChangeStopPlay(device, mediaDeviceId) {
       // console.log(device)
       // console.log(this.setting.player.isMediaDeviceRemovedStopPlay, this.isPlay, device.label, this.prevDeviceLabel)
@@ -822,6 +880,9 @@ export default {
 
       this.setMediaDeviceId(device.deviceId)
     },
+    /**
+     * @param { { type: "prev" | "togglePlay" | "next" | "progress" | "volume"; data: number; } } info
+     */
     handlePlayDetailAction({ type, data }) {
       switch (type) {
         case 'prev':
@@ -843,6 +904,7 @@ export default {
     assertApiSupport(source) {
       return assertApiSupport(source)
     },
+    /** @type { LxMusic.Renderer.SetLyricInfoFunc } */
     handleUpdateWinLyricInfo(type, data, info) {
       rendererSend(NAMES.mainWindow.set_lyric_info, {
         type,
@@ -880,6 +942,7 @@ export default {
       if (!this.musicInfo.songmid) return
       this.isShowAddMusicTo = true
     },
+    /** @param { LxMusic.Component.RestorePlayInfo } restorePlayInfo */
     handleRestorePlay(restorePlayInfo) {
       let musicInfo = this.list[restorePlayInfo.index]
       this.musicInfo.songmid = musicInfo.songmid

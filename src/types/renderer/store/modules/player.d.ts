@@ -1,19 +1,23 @@
 /** 播放音乐信息 */
-export interface PlayMusicInfo {
-  /** 列表编号 */ listId: string;
+export type PlayMusicInfo = {
   /** 播放序号 */ playIndex: number;
   /** 播放列表编号 */ playListId: string;
   /** 列表播放编号 */ listPlayIndex: number;
   /** 为播放列表 */ isPlayList: boolean;
-  /** 音乐信息 */ musicInfo: LxMusic.UserApiEvent.SongInfo;
   /** 为历史播放 */ isTempPlay: boolean;
-}
+} & ({
+  /** 列表编号 */ listId: "download";
+  /** 音乐信息 */ musicInfo: LxMusic.Renderer.DownloadInfo;
+} | {
+  /** 列表编号 */ listId: "play";
+  /** 音乐信息 */ musicInfo: LxMusic.UserApiEvent.SongInfo;
+})
 
 /** 播放器数据 */
 export interface PlayerState {
   /** 列表信息 */
   listInfo: {
-  /** 播放列表 */   list: LxMusic.UserApiEvent.SongInfo[];
+  /** 播放列表 */   list: (LxMusic.UserApiEvent.SongInfo | LxMusic.Renderer.DownloadInfo)[];
   /** 列表编号 */   id: string;
   };
   /** 播放序号 */ playIndex: number;

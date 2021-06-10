@@ -50,6 +50,7 @@ export interface DownloadInfo<
   /** 音乐信息 */ musicInfo: LxMusic.UserApiEvent.SongInfo;
   /** 关键 */ key: `${LxMusic.UserApiEvent.SongInfo["songmid"]}${E}`;
   /** 顺序 */ order: number;
+  /** 唱片名称 */ albumName: string;
 }
 
 /** 音质类型 */ export type MusicQualityType = "128k" | "192k" | "320k" | "ape" | "flac" | "wav";

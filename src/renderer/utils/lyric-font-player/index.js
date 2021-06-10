@@ -53,6 +53,11 @@ module.exports = class Lyric {
     }
   }
 
+  /**
+   * @param { number } num
+   * @param { string } text
+   * @param { number } curTime
+   */
   _handleLinePlayerOnPlay = (num, text, curTime) => {
     if (this.isLineMode) {
       if (num < this.playingLineNum + 1) {
@@ -148,6 +153,10 @@ module.exports = class Lyric {
     this.onSetLyric(this._lines)
   }
 
+  /**
+   * 播放
+   * @param { number } curTime
+   */
   play(curTime) {
     if (!this.linePlayer) return
     this.linePlayer.play(curTime)
@@ -159,6 +168,11 @@ module.exports = class Lyric {
     if (this.playingLineNum > -1) this._lineFonts[this.playingLineNum].pause()
   }
 
+  /**
+   * 设置歌词
+   * @param { string } lyric
+   * @param { string } translationLyric
+   */
   setLyric(lyric, translationLyric) {
     this.lyric = lyric
     this.translationLyric = translationLyric
