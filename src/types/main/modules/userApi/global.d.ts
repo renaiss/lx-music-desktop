@@ -12,7 +12,7 @@ interface GlobalEnvParams {
   /** 播放信息 */ play: `type=${GlobalEnvParamsPlayType}&source=${GlobalEnvParamsPlaySource}&name${GlobalEnvParamsPlayName}&index=${number}`;
 }
 
-namespace NodeJS {
+declare namespace NodeJS {
   interface Global {
 
     /** 全局模块 */

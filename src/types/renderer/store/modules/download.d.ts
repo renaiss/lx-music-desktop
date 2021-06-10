@@ -82,7 +82,7 @@ export interface DownloadOptionInfo {
   resumeTime: number;
   /** 若完成 */ onCompleted: () => void;
   /** 若异常 */ onError: (err: Error) => void;
-  /** 若失败 */ onFail: (response: import("request").Response) => void;
+  /** 若失败 */ onFail: (response: Response) => void;
   /** 若开始 */ onStart: () => void;
   /** 若停止 */ onStop: () => void;
   /** 若进展[0-1.0] */ onProgress: (status: number) => void;

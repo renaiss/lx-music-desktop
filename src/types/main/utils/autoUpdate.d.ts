@@ -22,7 +22,7 @@ export interface DownloadProgressInfo {
 }
 
 /** 发送事件信息 */
-export interface SendEventInfo<T> {
+export interface SendEventInfo<T extends keyof LxMusic.Common.MainDataMap> {
   /** 类型 */ type: T;
   /** 信息 */ info: LxMusic.Common.MainDataMap[T];
 }

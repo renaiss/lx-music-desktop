@@ -1,4 +1,8 @@
-type hotKey = {
+export type ModuleMap<T> = { [module in string]: T; };
+
+export type ModuleNameMap<T> = { [module in string]: ModuleMap<T>; };
+
+interface hotKey extends ModuleNameMap<{ action: string; name: string }> {
   common: {
 
     min: {
@@ -88,12 +92,14 @@ type keyName = {
   desktop_lyric: LxMusic.MainName.LxEventDataNameMap["winLyric"]["name"];
 }
 
+type ParseHotKeyType = { [module in string]: { [type in string]: { action: string; name: string; type: string | undefined; } } };
+
 export type ParseHotKey = {
   [moudle in keyof hotKey]: {
     [type in keyof hotKey[moudle]]: {
       action: `${moudle}_${hotKey[moudle][type]["action"]}`;
       name: `${moudle}_${hotKey[moudle][type]["name"]}`;
-      type: keyName[moudle];
+      type: moudle extends keyof keyName ? keyName[moudle] : undefined;
     }
   }
 }
@@ -102,6 +108,4 @@ export type HotKeyInfo = { [key in keyof ParseHotKey]: ParseHotKey[key][keyof Pa
 
 export type KeyNames = keyName[keyof keyName];
 
-export type  HotKeyEventNameMap = { [key in keyof ParseHotKey]: { [name in keyof ParseHotKey[key]]:ParseHotKey[key][name]["action"]; }; };
-
-export = ParseHotKey;
+export type HotKeyEventNameMap = { [key in keyof ParseHotKey]: { [name in keyof ParseHotKey[key]]: ParseHotKey[key][name]["action"]; }; };

@@ -35,7 +35,7 @@ export interface SongInfo {
   /** 歌曲歌词 */ lrc: string | null;
   /** 其它资源 */ otherSource: SongInfo[] | null;
   /** 音质组 */ types: [
-    { type: flac, size: null; },
+    { type: "flac", size: null; },
     { type: '320k', size: string; },
     { type: '128k', size: string; },
   ];
@@ -46,9 +46,9 @@ export interface SongInfo {
   };
   /** 类型链接 */ typeUrl: {};
 
-  /** 分类歌手 */ sortedSinger: ?string;
-  /** 小写名称 */ lowerCaseName: ?string;
-  /** 小写相册名称 */ lowerCaseAlbumName: ?string;
+  /** 分类歌手 */ sortedSinger?: string;
+  /** 小写名称 */ lowerCaseName?: string;
+  /** 小写相册名称 */ lowerCaseAlbumName?: string;
 }
 
 /** 歌曲表 */

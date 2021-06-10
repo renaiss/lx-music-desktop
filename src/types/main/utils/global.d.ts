@@ -1,4 +1,4 @@
-namespace NodeJS {
+declare namespace NodeJS {
   interface Global {
 
     /** 即将退出 */

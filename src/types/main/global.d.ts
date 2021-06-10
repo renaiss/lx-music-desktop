@@ -1,4 +1,4 @@
-namespace NodeJS {
+declare namespace NodeJS {
   interface Global {
 
     /** 全局核心 */

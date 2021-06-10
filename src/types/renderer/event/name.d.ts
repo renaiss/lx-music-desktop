@@ -1,4 +1,4 @@
-interface Names {
+interface Names extends LxMusic.Common.ModuleNameMap<string> {
   /** 基础名称 */
   base: {
     /** 按键按下 */ key_down: 'key_down';

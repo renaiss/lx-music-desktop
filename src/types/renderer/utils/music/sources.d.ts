@@ -1,5 +1,3 @@
-import request from "request";
-
 /** 歌曲资源 */
 export type MusicSources = [
   { name: "酷我音乐"; id: "kw"; },
@@ -15,7 +13,7 @@ export type MusicSourcesId = MusicSources[number]["id"];
 
 /** 音乐平台_临时搜索 */
 export interface MusicPlatformTempSearch {
-  /** 临时搜素 */ tempSearch: (str: string) => Promise<request.Response["body"]>;
+  /** 临时搜素 */ tempSearch: (str: string) => Promise<Response["body"]>;
   /** 处理结果 */ handleResult: (rawData: string[]) => string;
   /** 取消请求 */ cancelTempSearch: () => void;
   /** 搜素 */ search: (str: string) => Promise<string>;
@@ -37,7 +35,7 @@ export interface MusicPlatformMusicSearch {
   /** 总数 */ total: number;
   /** 页面 */ page: number;
   /** 页数 */ allPage: number;
-  /** 音乐搜索 */ musicSearch: (str: string, page: number, limit: number) => Promise<request.Response["body"]>;
+  /** 音乐搜索 */ musicSearch: (str: string, page: number, limit: number) => Promise<Response["body"]>;
   /** 处理结果 */ handleResult: (rawData: any) => LxMusic.UserApiEvent.SongInfo;
   /** 搜素 */ search: (str: string, page: number, limitInfo: { limit: string }, retryNum: number) => Promise<MusicPlatformMusicSearchResult>;
 }
@@ -64,7 +62,7 @@ export interface MusicPlatformLeaderboard {
   /** 取数据 */ getData: (url: string) => Promise<any>;
   /** 过滤数据 */ filterData: (rawList: any) => LxMusic.UserApiEvent.SongInfo;
   /** 过滤榜单数据 */ filterBoardsData: (rawList: MusicPlatformLeaderboardInfo[]) => MusicPlatformLeaderboardInfo[];
-  /** 取榜单 */ getBoards: (retryNum: string = 0) => Promise<MusicPlatformLeaderboardBoardsInfo>;
+  /** 取榜单 */ getBoards: (retryNum: number) => Promise<MusicPlatformLeaderboardBoardsInfo>;
   /** 取列表 */ getList: (id: string | number, page: number, ...args: any[]) => Promise<MusicPlatformMusicSearchResult>;
 }
 
@@ -185,7 +183,6 @@ export interface MusicPlatformCommentInfo {
   /** 评论 */ comments: MusicPlatformFilterCommentInfo[];
   /** 总数 */ total: number;
   /** 显数 */ limit: number;
-  /** 显数 */ limit: string;
   /** 页数 */ maxPage: string;
 }
 

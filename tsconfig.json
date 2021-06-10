@@ -1,0 +1,34 @@
+{
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "strict": true,
+    "allowJs": true,
+    // "checkJs": true, // 检查JS类型
+    "sourceMap": true,
+    // "skipLibCheck": true, // 跳过库检查
+    "importHelpers": true,
+    "esModuleInterop": true,
+    "keyofStringsOnly": true,
+    "allowUmdGlobalAccess": true,
+    "allowSyntheticDefaultImports": true,
+    "importsNotUsedAsValues": "preserve",
+    "outDir": "out",
+    "baseUrl": "./",
+    "paths": {
+      "@main/*": ["src/main/*"],
+      "@renderer/*": ["src/renderer/*"],
+      "@lyric/*": ["src/renderer-lyric/*"],
+      "@common/*": ["src/common/*"]
+    }
+  },
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.js",
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
+}

@@ -1,5 +1,5 @@
-
-namespace LxMusic {
+// @ts-nocheck
+declare namespace LxMusic {
   namespace Common {
     import("./common"); export * from "./common";
   }

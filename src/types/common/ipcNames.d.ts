@@ -1,5 +1,5 @@
 /** 时间表 */
-export type NameMap = {
+export interface NameMap extends LxMusic.Common.ModuleNameMap<string> {
   /** 主窗口 */
   mainWindow: {
     /** 聚焦 */ focus: 'focus';

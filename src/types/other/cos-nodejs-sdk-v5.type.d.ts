@@ -171,13 +171,13 @@ interface SliceUploadResult extends BackcallResult {
 }
 
 /** 腾讯云储存 */
-class COS {
+declare class COS {
 
   /**
    * 创建腾讯云储存
    * @param info 腾讯云储存连接信息
    */
-  constructor(info: COS_Info): void;
+  constructor(info: COS_Info);
 
   /**
    * 取存储桶
@@ -205,7 +205,6 @@ class COS {
 }
 
 declare module "cos-nodejs-sdk-v5" {
-
   export = COS;
 }
 

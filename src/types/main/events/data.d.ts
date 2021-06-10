@@ -48,36 +48,36 @@ export interface LxEventDataNameMap {
 }
 
 /** 事件数据名称表 */
-export interface LxEventDataMap {
+export interface LxEventDataMap extends LxMusic.Common.ModuleNameMap<any[]> {
   /** 通用 */
   common:
-  { [name in LxEventDataNameMap["common"]["initConfig"]]: never; } &
+  { [name in LxEventDataNameMap["common"]["initConfig"]]: []; } &
   { [name in LxEventDataNameMap["common"]["configStatus"]]: [name: LxMusic.Common.KeyNames]; };
 
   /** 主窗口 */
   mainWindow:
   { [name in LxEventDataNameMap["mainWindow"]["setLyricInfo"]]: [info: LxMusic.Renderer.SetLyricInfo]; } &
-  { [name in LxEventDataNameMap["mainWindow"]["destroy"]]: never; } &
-  { [name in LxEventDataNameMap["mainWindow"]["quit"]]: never; } &
-  { [name in LxEventDataNameMap["mainWindow"]["toggle_minimize"]]: never; } &
-  { [name in LxEventDataNameMap["mainWindow"]["toggle_hide"]]: never; } &
-  { [name in LxEventDataNameMap["mainWindow"]["ready_to_show"]]: never; } &
-  { [name in LxEventDataNameMap["mainWindow"]["show"]]: never; } &
-  { [name in LxEventDataNameMap["mainWindow"]["hide"]]: never; }
+  { [name in LxEventDataNameMap["mainWindow"]["destroy"]]: []; } &
+  { [name in LxEventDataNameMap["mainWindow"]["quit"]]: []; } &
+  { [name in LxEventDataNameMap["mainWindow"]["toggle_minimize"]]: []; } &
+  { [name in LxEventDataNameMap["mainWindow"]["toggle_hide"]]: []; } &
+  { [name in LxEventDataNameMap["mainWindow"]["ready_to_show"]]: []; } &
+  { [name in LxEventDataNameMap["mainWindow"]["show"]]: []; } &
+  { [name in LxEventDataNameMap["mainWindow"]["hide"]]: []; }
 
   /** 托盘 */
   tray:
-  { [name in LxEventDataNameMap["tray"]["create"]]: never; } &
-  { [name in LxEventDataNameMap["tray"]["destroy"]]: never; };
+  { [name in LxEventDataNameMap["tray"]["create"]]: []; } &
+  { [name in LxEventDataNameMap["tray"]["destroy"]]: []; };
 
   /** 歌词窗口 */
   winLyric:
-  { [name in LxEventDataNameMap["winLyric"]["create"]]: never; } &
-  { [name in LxEventDataNameMap["winLyric"]["close"]]: never; };
+  { [name in LxEventDataNameMap["winLyric"]["create"]]: []; } &
+  { [name in LxEventDataNameMap["winLyric"]["close"]]: []; };
 
   /** 热键 */
   hotKey:
-  { [name in LxEventDataNameMap["hotKey"]["init"]]: never; } &
+  { [name in LxEventDataNameMap["hotKey"]["init"]]: []; } &
   { [name in LxEventDataNameMap["hotKey"]["config"]]: [config: LxMusic.Renderer.HotKeyConfigInfo["config"], source: LxMusic.Renderer.HotKeyConfigInfo["source"]]; } &
   { [name in LxEventDataNameMap["hotKey"]["keyDown"]]: [info: LxMusic.Renderer.KeyDownInfo]; };
 
@@ -89,10 +89,10 @@ export interface LxEventDataMap {
 export type LxEventModuleName = keyof LxEventDataMap;
 
 /** 事件监听 */
-export type LxEventOn<M extends LxEventModuleName> = <T extends string>(name: T, callback: (...args: LxEventDataMap[M][T]) => void) => void;
+export type LxEventOn<M extends LxEventModuleName> = <T extends keyof LxEventDataMap[M]>(name: T, callback: (...args: LxEventDataMap[M][T]) => void) => void;
 
 /** 事件触发 */
-export type LxEventEmit<M extends LxEventModuleName> = <T extends string>(name: T, ...args: LxEventDataMap[M][T]) => void;
+export type LxEventEmit<M extends LxEventModuleName> = <T extends keyof LxEventDataMap[M]>(name: T, ...args: LxEventDataMap[M][T]) => void;
 
 /** 事件数据类 */
 export class LxEventDataClass<M extends LxEventModuleName> {

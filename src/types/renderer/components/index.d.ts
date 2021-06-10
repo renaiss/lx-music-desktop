@@ -1,4 +1,4 @@
-type ContextImportFunc = (name: string) => string;
+type ContextImportFunc = (name: string) => ({ default: string } | string);
 
 interface ContextKeys { keys: () => string[]; }
 

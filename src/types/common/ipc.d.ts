@@ -106,22 +106,22 @@ export type MainHandleDataMap =
   { /** 歌词窗口_获取歌词配置       */[name in LYRIC_WINDOW["get_lyric_config"]]: ParamRet<never, LxMusic.WinLyric.LyricConfigInfo>; };
 
 /** 主要监听回调函数 */
-export type MainOnCallback<T extends string> = MainCallback<MainDataMap[T], void>;
+export type MainOnCallback<T extends keyof MainDataMap> = MainCallback<MainDataMap[T], void>;
 
 /** 主要监听 */
-export type MainOn = <T extends string>(name: T, callback: MainOnCallback<T>) => void;
+export type MainOn = <T extends keyof MainDataMap>(name: T, callback: MainOnCallback<T>) => void;
 
 /** 主要发送 */
-export type MainSend = <T extends string>(window: Electron.BrowserWindow, name: T, params: MainDataMap[T]) => void;
+export type MainSend = <T extends keyof MainDataMap>(window: Electron.BrowserWindow, name: T, params: MainDataMap[T]) => void;
 
 /** 主要处理 */
-export type MainHandle = <T extends string>(name: T, callback: MainCallback<MainHandleDataMap[T]["PARAM"], Promise<MainHandleDataMap[T]["RET"]>>) => void;
+export type MainHandle = <T extends keyof MainHandleDataMap>(name: T, callback: MainCallback<MainHandleDataMap[T]["PARAM"], Promise<MainHandleDataMap[T]["RET"]>>) => void;
 
 /** 面板监听 */
-export type RendererOn = <T extends string>(name: T, callback: MainCallback<RendererOnDataMap[T], void>) => void;
+export type RendererOn = <T extends keyof RendererOnDataMap>(name: T, callback: MainCallback<RendererOnDataMap[T], void>) => void;
 
 /** 面板发送 */
-export type RendererSend = <T extends string>(name: T, params: MainDataMap[T]) => void;
+export type RendererSend = <T extends keyof MainDataMap>(name: T, params: MainDataMap[T]) => void;
 
 /** 面板调用 */
-export type RendererInvoke = <T extends string>(name: T, params: MainHandleDataMap[T]["PARAM"]) => Promise<MainHandleDataMap[T]["RET"]>;
+export type RendererInvoke = <T extends keyof MainHandleDataMap>(name: T, params: MainHandleDataMap[T]["PARAM"]) => Promise<MainHandleDataMap[T]["RET"]>;

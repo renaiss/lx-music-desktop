@@ -10,6 +10,6 @@ export interface TipsVue extends Vue {
   setTips: (tips: string) => void;
   autoCloseTimer: NodeJS.Timeout;
 
-  afterLeave: (el: HTMLELement, done: () => void) => void;
+  afterLeave: (el: HTMLElement, done: () => void) => void;
   handleGetOffsetXY: (left: number, top: number) => `${number}${number}`;
 }
