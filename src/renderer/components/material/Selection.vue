@@ -44,6 +44,7 @@ export default {
     document.removeEventListener('click', this.handleHide)
   },
   computed: {
+    /** @returns { [string, number] } */
     label() {
       if (!this.value) return ''
       if (!this.itemName) return this.value

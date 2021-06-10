@@ -88,8 +88,8 @@ export interface ActionContext<M extends StoreModuleName, S> extends VuexActionC
 
 declare module "vuex" {
   const mapGetters:
-    (<T extends keyof RootStore["getters"]>(name: T[]) => { [name in T]: ReturnType<RootStore["getters"][name]>; }) &
-    (<M extends StoreModuleName, T extends keyof StoreModuleMap[M]["getters"]>(module: M, name: T[]) => { [name in T]: ReturnType<StoreModuleMap[M]["getters"][name]>; });
+    (<T extends keyof RootStore["getters"]>(name: T[]) => { [name in T]: (...args: ParametersOther<RootStore["getters"][name]>) => ReturnType<RootStore["getters"][name]>; }) &
+    (<M extends StoreModuleName, T extends keyof StoreModuleMap[M]["getters"]>(module: M, name: T[]) => { [name in T]: (...args: ParametersOther<StoreModuleMap[M]["getters"][name]>) => ReturnType<StoreModuleMap[M]["getters"][name]>; });
   const mapMutations:
     (<T extends keyof RootStore["mutations"]>(name: T[]) => { [name in T]: (...args: ParametersOther<RootStore["mutations"][name]>) => ReturnType<RootStore["mutations"][name]>; }) &
     (<M extends StoreModuleName, T extends keyof StoreModuleMap[M]["mutations"]>(module: M, name: T[]) => { [name in T]: (...args: ParametersOther<StoreModuleMap[M]["mutations"][name]>) => ReturnType<StoreModuleMap[M]["mutations"][name]>; });
