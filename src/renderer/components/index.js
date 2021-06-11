@@ -2,6 +2,7 @@ import Vue from 'vue'
 import upperFirst from 'lodash/upperFirst'
 import camelCase from 'lodash/camelCase'
 
+/** @type { ContextFuncContext<Vue> } */
 const requireComponent = require.context('./', true, /\.vue$/)
 
 requireComponent.keys().forEach(fileName => {

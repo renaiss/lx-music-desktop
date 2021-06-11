@@ -93,6 +93,7 @@ let cancelScrollFn = null
 
 export default {
   props: {
+    /** @type { (...angs: any[]) => LxMusic.UserApiEvent.SongInfo; } */
     musicInfo: {
       type: Object,
       default() {
@@ -128,6 +129,7 @@ export default {
         }
       },
     },
+    /** @deprecated */
     list: {
       type: Array,
       default() {
@@ -156,6 +158,10 @@ export default {
     //   immediate: true,
     // },
     'lyric.lines': {
+      /**
+       * @param { any } n
+       * @param { any } o
+       */
       handler(n, o) {
         this.isSetedLines = true
         if (o) {
@@ -194,6 +200,7 @@ export default {
       immediate: true,
     },
     'lyric.line': {
+      /** @param { boolean } n */
       handler(n) {
         if (n < 0) return
         if (n == 0 && this.isSetedLines) return this.isSetedLines = false
@@ -201,6 +208,10 @@ export default {
       },
       immediate: true,
     },
+    /**
+     * @param { number } n
+     * @param { number } o
+     */
     'playInfo.nowPlayTime'(n, o) {
       if (Math.abs(n - o) > 2) this.isActiveTransition = true
     },
@@ -226,7 +237,7 @@ export default {
         isStopScroll: false,
         timeout: null,
       },
-      _lyricLines: [],
+      /** @type { any[] } */ _lyricLines: [],
       lyricLines: [],
       isSetedLines: false,
       isShowComment: false,
@@ -253,9 +264,12 @@ export default {
     ...mapGetters('player', ['isShowPlayerDetail']),
   },
   methods: {
-    ...mapMutations('player', [
-      'visiblePlayerDetail',
-    ]),
+    ...mapMutations('player', [ 'visiblePlayerDetail' ]),
+
+    /**
+     * @param { { dom_line: HTMLElement }[] } lines
+     * @returns { void }
+     */
     setLyric(lines) {
       const dom_lines = document.createDocumentFragment()
       for (const line of lines) {
@@ -279,6 +293,7 @@ export default {
     handleTransitionEnd() {
       this.isActiveTransition = false
     },
+    /** @param { MouseEvent } event */
     setProgress(event) {
       this.$emit('action', {
         type: 'progress',
@@ -298,15 +313,18 @@ export default {
       this.clickTime = 0
       this.visiblePlayerDetail(false)
     },
+    /** @param { MouseEvent } e */
     handleLyricMouseDown(e) {
       // console.log(e)
       this.lyricEvent.isMsDown = true
       this.lyricEvent.msDownY = e.clientY
       this.lyricEvent.msDownScrollY = this.$refs.dom_lyric.scrollTop
     },
+    /** @param { MouseEvent } e */
     handleMouseMsUp(e) {
       this.lyricEvent.isMsDown = this.volumeEvent.isMsDown = false
     },
+    /** @param { MouseEvent } e */
     handleMouseMsMove(e) {
       if (this.lyricEvent.isMsDown) {
         if (!this.lyricEvent.isStopScroll) this.lyricEvent.isStopScroll = true
@@ -335,8 +353,8 @@ export default {
         this.handleScrollLrc()
       }, 3000)
     },
+    /** @param { WheelEvent } event */
     handleWheel(event) {
-      console.log(event.deltaY)
       if (!this.lyricEvent.isStopScroll) this.lyricEvent.isStopScroll = true
       if (cancelScrollFn) {
         cancelScrollFn()

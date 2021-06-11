@@ -1,6 +1,8 @@
 // https://vuex.vuejs.org/en/modules.html
 
+/** @type { ContextFuncContext<import("vuex").Store> } */
 const requireModule = require.context('./', true, /\.js$/)
+/** @type { LxMusic.Renderer.StoreModuleMap } */
 const modules = {}
 
 requireModule.keys().forEach(fileName => {

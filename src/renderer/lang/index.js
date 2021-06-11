@@ -1,5 +1,6 @@
 // http://kazupon.github.io/vue-i18n/en/messages.html
 
+/** @type { ContextFuncContext<Object> } */
 const requireLang = require.context(
   '@renderer/lang',
   true,
