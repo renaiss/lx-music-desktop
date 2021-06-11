@@ -28,16 +28,14 @@ export default {
     return {
       searchText: '',
       visibleList: false,
-      tipList: [],
+      /** @type { string[] } */ tipList: [],
       tipSearch: null,
       isFocused: false,
     }
   },
   computed: {
     ...mapGetters(['route', 'setting']),
-    ...mapGetters('search', {
-      storeSearchText: 'searchText',
-    }),
+    ...mapGetters('search', { storeSearchText: 'searchText', }),
     source() {
       return this.setting.search.tempSearchSource
     },
@@ -49,15 +47,18 @@ export default {
     },
   },
   watch: {
+    /** @param { import("vue-router").RouteConfig } n  */
     route(n) {
       if (n.name != 'search') {
         if (this.isAutoClearSearchInput && this.searchText) this.searchText = ''
         if (this.isAutoClearSearchList) this.clearSearchList()
       }
     },
+    /** @param { string } n  */
     storeSearchText(n) {
       if (n !== this.searchText) this.searchText = n
     },
+    /** @param { string } n  */
     searchText(n) {
       this.handleTipSearch()
     },
@@ -75,9 +76,8 @@ export default {
     }, 50)
   },
   methods: {
-    ...mapMutations('search', {
-      clearSearchList: 'clearList',
-    }),
+    ...mapMutations('search', { clearSearchList: 'clearList', }),
+    /** @param { { action:"focus" | "blur" | "submit" | "listClick"; data: number; } } info */
     handleEvent({ action, data }) {
       switch (action) {
         case 'focus':

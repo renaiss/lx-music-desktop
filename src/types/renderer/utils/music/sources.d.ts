@@ -16,7 +16,7 @@ export interface MusicPlatformTempSearch {
   /** 临时搜素 */ tempSearch: (str: string) => Promise<Response["body"]>;
   /** 处理结果 */ handleResult: (rawData: string[]) => string;
   /** 取消请求 */ cancelTempSearch: () => void;
-  /** 搜素 */ search: (str: string) => Promise<string>;
+  /** 搜素 */ search: (str: string) => Promise<string[]>;
 }
 
 /** 音乐平台_音乐搜索_结果 */

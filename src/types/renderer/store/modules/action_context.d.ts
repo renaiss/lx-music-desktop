@@ -33,16 +33,16 @@ export interface StoreModuleMap {
 /** 存储模块名称 */
 type StoreModuleName = keyof StoreModuleMap;
 
+/** 函数表参反表 */
+type FuncParamRetMap<T extends AnyFuncMap> = { [name in keyof T]: { param: ParametersOther<T[name]>; return: ReturnType<T[name]>; } };
+
 // action
 
 /** 存储模块行为名称 */
 type StoreModuleActionName = { [name in StoreModuleName]: keyof StoreModuleMap[name]["actions"]; }[StoreModuleName];
 
-/** 存储模块行为参反表 */
-type ActionsParamRetMap<T extends AnyFuncMap> = { [name in keyof T]: { param: ParametersOther<T[name]>; return: ReturnType<T[name]>; } };
-
 /** 存储模块行为参反数据 */
-type ActionParamRet = { [name in StoreModuleName]: ActionsParamRetMap<StoreModuleMap[name]["actions"]>; };
+type ActionParamRet = { [name in StoreModuleName]: FuncParamRetMap<StoreModuleMap[name]["actions"]>; };
 
 /** 存储模块派遣 */
 type StoreModuleDispatch<M2 extends StoreModuleName> = <
@@ -60,11 +60,8 @@ type StoreModuleDispatch<M2 extends StoreModuleName> = <
 /** 存储模块变化名称 */
 type StoreModuleMutationsName = { [name in StoreModuleName]: keyof StoreModuleMap[name]["mutations"]; }[StoreModuleName];
 
-/** 存储模块变化参反表 */
-type MutationsParamRetMap<T> = { [name in keyof T]: { param: ParametersOther<T[name]>; return: ReturnType<T[name]>; } };
-
 /** 存储模块变化参反数据 */
-type MutationsParamRet = { [name in StoreModuleName]: ActionsParamRetMap<StoreModuleMap[name]["mutations"]>; };
+type MutationsParamRet = { [name in StoreModuleName]: FuncParamRetMap<StoreModuleMap[name]["mutations"]>; };
 
 /** 存储模块提交 */
 type StoreModuleCommit<M2 extends StoreModuleName> = <
@@ -86,14 +83,80 @@ export interface ActionContext<M extends StoreModuleName, S> extends VuexActionC
   commit: StoreModuleCommit<M>;
 }
 
+type KVMap<K, V> = { [key in K]: V };
+
 declare module "vuex" {
   const mapGetters:
-    (<T extends keyof RootStore["getters"]>(name: T[]) => { [name in T]: (...args: ParametersOther<RootStore["getters"][name]>) => ReturnType<RootStore["getters"][name]>; }) &
-    (<M extends StoreModuleName, T extends keyof StoreModuleMap[M]["getters"]>(module: M, name: T[]) => { [name in T]: (...args: ParametersOther<StoreModuleMap[M]["getters"][name]>) => ReturnType<StoreModuleMap[M]["getters"][name]>; });
+    (
+      <T extends keyof RootStore["getters"]>(name: T[]) => {
+        [name in T]: (...args: ParametersOther<RootStore["getters"][name]>)
+          => ReturnType<RootStore["getters"][name]>;
+      }
+    ) &
+    (
+      <N extends KVMap<string, keyof RootStore["getters"]>>(name: N) => {
+        [name in keyof N]: (...args: ParametersOther<RootStore["getters"][N[name]]>)
+          => ReturnType<RootStore["getters"][N[name]]>;
+      }
+    ) &
+    (
+      <M extends StoreModuleName, T extends keyof StoreModuleMap[M]["getters"]>(module: M, name: T[]) => {
+        [name in T]: (...args: ParametersOther<StoreModuleMap[M]["getters"][name]>)
+          => ReturnType<StoreModuleMap[M]["getters"][name]>;
+      }
+    ) &
+    (
+      <M extends StoreModuleName, N extends KVMap<string, keyof StoreModuleMap[M]["getters"]>>(module: M, name: N) => {
+        [name in keyof N]: (...args: ParametersOther<StoreModuleMap[M]["getters"][N[name]]>)
+          => ReturnType<StoreModuleMap[M]["getters"][N[name]]>;
+      }
+    );
+
   const mapMutations:
-    (<T extends keyof RootStore["mutations"]>(name: T[]) => { [name in T]: (...args: ParametersOther<RootStore["mutations"][name]>) => ReturnType<RootStore["mutations"][name]>; }) &
-    (<M extends StoreModuleName, T extends keyof StoreModuleMap[M]["mutations"]>(module: M, name: T[]) => { [name in T]: (...args: ParametersOther<StoreModuleMap[M]["mutations"][name]>) => ReturnType<StoreModuleMap[M]["mutations"][name]>; });
+    (
+      <T extends keyof RootStore["mutations"]>(name: T[]) => {
+        [name in T]: (...args: ParametersOther<RootStore["mutations"][name]>)
+          => ReturnType<RootStore["mutations"][name]>; }
+    ) &
+    (
+      <N extends KVMap<string, keyof RootStore["mutations"]>>(name: N) => {
+        [name in keyof N]: (...args: ParametersOther<RootStore["mutations"][N[name]]>)
+          => ReturnType<RootStore["mutations"][N[name]]>;
+      }
+    ) &
+    (
+      <M extends StoreModuleName, T extends keyof StoreModuleMap[M]["mutations"]>(module: M, name: T[]) => {
+        [name in T]: (...args: ParametersOther<StoreModuleMap[M]["mutations"][name]>)
+          => ReturnType<StoreModuleMap[M]["mutations"][name]>; }
+    ) &
+    (
+      <M extends StoreModuleName, N extends KVMap<string, keyof StoreModuleMap[M]["mutations"]>>(module: M, name: N) => {
+        [name in keyof N]: (...args: ParametersOther<StoreModuleMap[M]["mutations"][N[name]]>)
+          => ReturnType<StoreModuleMap[M]["mutations"][N[name]]>;
+      }
+    );
+
   const mapActions:
-    (<T extends keyof RootStore["actions"]>(name: T[]) => { [name in T]: (...args: ParametersOther<RootStore["actions"][name]>) => ReturnType<RootStore["actions"][name]>; }) &
-    (<M extends StoreModuleName, T extends keyof StoreModuleMap[M]["actions"]>(module: M, name: T[]) => { [name in T]: (...args: ParametersOther<StoreModuleMap[M]["actions"][name]>) => ReturnType<StoreModuleMap[M]["actions"][name]>; });
+    (
+      <T extends keyof RootStore["actions"]>(name: T[]) => {
+        [name in T]: (...args: ParametersOther<RootStore["actions"][name]>)
+          => ReturnType<RootStore["actions"][name]>; }
+    ) &
+    (
+      <N extends KVMap<string, keyof RootStore["actions"]>>(name: N) => {
+        [name in keyof N]: (...args: ParametersOther<RootStore["actions"][N[name]]>)
+          => ReturnType<RootStore["actions"][N[name]]>;
+      }
+    ) &
+    (
+      <M extends StoreModuleName, T extends keyof StoreModuleMap[M]["actions"]>(module: M, name: T[]) => {
+        [name in T]: (...args: ParametersOther<StoreModuleMap[M]["actions"][name]>)
+          => ReturnType<StoreModuleMap[M]["actions"][name]>; }
+    ) &
+    (
+      <M extends StoreModuleName, N extends KVMap<string, keyof StoreModuleMap[M]["actions"]>>(module: M, name: N) => {
+        [name in keyof N]: (...args: ParametersOther<StoreModuleMap[M]["actions"][N[name]]>)
+          => ReturnType<StoreModuleMap[M]["actions"][N[name]]>;
+      }
+    );
 }
