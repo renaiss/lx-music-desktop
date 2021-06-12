@@ -1,5 +1,5 @@
 // Support qualitys: 128k 320k flac wav
-
+/** @type { LxMusic.Renderer.MusicQualitysApiInfo[] } */
 module.exports = [
   {
     id: 'test',

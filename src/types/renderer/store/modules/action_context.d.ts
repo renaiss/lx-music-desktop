@@ -10,6 +10,8 @@ import { rootStoreOption } from "../../../../renderer/store/index";
 
 import { ActionContext as VuexActionContext } from "vuex";
 
+export type KVMap<K, V> = { [key in K]: V };
+
 type ParametersOther<T extends (...args: any) => any> = T extends (a: any, ...args: infer P) => any ? P : [];
 
 type AnyFuncMap = LxMusic.Common.ModuleMap<(...args: any[]) => any>;
@@ -82,8 +84,6 @@ export interface ActionContext<M extends StoreModuleName, S> extends VuexActionC
   dispatch: StoreModuleDispatch<M>;
   commit: StoreModuleCommit<M>;
 }
-
-type KVMap<K, V> = { [key in K]: V };
 
 declare module "vuex" {
   const mapGetters:

@@ -56,7 +56,7 @@ export default {
       isProd: process.env.NODE_ENV === 'production',
       isDT: false,
       isLinux,
-      globalObj: {
+      /** @type { Window["globalObj"] } */ globalObj: {
         apiSource: null,
         proxy: {},
         isShowPact: false,
@@ -201,12 +201,8 @@ export default {
     ...mapMutations(['setNewVersion', 'setVersionModalVisible', 'setDownloadProgress', 'setSetting', 'setDesktopLyricConfig']),
     ...mapMutations('list', ['initList']),
     ...mapMutations('download', ['updateDownloadList']),
-    ...mapMutations('search', {
-      setSearchHistoryList: 'setHistory',
-    }),
-    ...mapMutations('player', {
-      setPlayList: 'setList',
-    }),
+    ...mapMutations('search', { setSearchHistoryList: 'setHistory', }),
+    ...mapMutations('player', { setPlayList: 'setList', }),
     ...mapActions('songList', ['getListDetailAll']),
     init() {
       document.documentElement.style.fontSize = this.windowSizeActive.fontSize
@@ -391,10 +387,12 @@ export default {
           this.globalObj.userApi.message = message
           if (status) {
             if (apiInfo.id === this.setting.apiSource) {
-              let apis = {}
-              let qualitys = {}
-              for (const [source, { actions, type, qualitys: sourceQualitys }] of Object.entries(apiInfo.sources)) {
+              /** @type { LxMusic.UserApi.GlobalUserApiInfo["apis"] } */ let apis = {}
+              /** @type { LxMusic.Renderer.ApiSupportQualitys } */ let qualitys = {}
+              for (const [_source, { actions, type, qualitys: sourceQualitys }] of Object.entries(apiInfo.sources)) {
                 if (type != 'music') continue
+                /** @type { LxMusic.Renderer.MusicSourcesId } */
+                const source = _source
                 apis[source] = {}
                 for (const action of actions) {
                   switch (action) {
@@ -408,7 +406,7 @@ export default {
                           promise: rendererInvoke(NAMES.mainWindow.request_user_api, {
                             requestKey,
                             data: {
-                              source: source,
+                              source,
                               action: 'musicUrl',
                               info: {
                                 type,

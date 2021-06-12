@@ -22,6 +22,7 @@ export default {
       type: Boolean,
       default: false,
     },
+    /** @type { (...args: any[]) => LxMusic.UserApiEvent.SongInfo; } */
     musicInfo: {
       type: Object,
     },
@@ -29,6 +30,7 @@ export default {
       type: Boolean,
       default: true,
     },
+    /** @type { (...args: any[]) => string[]; } */
     excludeListId: {
       type: Array,
       default() {
@@ -56,6 +58,7 @@ export default {
   },
   computed: {
     ...mapGetters('list', ['defaultList', 'loveList', 'userList']),
+    /** @returns { { isExist: boolean; id: string; name: string; list: LxMusic.UserApiEvent.SongInfo[]; location: number; source: LxMusic.Renderer.MusicSourcesId; sourceListId: string; }[]; } */
     lists() {
       if (!this.musicInfo) return []
       return [
@@ -64,12 +67,14 @@ export default {
         ...this.userList,
       ].filter(l => !this.excludeListId.includes(l.id)).map(l => ({ ...l, isExist: l.list.some(s => s.songmid == this.musicInfo.songmid) }))
     },
+    /** @returns { number } */
     spaceNum() {
       return this.lists.length < 2 ? 0 : (3 - this.lists.length % 3 - 1)
     },
   },
   methods: {
     ...mapMutations('list', ['listAdd', 'listMove', 'createUserList']),
+    /** @param { number } index */
     handleClick(index) {
       this.isMove
         ? this.listMove({ fromId: this.fromListId, toId: this.lists[index].id, musicInfo: this.musicInfo })
@@ -81,12 +86,14 @@ export default {
     handleClose() {
       this.$emit('close')
     },
+    /** @param { Event & Target } event */
     handleEditing(event) {
       if (this.isEditing) return
       if (!this.newListName) this.newListName = this.listName
       this.isEditing = true
       this.$nextTick(() => event.currentTarget.querySelector('.' + this.$style.newListInput).focus())
     },
+    /** @param { Event & Target<HTMLInputElement> } event */
     handleSaveList(event) {
       let name = event.target.value
       this.newListName = event.target.value = ''

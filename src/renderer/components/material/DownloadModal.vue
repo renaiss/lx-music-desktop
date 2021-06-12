@@ -13,33 +13,40 @@ material-modal(:show="show" :bg-close="bgClose" @close="handleClose")
 
 export default {
   props: {
+    /** @type { (...args: any[]) => boolean; } */
     show: {
       type: Boolean,
       default: false,
     },
+    /** @type { (...args: any[]) => LxMusic.UserApiEvent.SongInfo; } */
     musicInfo: {
       type: Object,
     },
+    /** @type { (...args: any[]) => boolean; } */
     bgClose: {
       type: Boolean,
       default: true,
     },
   },
   computed: {
+    /** @returns { LxMusic.UserApiEvent.SongInfo | {} } */
     info() {
       return this.musicInfo || {}
     },
+    /** @returns { LxMusic.UserApi.QualityType[] } */
     qualityList() {
       return window.globalObj.qualityList[this.musicInfo.source] || []
     },
   },
   methods: {
+    /** @param { LxMusic.Renderer.MusicQualityType } type */
     handleClick(type) {
       this.$emit('select', type)
     },
     handleClose() {
       this.$emit('close')
     },
+    /** @param { LxMusic.Renderer.MusicQualityType } type */
     getTypeName(type) {
       switch (type) {
         case 'flac':
@@ -53,6 +60,7 @@ export default {
           return this.$t('material.download_modal.normal')
       }
     },
+    /** @param { LxMusic.Renderer.MusicQualityType } type */
     checkSource(type) {
       return this.qualityList.includes(type)
     },

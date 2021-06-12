@@ -17,12 +17,14 @@ div.scroll(:class="$style.tab")
 <script>
 export default {
   props: {
+    /** @type { (...args: any[]) => any[]; } */
     list: {
       type: Array,
       default() {
         return []
       },
     },
+    /** @type { (...args: any[]) => [string, number]; } */
     value: {
       type: [String, Number],
     },
@@ -34,6 +36,7 @@ export default {
     },
   },
   methods: {
+    /** @param { unknown } item */
     handleClick(item) {
       if (item === this.value) return
       this.$emit('input', item)

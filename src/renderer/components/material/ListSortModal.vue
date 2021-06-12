@@ -14,6 +14,7 @@ export default {
       type: Boolean,
       default: false,
     },
+    /** @type { (...args: any[]) => LxMusic.UserApiEvent.SongInfo; } */
     musicInfo: {
       type: Object,
       default() {
@@ -31,6 +32,7 @@ export default {
     }
   },
   watch: {
+    /** @param { boolean } n */
     show(n) {
       if (n) {
         this.sortNum = ''

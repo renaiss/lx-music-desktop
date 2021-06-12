@@ -38,6 +38,7 @@ export default {
       type: String,
       default: '歌名 - 歌手',
     },
+    /** @type { (...args: any[]) => LxMusic.UserApiEvent.SongInfo; } */
     musicInfo: {
       type: Object,
       required: true,
@@ -45,6 +46,7 @@ export default {
   },
   data() {
     return {
+      /** @type { LxMusic.UserApiEvent.SongInfo } */
       currentMusicInfo: {
         name: '',
         singer: '',
@@ -58,6 +60,7 @@ export default {
       isHotLoadError: true,
       isNewLoadError: false,
       nextPage: 1,
+      /** @type { LxMusic.Renderer.MusicPlatformFilterCommentInfo[] } */
       newComments: [
         // {
         //   text: ['123123hhh'],
@@ -69,6 +72,7 @@ export default {
         //   reply: [],
         // },
       ],
+      /** @type { LxMusic.Renderer.MusicPlatformFilterCommentInfo[] } */
       hotComments: [
         // {
         //   text: ['123123hhh'],
@@ -99,11 +103,17 @@ export default {
     },
   },
   watch: {
+    /** @param { boolean } n */
     value(n) {
       if (n) this.handleShowComment()
     },
   },
   methods: {
+    /**
+     * @param { LxMusic.UserApiEvent.SongInfo } musicInfo
+     * @param { number } page
+     * @param { number } limit
+     */
     async getComment(musicInfo, page, limit, retryNum = 0) {
       let resp
       try {
@@ -114,6 +124,7 @@ export default {
       }
       return resp
     },
+    /** @param { LxMusic.UserApiEvent.SongInfo } musicInfo */
     async getHotComment(musicInfo, retryNum = 0) {
       let resp
       try {
@@ -124,6 +135,11 @@ export default {
       }
       return resp
     },
+    /**
+     * @param { LxMusic.UserApiEvent.SongInfo } musicInfo
+     * @param { number } page
+     * @param { number } limit
+     */
     handleGetNewComment(musicInfo, page, limit) {
       this.isNewLoadError = false
       this.isNewLoading = true
@@ -143,6 +159,7 @@ export default {
         this.isNewLoading = false
       })
     },
+    /** @param { LxMusic.UserApiEvent.SongInfo } musicInfo */
     handleGetHotComment(musicInfo) {
       this.isHotLoadError = false
       this.isHotLoading = true
@@ -170,6 +187,7 @@ export default {
       if (this.page == 1) this.handleGetHotComment(this.currentMusicInfo)
       this.handleGetNewComment(this.currentMusicInfo, this.page, this.limit)
     },
+    /** @param { number } page */
     handleToggleCommentPage(page) {
       this.nextPage = page
       this.handleGetNewComment(this.currentMusicInfo, page, this.limit)

@@ -28,7 +28,7 @@ export interface SongInfo {
   /** 歌曲歌名 */ name: string;
   /** 唱片名称 */ albumName: string;
   /** 唱片编号 */ albumId: string;
-  /** 歌曲来源 */ source: LxMusic.Renderer.MusicSourcesId;
+  /** 歌曲来源 */ source: LxMusic.Renderer.MusicSourcesId; // LxMusic.Renderer.MusicQualitysApiId // TODO type error
   /** 音乐时间 */ interval: string | null;
   /** 歌曲编号 */ songmid: string;
   /** 歌曲图片 */ img: string;
@@ -60,7 +60,7 @@ export interface RequestData {
   /** 行为 */ action: 'musicUrl';
   /** 信息 */
   info: {
-    /** 类型 */ type: string;
+    /** 类型 */ type: LxMusic.Renderer.MusicQualityType;
     /** 歌曲信息 */ musicInfo: SongInfo;
   }
 }

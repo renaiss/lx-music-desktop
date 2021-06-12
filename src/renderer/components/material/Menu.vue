@@ -8,6 +8,7 @@ import { mapGetters } from 'vuex'
 
 export default {
   props: {
+    /** @type { (...args: any[]) => LxMusic.Renderer.MenuInfo[]; } */
     menus: {
       type: Array,
       default() {
@@ -22,6 +23,7 @@ export default {
       type: Boolean,
       default: false,
     },
+    /** @type { (...args: any[]) => { x: number; y: number; }; } */
     location: {
       type: Object,
       default() {
@@ -31,15 +33,21 @@ export default {
   },
   computed: {
     ...mapGetters(['setting']),
+    /** @returns { HTMLUListElement } */
+    ref_dom_list() {
+      return this.$refs.dom_list
+    }
   },
   watch: {
     isShow: {
+      /** @param { boolean } n */
       handler(n) {
         n ? this.handleShow() : this.handleHide()
       },
       immediate: true,
     },
     location: {
+      /** @param { { x: number; y: number; } } n */
       handler(n) {
         this.listStyles.left = n.x + 2 + 'px'
         this.listStyles.top = n.y + 'px'
@@ -78,15 +86,19 @@ export default {
       this.listStyles.opacity = 1
       this.listStyles.transform = `scaleY(1) translate(${this.handleGetOffsetXY(this.location.x, this.location.y)})`
     },
-    handleHide(e) {
+    handleHide() {
       this.listStyles.opacity = 0
       this.listStyles.transform = 'scale(0) translate(0, 0)'
       this.show = false
     },
+    /**
+     * @param { number } left
+     * @param { number } top
+     */
     handleGetOffsetXY(left, top) {
-      const listWidth = this.$refs.dom_list.clientWidth
-      const listHeight = this.$refs.dom_list.clientHeight
-      const dom_container = this.$refs.dom_list.offsetParent
+      const listWidth = this.ref_dom_list.clientWidth
+      const listHeight = this.ref_dom_list.clientHeight
+      const dom_container = this.ref_dom_list.offsetParent
       const containerWidth = dom_container.clientWidth
       const containerHeight = dom_container.clientHeight
       const offsetWidth = containerWidth - left - listWidth
@@ -101,14 +113,16 @@ export default {
       }
       return `${x}px, ${y}px`
     },
+    /** @param { Event & Target<Document> }  event */
     handleDocumentClick(event) {
       if (!this.show) return
 
-      if (event.target == this.$refs.dom_list || this.$refs.dom_list.contains(event.target)) return
+      if (event.target == this.ref_dom_list || this.ref_dom_list.contains(event.target)) return
 
       if (this.show && this.listStyles.transitionProperty != this.transition1) this.listStyles.transitionProperty = this.transition1
       this.handleClick(null)
     },
+    /** @param { ?LxMusic.Renderer.MenuInfo } item */
     handleClick(item) {
       if (item && item.disabled) return
 

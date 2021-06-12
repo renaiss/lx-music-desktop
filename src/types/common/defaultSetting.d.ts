@@ -127,11 +127,11 @@ export interface Setting {
   /** 主题编号 */ themeId: LxMusic.Renderer.StoreThemeId;
   /** 语言编号 */ langId: string | number;
   /** 来源编号 */ sourceId: LxMusic.Renderer.MusicSourcesId;
-  /** 网络接口编号 */ apiSource: "test" | "temp";
+  /** 网络接口编号 */ apiSource: "test" | "temp"; // TODO type error from ApiInfo["id"]
   /** 源名称类型 */ sourceNameType: "real" | "alias";
   /** 显示动画 */ isShowAnimation: boolean;
   /** 随机动画 */ randomAnimate: boolean;
-  /** 忽略版本 */ ignoreVersion: boolean;
+  /** 忽略版本 */ ignoreVersion: string;
   /** 赞同协定 */ isAgreePact: boolean;
   /** 控制按钮位置 */ controlBtnPosition: "left" | "right";
   /** 设置 */ setting?: Setting;

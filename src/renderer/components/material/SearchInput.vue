@@ -31,6 +31,7 @@ export default {
       type: String,
       default: 'Search for something...',
     },
+    /** @type { (...args: any[]) => string[]; } */
     list: {
       type: Array,
     },
@@ -63,36 +64,50 @@ export default {
     }
   },
   watch: {
+    /** @param { string[] } n */
     list(n) {
       if (!this.visibleList) return
       if (this.selectIndex > -1) this.selectIndex = -1
       this.$nextTick(() => {
-        this.listStyle.height = this.$refs.dom_list.scrollHeight + 'px'
+        this.listStyle.height = this.ref_dom_list.scrollHeight + 'px'
       })
     },
+    /** @param { string } n */
     value(n) {
       this.text = n
     },
+    /** @param { boolean } n */
     visibleList(n) {
       n ? this.showList() : this.hideList()
     },
   },
+  computed:{
+    /** @return { HTMLUListElement } */
+    ref_dom_list(){
+      return this.$refs.dom_list
+    }
+  },
   mounted() {
-    if (this.$store.getters.setting.search.isFocusSearchBox) this.handleFocusInput()
+    /** @type { LxMusic.Common.Setting } */
+    const rootStoreSetting = this.$store.getters.setting
+    if (rootStoreSetting.search.isFocusSearchBox) this.handleFocusInput()
     this.handleRegisterEvent('on')
   },
   beforeDestroy() {
     this.handleRegisterEvent('off')
   },
   methods: {
+    /** @param { "on" | "off" } action */
     handleRegisterEvent(action) {
       let eventHub = window.eventHub
+      /** @type { "$on" | "$off" } */
       let name = action == 'on' ? '$on' : '$off'
       eventHub[name](eventCommonNames.focusSearchInput.action, this.handleFocusInput)
     },
     handleFocusInput() {
       this.$refs.dom_input.focus()
     },
+    /** @param { number } index */
     handleTemplistClick(index) {
       console.log(index)
       this.sendEvent('listClick', index)
@@ -114,7 +129,7 @@ export default {
     },
     showList() {
       this.isShow = true
-      this.listStyle.height = this.$refs.dom_list.scrollHeight + 'px'
+      this.listStyle.height = this.ref_dom_list.scrollHeight + 'px'
     },
     hideList() {
       this.isShow = false
@@ -123,6 +138,10 @@ export default {
         this.selectIndex = -1
       })
     },
+    /**
+     * @param { LxMusic.Renderer.SearchSendEventType } action
+     * @param { number | undefined } data
+     */
     sendEvent(action, data) {
       this.$emit('event', {
         action,

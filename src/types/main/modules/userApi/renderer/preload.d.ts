@@ -1,4 +1,4 @@
-/** 质量类型 */ export type QualityType = "128k" | "320k" | "flac";
+/** 质量类型 */ export type QualityType = "128k" | "320k" | "flac" | "wav";
 
 /** 支持的质量 */
 export type SupportQualitys = { [source in LxMusic.Renderer.MusicSourcesId]: QualityType[] };

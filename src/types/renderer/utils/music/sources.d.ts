@@ -174,7 +174,7 @@ export interface MusicPlatformFilterCommentInfo {
 /** 用户编号 */ userId: string;
 /** 喜爱计数 */ likedCount: number;
 /** 回复数 */ replyNum: number;
-/** 回复 */ reply: string[];
+/** 回复 */ reply: MusicPlatformFilterCommentInfo[];
 }
 
 /** 音乐平台_评论信息 */

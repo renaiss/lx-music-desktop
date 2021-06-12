@@ -20,7 +20,9 @@ export default {
     event: 'input',
   },
   props: {
+    /** @type { (...args: any[]) => any; } */
     checked: {},
+    /** @type { (...args: any[]) => any; } */
     value: {},
     id: {
       type: String,

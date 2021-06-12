@@ -1,7 +1,7 @@
 import apiSourceInfo from './api-source-info'
 
 const apiList = {}
-const supportQuality = {}
+/** @type { Window["globalObj"]["qualityList"] } */ const supportQuality = {}
 
 for (const api of apiSourceInfo) {
   supportQuality[api.id] = api.supportQualitys

@@ -23,6 +23,7 @@ export default {
       type: Boolean,
       default: true,
     },
+    /** @type { (...args: any[]) => any[]; } */
     list: {
       type: Array,
       default() {
@@ -31,6 +32,7 @@ export default {
     },
   },
   methods: {
+    /** @param { LxMusic.UserApi.QualityType } type */
     handleClick(type) {
       this.$emit('select', type)
     },

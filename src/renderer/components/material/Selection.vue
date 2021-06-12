@@ -13,12 +13,14 @@
 
 export default {
   props: {
+    /** @type { (...args: any[]) => any[]; } */
     list: {
       type: Array,
       default() {
         return []
       },
     },
+    /** @type { (...args: any[]) => [string, number]; } */
     value: {
       type: [String, Number],
     },
@@ -52,16 +54,20 @@ export default {
       if (!item) return ''
       return item[this.itemName]
     },
+    /** @returns { HTMLDivElement }   */ ref_dom_btn() { return this.$refs.dom_btn },
+    /** @returns { HTMLUListElement } */ ref_dom_list() { return this.$refs.dom_list },
   },
   methods: {
+    /** @param { Event & Target } e */
     handleHide(e) {
-      // if (e && e.target.parentNode != this.$refs.dom_list && this.show) return this.show = false
-      if (e && (e.target == this.$refs.dom_btn || this.$refs.dom_btn.contains(e.target))) return
+      // if (e && e.target.parentNode != this.ref_dom_list && this.show) return this.show = false
+      if (e && (e.target == this.ref_dom_btn || this.ref_dom_btn.contains(e.target))) return
       this.listStyles.transform = 'scaleY(0) translateY(0)'
       setTimeout(() => {
         this.show = false
       }, 50)
     },
+    /** @param { any } item */
     handleClick(item) {
       // console.log(this.value)
       if (item === this.value) return
@@ -73,9 +79,9 @@ export default {
       this.listStyles.transform = `scaleY(1) translateY(${this.handleGetOffset()}px)`
     },
     handleGetOffset() {
-      const listHeight = this.$refs.dom_list.clientHeight
-      const dom_select = this.$refs.dom_list.offsetParent
-      const dom_container = dom_select.offsetParent
+      const listHeight = this.ref_dom_list.clientHeight
+      /** @type { HTMLElement } */ const dom_select = this.ref_dom_list.offsetParent
+      /** @type { HTMLElement } */ const dom_container = dom_select.offsetParent
       const containerHeight = dom_container.clientHeight
       if (containerHeight < listHeight) return 0
       const offsetHeight = (dom_container.scrollTop + containerHeight) - (dom_select.offsetTop + listHeight)

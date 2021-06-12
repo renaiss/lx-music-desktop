@@ -55,6 +55,7 @@ export default {
     event: 'input',
   },
   props: {
+    /** @type { (...args: any[]) => LxMusic.UserApiEvent.SongInfo[]; } */
     list: {
       type: Array,
       default() {
@@ -73,6 +74,7 @@ export default {
       type: Number,
       required: true,
     },
+    /** @type { (...args: any[]) => LxMusic.UserApiEvent.SongInfo[]; } */
     selectdData: {
       type: Array,
       required: true,
@@ -84,6 +86,7 @@ export default {
       type: String,
       default: '列表加载中...',
     },
+    /** @type { (...args: any[]) => () => void; } */
     hideListsMenu: {
       type: Function,
       default: () => {},
@@ -138,6 +141,8 @@ export default {
         },
       ]
     },
+    /** @returns { HTMLDivElement } */ ref_dom_scrollContent() { return this.$refs.dom_scrollContent },
+    /** @returns { HTMLTableSectionElement } */ ref_dom_scrollContent() { return this.$refs.dom_tbody },
   },
   watch: {
     // selectdList(n) {
@@ -148,6 +153,7 @@ export default {
     //     this.isShowEditBtn = false
     //   }
     // },
+    /** @param { LxMusic.UserApiEvent.SongInfo[] } n */
     selectdData(n) {
       const len = n.length
       if (len) {
@@ -158,10 +164,11 @@ export default {
         this.removeAllSelect()
       }
     },
+    /** @param { LxMusic.UserApiEvent.SongInfo[] } n */
     list(n) {
       this.removeAllSelect()
       if (!this.list.length) return
-      this.$nextTick(() => scrollTo(this.$refs.dom_scrollContent, 0))
+      this.$nextTick(() => scrollTo(this.ref_dom_scrollContent, 0))
     },
   },
   data() {
@@ -169,7 +176,7 @@ export default {
       clickTime: 0,
       clickIndex: -1,
       isShowEditBtn: false,
-      selectdList: [],
+      /** @type { LxMusic.UserApiEvent.SongInfo[] } */ selectdList: [],
       keyEvent: {
         isShiftDown: false,
         isModDown: false,
@@ -225,6 +232,7 @@ export default {
     handle_key_mod_up() {
       if (this.keyEvent.isModDown) this.keyEvent.isModDown = false
     },
+    /** @param { { event: KeyboardEvent & Target<HTMLInputElement>; } } */
     handle_key_mod_a_down({ event }) {
       if (event.target.tagName == 'INPUT') return
       event.preventDefault()
@@ -232,6 +240,10 @@ export default {
       this.keyEvent.isModDown = false
       this.handleSelectAllData()
     },
+    /**
+     * @param { Event } event
+     * @param { number } index
+     */
     handleDoubleClick(event, index) {
       if (event.target.classList.contains('select')) return
 
@@ -249,6 +261,10 @@ export default {
       this.clickTime = 0
       this.clickIndex = -1
     },
+    /**
+     * @param { Event } event
+     * @param { number } clickIndex
+     */
     handleSelectData(event, clickIndex) {
       if (this.keyEvent.isShiftDown) {
         if (this.selectdList.length) {
@@ -264,7 +280,7 @@ export default {
             }
             this.selectdList = this.list.slice(lastSelectIndex, clickIndex + 1)
             if (isNeedReverse) this.selectdList.reverse()
-            let nodes = this.$refs.dom_tbody.childNodes
+            let nodes = this.ref_dom_scrollContent.childNodes
             do {
               nodes[lastSelectIndex].classList.add('active')
               lastSelectIndex++
@@ -293,41 +309,49 @@ export default {
     },
     removeAllSelect() {
       this.selectdList = []
-      let dom_tbody = this.$refs.dom_tbody
+      let dom_tbody = this.ref_dom_scrollContent
       if (!dom_tbody) return
       let nodes = dom_tbody.querySelectorAll('.active')
       for (const node of nodes) {
         if (node.parentNode == dom_tbody) node.classList.remove('active')
       }
     },
+    /** @param { unknown } info */
     handleListBtnClick(info) {
       this.emitEvent('listBtnClick', info)
     },
     handleSelectAllData() {
       this.removeAllSelect()
       this.selectdList = [...this.list]
-      let nodes = this.$refs.dom_tbody.childNodes
+      /** @type { HTMLElement[] } */
+      let nodes = this.ref_dom_scrollContent.childNodes
       for (const node of nodes) {
         node.classList.add('active')
       }
       this.$emit('input', [...this.selectdList])
     },
+    /** @param { unknown } page */
     handleTogglePage(page) {
       this.emitEvent('togglePage', page)
     },
     // handleFlowBtnClick(action) {
     //   this.emitEvent('flowBtnClick', action)
     // },
+    /**
+     * @param { "testPlay" | "listBtnClick" | "togglePage" | "flowBtnClick" | "menuClick" } action
+     * @param { any } data
+     */
     emitEvent(action, data) {
       this.$emit('action', { action, data })
     },
     handleChangeSelect() {
       this.$emit('input', [...this.selectdList])
     },
+    /** @param { MouseEvent & Target<HTMLTableSectionElement> } event */
     handleContextMenu(event) {
       if (!event.target.classList.contains('select')) return
       event.stopImmediatePropagation()
-      let classList = this.$refs.dom_scrollContent.classList
+      let classList = this.ref_dom_scrollContent.classList
       classList.add(this.$style.copying)
       window.requestAnimationFrame(() => {
         let str = window.getSelection().toString()
@@ -337,33 +361,39 @@ export default {
         clipboardWriteText(str)
       })
     },
+    /** @param { LxMusic.Renderer.MusicSourcesId } */
     assertApiSupport(source) {
       return assertApiSupport(source)
     },
+    /**
+     * @param { MouseEvent & Target<HTMLTableRowElement> } event
+     * @param { number } index
+     */
     handleListItemRigthClick(event, index) {
       this.listMenu.itemMenuControl.sourceDetail = !!musicSdk[this.list[index].source].getMusicDetailPageUrl
       // this.listMenu.itemMenuControl.play =
       //   this.listMenu.itemMenuControl.playLater =
       this.listMenu.itemMenuControl.download =
         this.assertApiSupport(this.list[index].source)
-      let dom_selected = this.$refs.dom_tbody.querySelector('tr.selected')
+      let dom_selected = this.ref_dom_scrollContent.querySelector('tr.selected')
       if (dom_selected) dom_selected.classList.remove('selected')
-      this.$refs.dom_tbody.querySelectorAll('tr')[index].classList.add('selected')
+      this.ref_dom_scrollContent.querySelectorAll('tr')[index].classList.add('selected')
       let dom_td = event.target.closest('td')
       this.listMenu.rightClickItemIndex = index
       this.listMenu.menuLocation.x = dom_td.offsetLeft + event.offsetX
-      this.listMenu.menuLocation.y = dom_td.offsetParent.offsetTop + dom_td.offsetTop + event.offsetY - this.$refs.dom_scrollContent.scrollTop
+      this.listMenu.menuLocation.y = dom_td.offsetParent.offsetTop + dom_td.offsetTop + event.offsetY - this.ref_dom_scrollContent.scrollTop
       this.hideListsMenu()
       this.$nextTick(() => {
         this.listMenu.isShowItemMenu = true
       })
     },
     hideListMenu() {
-      let dom_selected = this.$refs.dom_tbody && this.$refs.dom_tbody.querySelector('tr.selected')
+      let dom_selected = this.ref_dom_scrollContent && this.ref_dom_scrollContent.querySelector('tr.selected')
       if (dom_selected) dom_selected.classList.remove('selected')
       this.listMenu.isShowItemMenu = false
       this.listMenu.rightClickItemIndex = -1
     },
+    /** @param { unknown } action */
     handleListItemMenuClick(action) {
       // console.log(action)
       let index = this.listMenu.rightClickItemIndex

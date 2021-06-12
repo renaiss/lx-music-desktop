@@ -1,4 +1,4 @@
-/** 储存主题 */
+/** 储存模块主题 */
 export type StoreThemes = [
   { id: 0; name: '绿意盎然'; class: 'green'; },
   { id: 1; name: '蓝田生玉'; class: 'blue'; },
@@ -16,24 +16,37 @@ export type StoreThemes = [
   { id: 9; name: '新年快乐'; class: 'happy_new_year'; },
 ];
 
-/** 储存主题编号 */
+/** 储存模块主题编号 */
 export type StoreThemeId = StoreThemes[number]["id"];
 
-/** 储存版本 */
+/** 储存模块新版本 */
+export interface StoreHistoryVersionInfo {
+  /** 版本 */ version: string;
+}
+
+/** 储存模块新版本 */
+export interface StoreNewVersionInfo {
+  /** 历史版本 */ history: StoreHistoryVersionInfo[];
+  /** 版本 */ version: string;
+  /** 描述 */ desc: string;
+}
+
+/** 储存模块版本 */
 export interface StoreVersionInfo {
   /** 版本 */ version: string;
-  /** 新版本 */ newVersion: null;
+  /** 新版本 */ newVersion: StoreNewVersionInfo;
   /** 显示模块 */ showModal: boolean;
+  /** 要显示 */ isShow: boolean;
   /** 有错误 */ isError: boolean;
   /** 有延时 */ isTimeOut: boolean;
   /** 有未知 */ isUnknow: boolean;
   /** 有下载 */ isDownloaded: boolean;
   /** 在下载 */ isDownloading: boolean;
   /** 有落后版本 */ isLatestVer: boolean;
-  /** 下载进度条 */ downloadProgress: LxMusic.Common.Download;
+  /** 下载进度条 */ downloadProgress: LxMusic.Utils.DownloadProgressInfo;
 }
 
-/** 储存根数据 */
+/** 储存模块根数据 */
 export interface StoreRootState {
   /** 主题信息 */ themes: StoreThemes;
   /** 版本信息 */ version: StoreVersionInfo;

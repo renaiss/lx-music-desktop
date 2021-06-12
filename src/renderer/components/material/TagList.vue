@@ -17,6 +17,7 @@ import { mapGetters } from 'vuex'
 export default {
   props: {
     list: {
+      /** @type { (...args: any[]) => LxMusic.Renderer.MusicPlatformTagInfo[]; } */
       type: Array,
       default() {
         return []
@@ -26,6 +27,7 @@ export default {
       type: Number,
       default: 645,
     },
+    /** @type { (...args: any[]) => LxMusic.Renderer.MusicPlatformTagInfo["list"][number]; } */
     value: {
       type: Object,
     },
@@ -52,6 +54,7 @@ export default {
         this.show = false
       }, 50)
     },
+    /** @param { LxMusic.Renderer.MusicPlatformTagInfo["list"][number] } item */
     handleClick(item) {
       if (!item) {
         item = {

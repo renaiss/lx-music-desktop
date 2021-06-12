@@ -23,6 +23,7 @@ import commentDefImg from '../../assets/images/defaultUser.jpg'
 
 export default {
   props: {
+    /** @type { (...args: any[]) => LxMusic.Renderer.MusicPlatformFilterCommentInfo[]; } */
     comments: {
       type: Array,
       default() {
@@ -32,14 +33,16 @@ export default {
   },
   data() {
     return {
-      commentDefImg,
+      /** @type { string } */ commentDefImg,
     }
   },
   methods: {
+    /** @param { string } time */
     timeFormat(time) {
       return time
       // return formatTime(new Date(time), true)
     },
+    /** @param { Event & Target<HTMLImageElement> } event */
     handleUserImg(event) {
       event.target.src = this.commentDefImg
     },

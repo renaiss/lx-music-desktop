@@ -30,6 +30,10 @@ let canceleFn
 
 
 // https://blog.csdn.net/xcxy2015/article/details/77164126#comments
+/**
+ * @param { string } a
+ * @param { string } b
+*/
 const similar = (a, b) => {
   if (!a || !b) return 0
   if (a.length > b.length) { // 保证 a <= b
@@ -55,6 +59,10 @@ const similar = (a, b) => {
   return 1 - (mp[bl] / bl)
 }
 
+/**
+ * @param { LxMusic.Renderer.SongInfoSortInfo[] } arr
+ * @param { LxMusic.Renderer.SongInfoSortInfo } data
+ */
 const sortInsert = (arr, data) => {
   let key = data.num
   let left = 0
@@ -79,7 +87,12 @@ const sortInsert = (arr, data) => {
   arr.splice(left, 0, data)
 }
 
+/**
+ * @param { LxMusic.UserApiEvent.SongInfo[] } list
+ * @param { string } keyword
+ */
 const handleSortList = (list, keyword) => {
+  /** @type { LxMusic.Renderer.SongInfoSortInfo[] } */
   let arr = []
   for (const item of list) {
     sortInsert(arr, {
@@ -96,6 +109,7 @@ export default {
       type: String,
       default: 'Find for something...',
     },
+    /** @type { (...args: any[]) => LxMusic.UserApiEvent.SongInfo[]; } */
     list: {
       type: Array,
       default() {
@@ -116,22 +130,26 @@ export default {
         maxHeight: 0,
       },
       maxHeight: 0,
-      resultList: [],
+      /** @type { LxMusic.UserApiEvent.SongInfo[] } */ resultList: [],
       isModDown: false,
       isShow: false,
+      /** @type { undefined | (...args: any[]) => void } */ handleDelaySearch: undefined,
     }
   },
   watch: {
+    /** @param { LxMusic.UserApiEvent.SongInfo[] } n */
     resultList(n) {
       if (this.selectIndex > -1) this.selectIndex = -1
       this.$nextTick(() => {
-        this.listStyle.height = Math.min(this.$refs.dom_list.scrollHeight, this.maxHeight) + 'px'
+        this.listStyle.height = Math.min(this.ref_dom_list.scrollHeight, this.maxHeight) + 'px'
       })
     },
+    /** @param { LxMusic.UserApiEvent.SongInfo[] } n */
     list(n) {
       if (!this.visible) return
       this.handleDelaySearch()
     },
+    /** @param { boolean } n */
     visible(n) {
       if (!n) return
       this.isShow = true
@@ -155,16 +173,22 @@ export default {
     window.eventHub.$off('key_mod_up', this.handle_key_mod_up)
     window.eventHub.$off('key_mod+f_down', this.handle_key_mod_f_down)
   },
+  computed: {
+    /** @returns { HTMLUListElement } */ ref_dom_list() { return this.$refs.dom_list },
+    /** @returns { HTMLInputElement } */ ref_dom_input() { return this.$refs.dom_input },
+    /** @returns { HTMLDivElement }   */ ref_dom_container() { return this.$refs.dom_container },
+    /** @returns { HTMLDivElement }   */ ref_dom_scrollContainer() { return this.$refs.dom_scrollContainer },
+  },
   methods: {
     init() {
       if (!this.visible) return
       this.handleSearch()
       this.$nextTick(() => {
         if (!this.listStyle.maxHeight) {
-          this.maxHeight = this.$refs.dom_container.offsetParent.clientHeight - this.$refs.dom_list.offsetTop - 70
+          this.maxHeight = this.ref_dom_container.offsetParent.clientHeight - this.ref_dom_list.offsetTop - 70
           this.listStyle.maxHeight = this.maxHeight + 'px'
         }
-        this.$refs.dom_input.focus()
+        this.ref_dom_input.focus()
       })
     },
     handleKeyEsc() {
@@ -184,12 +208,13 @@ export default {
       }, 100)
     },
     handle_key_mod_f_down() {
-      if (this.visible) this.$refs.dom_input.focus()
+      if (this.visible) this.ref_dom_input.focus()
     },
     handleAnimated() {
       if (this.visible) return
       this.isShow = false
     },
+    /** @param { number } index */
     handleTemplistClick(index) {
       if (index < 0) return
       this.sendEvent('listClick', {
@@ -200,6 +225,10 @@ export default {
     handleHide() {
       this.sendEvent('hide')
     },
+    /**
+     * @param { LxMusic.Renderer.SearchSendEventType } action
+     * @param { any } data
+     */
     sendEvent(action, data) {
       this.$emit('action', {
         action,
@@ -218,24 +247,26 @@ export default {
     },
     handleScrollList() {
       if (this.selectIndex < 0) return
-      let dom = this.$refs.dom_list.children[this.selectIndex]
+      /** @type { HTMLElement } */
+      let dom = this.ref_dom_list.children[this.selectIndex]
       let offsetTop = dom.offsetTop
-      let scrollTop = this.$refs.dom_scrollContainer.scrollTop
+      let scrollTop = this.ref_dom_scrollContainer.scrollTop
       if (offsetTop < scrollTop) {
         if (canceleFn) canceleFn()
-        canceleFn = scrollTo(this.$refs.dom_scrollContainer, offsetTop, 200, () => canceleFn = null)
-      } else if (offsetTop + dom.clientHeight > this.$refs.dom_scrollContainer.clientHeight + scrollTop) {
+        canceleFn = scrollTo(this.ref_dom_scrollContainer, offsetTop, 200, () => canceleFn = null)
+      } else if (offsetTop + dom.clientHeight > this.ref_dom_scrollContainer.clientHeight + scrollTop) {
         if (canceleFn) canceleFn()
-        canceleFn = scrollTo(this.$refs.dom_scrollContainer, offsetTop + dom.clientHeight - this.$refs.dom_scrollContainer.clientHeight, 200, () => canceleFn = null)
+        canceleFn = scrollTo(this.ref_dom_scrollContainer, offsetTop + dom.clientHeight - this.ref_dom_scrollContainer.clientHeight, 200, () => canceleFn = null)
       }
     },
     handleContextMenu() {
       let str = clipboardReadText()
       str = str.replace(/\t|\r\n|\n|\r/g, ' ')
       str = str.replace(/\s+/g, ' ')
-      let dom_input = this.$refs.dom_input
+      let dom_input = this.ref_dom_input
       this.text = `${this.text.substring(0, dom_input.selectionStart)}${str}${this.text.substring(dom_input.selectionEnd, this.text.length)}`
     },
+    /** @returns { void } */
     handleSearch() {
       if (!this.text.length) return this.resultList = []
       let list = []

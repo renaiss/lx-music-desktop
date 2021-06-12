@@ -25,6 +25,7 @@ export default {
     },
   },
   methods: {
+    /** @param { Event & Target<HTMLInputElement> } event */
     handleInput(event) {
       let value = event.target.value.trim()
       event.target.value = value

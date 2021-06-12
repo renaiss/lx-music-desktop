@@ -63,17 +63,20 @@ export default {
   },
   data() {
     return {
-      pageArr: [],
+      /** @type { number[] } */ pageArr: [],
     }
   },
   computed: {
     ...mapGetters(['userInfo']),
+    /** @returns { number } */
     allPage() {
       return this.maxPage == null ? Math.ceil(this.count / this.limit) || 1 : this.maxPage
     },
+    /** @returns { number } */
     pageEvg() {
       return Math.floor(this.btnLength / 2)
     },
+    /** @returns { number[] } */
     pages() {
       if (this.allPage <= this.btnLength) return this.pageArr
       let start =
@@ -104,6 +107,7 @@ export default {
       this.pageArr = []
       for (let i = 1; i <= this.allPage; i++) this.pageArr.push(i)
     },
+    /** @param { number } page */
     handleClick(page) {
       this.$emit('btn-click', page)
     },

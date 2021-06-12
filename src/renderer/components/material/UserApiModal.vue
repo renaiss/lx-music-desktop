@@ -50,6 +50,7 @@ export default {
   },
   computed: {
     ...mapGetters(['setting']),
+    /** @returns { LxMusic.UserApi.ApiInfo[] } */
     apiList() {
       return this.globalObj.userApi.list
     },
@@ -75,6 +76,7 @@ export default {
     handleExport() {
 
     },
+    /** @param { number } index */
     async handleRemove(index) {
       const api = this.apiList[index]
       if (!api) return
@@ -87,6 +89,7 @@ export default {
     handleClose() {
       this.$emit('toggle', false)
     },
+    /** @param { string } url */
     handleOpenUrl(url) {
       openUrl(url)
     },

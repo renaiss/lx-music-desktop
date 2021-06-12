@@ -107,6 +107,7 @@ export default {
         }
       },
     },
+    /** @type { (...angs: any[]) => LxMusic.Renderer.PlayerDetailLyricInfo; } */
     lyric: {
       type: Object,
       default() {
@@ -117,6 +118,7 @@ export default {
         }
       },
     },
+    /** @type { (...angs: any[]) => LxMusic.Renderer.PlayerDetailPlayInfo; } */
     playInfo: {
       type: Object,
       default() {
@@ -159,8 +161,8 @@ export default {
     // },
     'lyric.lines': {
       /**
-       * @param { any } n
-       * @param { any } o
+       * @param { LxMusic.Renderer.PlayerDetailLyricInfo["lines"] } n
+       * @param { LxMusic.Renderer.PlayerDetailLyricInfo["lines"] } o
        */
       handler(n, o) {
         this.isSetedLines = true
@@ -200,7 +202,7 @@ export default {
       immediate: true,
     },
     'lyric.line': {
-      /** @param { boolean } n */
+      /** @param { LxMusic.Renderer.PlayerDetailLyricInfo["line"] } n */
       handler(n) {
         if (n < 0) return
         if (n == 0 && this.isSetedLines) return this.isSetedLines = false
@@ -221,7 +223,7 @@ export default {
       bgStyle: {
         backgroundImage: null,
       },
-      dom_lines: [],
+      /** @type { LxMusic.Renderer.PlayerDetailDomLineInfo[] } */ dom_lines: [],
       isActiveTransition: false,
       pregessWidth: 0,
       clickTime: 0,
@@ -267,7 +269,7 @@ export default {
     ...mapMutations('player', [ 'visiblePlayerDetail' ]),
 
     /**
-     * @param { { dom_line: HTMLElement }[] } lines
+     * @param { LxMusic.Renderer.PlayerDetailLyricInfo["lines"] } lines
      * @returns { void }
      */
     setLyric(lines) {

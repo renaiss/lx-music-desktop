@@ -9,12 +9,14 @@
 
 export default {
   props: {
+    /** @type { (...args: any[]) => any[]; } */
     list: {
       type: Array,
       default() {
         return []
       },
     },
+    /** @type { (...args: any[]) => [string, number]; } */
     value: {
       type: [String, Number],
     },
@@ -30,6 +32,9 @@ export default {
       show: false,
     }
   },
+  computed: {
+    /** @returns { HTMLDivElement } */ ref_dom_btn() { return this.$refs.dom_btn },
+  },
   mounted() {
     document.addEventListener('click', this.handleHide)
   },
@@ -37,13 +42,15 @@ export default {
     document.removeEventListener('click', this.handleHide)
   },
   methods: {
+    /** @param { Event & Target } e */
     handleHide(e) {
       // if (e && e.target.parentNode != this.$refs.dom_list && this.show) return this.show = false
-      if (e && e.target == this.$refs.dom_btn) return
+      if (e && e.target == this.ref_dom_btn) return
       setTimeout(() => {
         this.show = false
       }, 50)
     },
+    /** @param { any } item */
     handleClick(item) {
       if (item === this.value) return
       this.$emit('input', item)

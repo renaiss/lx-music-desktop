@@ -63,6 +63,7 @@ export default {
   data() {
     return {
       time: 20,
+      /** @type { Window["globalObj"] } */
       globalObj: {
         isShowPact: false,
       },
@@ -70,14 +71,17 @@ export default {
   },
   computed: {
     ...mapGetters(['setting']),
+    /** @returns { boolean } */
     btnEnable() {
       return this.time == 0
     },
+    /** @returns { string } */
     timeStr() {
       return this.btnEnable ? '' : `(${this.time})`
     },
   },
   watch: {
+    /** @param { boolean } n */
     'setting.isAgreePact'(n) {
       if (n) return
       this.time = 5
@@ -97,10 +101,12 @@ export default {
     handleClick() {
       this.setAgreePact()
     },
+    /** @param { boolean } isExit */
     handleClose(isExit) {
       if (isExit) return rendererSend(NAMES.mainWindow.close, true)
       this.globalObj.isShowPact = false
     },
+    /** @param { string } url */
     openUrl(url) {
       openUrl(url)
     },

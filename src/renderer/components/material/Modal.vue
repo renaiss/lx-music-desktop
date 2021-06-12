@@ -78,13 +78,14 @@ export default {
       ],
       inClass: 'animated jackInTheBox',
       outClass: 'animated flipOutX',
-      unwatchFn: null,
+      /** @type { ?() => void } */ unwatchFn: null,
     }
   },
   computed: {
     ...mapGetters(['setting']),
   },
   watch: {
+    /** @param { boolean } n */
     'setting.randomAnimate'(n) {
       n ? this.createWatch() : this.removeWatch()
     },
@@ -98,7 +99,7 @@ export default {
   methods: {
     createWatch() {
       this.removeWatch()
-      this.unwatchFn = this.$watch('show', function(n) {
+      this.unwatchFn = this.$watch('show', function(/** @type { boolean } */ n) {
         this.inClass = 'animated ' + this.animateIn[getRandom(0, this.animateIn.length)]
         this.outClass = 'animated ' + this.animateOut[getRandom(0, this.animateOut.length)]
       })

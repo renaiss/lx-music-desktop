@@ -133,8 +133,10 @@ import { compareVer, openUrl, clipboardWriteText, sizeFormate } from '../../util
 export default {
   computed: {
     ...mapGetters(['version', 'setting']),
+    /** @returns { LxMusic.Renderer.StoreHistoryVersionInfo[] } */
     history() {
       if (!this.version.newVersion || !this.version.newVersion.history) return []
+      /** @type { LxMusic.Renderer.StoreHistoryVersionInfo[] } */
       let arr = []
       let currentVer = this.version.version
       this.version.newVersion.history.forEach(ver => {
@@ -143,11 +145,13 @@ export default {
 
       return arr
     },
+    /** @returns { string } */
     progress() {
       return this.version.downloadProgress
         ? `${this.version.downloadProgress.percent.toFixed(2)}% - ${sizeFormate(this.version.downloadProgress.transferred)}/${sizeFormate(this.version.downloadProgress.total)} - ${sizeFormate(this.version.downloadProgress.bytesPerSecond)}/s`
         : '处理更新中...'
     },
+    /** @returns { boolean } */
     isIgnored() {
       return this.setting.ignoreVersion == this.version.newVersion.version
     },
@@ -159,14 +163,17 @@ export default {
         isShow: false,
       })
     },
+    /** @param { string } url */
     handleOpenUrl(url) {
       openUrl(url)
     },
+    /** @param { Event & Target<HTMLInputElement> } event */
     handleRestartClick(event) {
       this.handleClose()
       event.target.disabled = true
       rendererSend(NAMES.mainWindow.quit_update)
     },
+    /** @param { string } text */
     handleCopy(text) {
       clipboardWriteText(text)
     },
