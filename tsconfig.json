@@ -10,6 +10,7 @@
     // "skipLibCheck": true, // 跳过库检查
     "importHelpers": true,
     "esModuleInterop": true,
+    // "resolveJsonModule":true, // 引入JSON文件
     "keyofStringsOnly": true,
     "allowUmdGlobalAccess": true,
     "allowSyntheticDefaultImports": true,

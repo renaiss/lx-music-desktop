@@ -3,7 +3,27 @@ const FontPlayer = require('./font-player')
 
 const fontTimeExp = /<(\d+),(\d+)>/g
 
+/**
+ * text
+ */
+
 module.exports = class Lyric {
+  /**
+   * @param { {
+   * lyric?: string;
+   * translationLyric?: string;
+   * offset?: number;
+   * lineClassName?: string;
+   * fontClassName?: string;
+   * translationClassName?: string;
+   * activeLineClassName?: string;
+   * lineModeClassName?: string;
+   * shadowClassName?: string;
+   * shadowContent?: boolean;
+   * onPlay?: (line: number, text: string) => void;
+   * onSetLyric?: (lines: FontPlayer[]) => void;
+   * } } info
+   */
   constructor({
     lyric = '',
     translationLyric = '',

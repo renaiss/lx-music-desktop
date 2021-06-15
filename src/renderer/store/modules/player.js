@@ -506,7 +506,7 @@ const mutations = {
   /**
    * 播放器设置播放列表
    * @param { LxMusic.Renderer.PlayerState } state
-   * @param { LxMusic.UserApiEvent.SongInfo } item
+   * @param { LxMusic.Renderer.PlayMusicInfo } item
    * @returns
    */
   setPlayedList(state, item) {
@@ -542,7 +542,7 @@ const mutations = {
    * 设置播放历史列表
    * @this LxMusic.Renderer.PlayerActionContext
    * @param { LxMusic.Renderer.PlayerState } state
-   * @param { LxMusic.Renderer.PlayMusicInfo } list
+   * @param { LxMusic.Renderer.PlayMusicInfo[] } list
    */
   setTempPlayList(state, list) {
     state.tempPlayList.push(...list.map(({ musicInfo, listId }) => ({ musicInfo, listId, isTempPlay: true })))

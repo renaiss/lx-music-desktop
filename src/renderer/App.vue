@@ -56,7 +56,8 @@ export default {
       isProd: process.env.NODE_ENV === 'production',
       isDT: false,
       isLinux,
-      /** @type { Window["globalObj"] } */ globalObj: {
+      /** @type { GlobalObjInfo } */
+      globalObj: {
         apiSource: null,
         proxy: {},
         isShowPact: false,
@@ -69,6 +70,7 @@ export default {
         },
       },
       updateTimeout: null,
+      /** @type { NodeJS.Global["envParams"]["cmdParams"] } */
       envParams: {
         nt: false,
       },
@@ -485,6 +487,7 @@ export default {
       event.preventDefault()
       if (/^https?:\/\//.test(event.target.href)) openUrl(event.target.href)
     },
+    /** @param { NodeJS.Global["envParams"]["cmdParams"] } envParams */
     handleEnvParamsInit(envParams) {
       this.envParams = envParams
       this.isDT = this.envParams.dt

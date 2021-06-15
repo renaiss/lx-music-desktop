@@ -11,7 +11,7 @@ export type SearchType = SearchSources[number]["id"];
 export type SearchMap = { [id in SearchSources[number]["id"]]: string[] }
 
 /** 歌曲表 */
-export type MusicSourcesMap = { [id in LxMusic.Renderer.MusicSources[number]["id"]]: string[] }
+export type MusicSourcesMap = { [id in LxMusic.Renderer.MusicSourcesId]: string[] }
 
 /** 热搜数据 */
 export interface HotSearchState {

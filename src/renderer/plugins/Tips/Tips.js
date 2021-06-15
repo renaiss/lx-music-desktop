@@ -3,7 +3,10 @@ import Vue from 'vue'
 
 const TipsConstructor = Vue.extend(Tips)
 
-/** @param { LxMusic.Renderer.TipsVue } instance */
+/**
+ * @param { LxMusic.Renderer.TipsVue } instance
+ * @param { number } time
+ */
 const addAutoCloseTimer = (instance, time) => {
   if (!time) return
   if (instance.autoCloseTimer) clearTimeout(instance.autoCloseTimer)

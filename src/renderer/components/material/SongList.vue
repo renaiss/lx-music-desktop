@@ -107,6 +107,7 @@ export default {
   },
   computed: {
     ...mapGetters(['setting']),
+    /** @returns { LxMusic.Renderer.SongListMenuInfo[] } */
     listItemMenu() {
       return [
         {
@@ -182,6 +183,7 @@ export default {
         isModDown: false,
       },
       lastSelectIndex: 0,
+      /** @type { LxMusic.Renderer.SongListMenuConfig } */
       listMenu: {
         isShowItemMenu: false,
         itemMenuControl: {
@@ -232,7 +234,7 @@ export default {
     handle_key_mod_up() {
       if (this.keyEvent.isModDown) this.keyEvent.isModDown = false
     },
-    /** @param { { event: KeyboardEvent & Target<HTMLInputElement>; } } */
+    /** @param { LxMusic.Renderer.HubKeyEven } */
     handle_key_mod_a_down({ event }) {
       if (event.target.tagName == 'INPUT') return
       event.preventDefault()
@@ -316,7 +318,7 @@ export default {
         if (node.parentNode == dom_tbody) node.classList.remove('active')
       }
     },
-    /** @param { unknown } info */
+    /** @type { LxMusic.Renderer.ListButtonHandle } */
     handleListBtnClick(info) {
       this.emitEvent('listBtnClick', info)
     },
@@ -330,17 +332,14 @@ export default {
       }
       this.$emit('input', [...this.selectdList])
     },
-    /** @param { unknown } page */
+    /** @param { number } page */
     handleTogglePage(page) {
       this.emitEvent('togglePage', page)
     },
     // handleFlowBtnClick(action) {
     //   this.emitEvent('flowBtnClick', action)
     // },
-    /**
-     * @param { "testPlay" | "listBtnClick" | "togglePage" | "flowBtnClick" | "menuClick" } action
-     * @param { any } data
-     */
+    /** @type { LxMusic.Renderer.SongListSendEvent } */
     emitEvent(action, data) {
       this.$emit('action', { action, data })
     },
@@ -393,7 +392,7 @@ export default {
       this.listMenu.isShowItemMenu = false
       this.listMenu.rightClickItemIndex = -1
     },
-    /** @param { unknown } action */
+    /** @param { LxMusic.Renderer.SongListMenuInfo } action */
     handleListItemMenuClick(action) {
       // console.log(action)
       let index = this.listMenu.rightClickItemIndex

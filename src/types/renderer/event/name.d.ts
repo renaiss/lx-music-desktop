@@ -1,4 +1,6 @@
-interface Names extends LxMusic.Common.ModuleNameMap<string> {
+type NamesAssert = LxMusic.Common.ModuleNameMap<string>;
+
+type Names = {
   /** 基础名称 */
   base: {
     /** 按键按下 */ key_down: 'key_down';
@@ -14,4 +16,8 @@ interface Names extends LxMusic.Common.ModuleNameMap<string> {
 }
 
 /** 热键事件名称表 */
-export type HotKeyBaseEventNameMap = { [key in keyof Names]:{ [type in keyof Names[key]]:`${key}_${Names[key][type]}` } };
+export type HotKeyBaseEventNameMap<T extends NamesAssert = Names> = {
+  [key in keyof T]: {
+    [type in keyof T[key]]: `${key}_${T[key][type]}`;
+  };
+}

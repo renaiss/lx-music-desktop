@@ -113,7 +113,13 @@ const state = {
 
 // getters
 const getters = {
-  /** @param { LxMusic.Renderer.SearchState } state */ sources(state, getters, rootState, { sourceNames }) { return sources.map(item => ({ id: item.id, name: sourceNames[item.id] })) },
+  /**
+   * @param  { LxMusic.Renderer.SearchActionContext["state"] } state
+   * @param  { LxMusic.Renderer.SearchActionContext["getters"] } getters
+   * @param  { LxMusic.Renderer.SearchActionContext["rootState"] } rootState
+   * @param  { LxMusic.Renderer.SearchActionContext["rootGetters"] } rootGetters
+   */
+  sources(state, getters, rootState, { sourceNames }) { return sources.map(item => ({ id: item.id, name: sourceNames[item.id] })) },
   /** @param { LxMusic.Renderer.SearchState } state */ sourceList: state => state.sourceList || [],
   /** @param { LxMusic.Renderer.SearchState } state */ searchText: state => state.text,
   /** @param { LxMusic.Renderer.SearchState } state */ historyList: state => state.historyList,

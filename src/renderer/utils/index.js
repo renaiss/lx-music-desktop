@@ -11,7 +11,10 @@ import { rendererSend, rendererInvoke, NAMES } from '../../common/ipc'
  */
 export const getRandom = (min, max) => Math.floor(Math.random() * (max - min)) + min
 
-
+/**
+ * @param { number } size
+ * @returns { LxMusic.Renderer.DataSize }
+ */
 export const sizeFormate = size => {
   // https://gist.github.com/thomseddon/3511330
   if (!size) return '0 B'
@@ -229,7 +232,7 @@ export const objectDeepMerge = (target, source, mergedObj) => {
 
 /**
  * 在浏览器打开URL
- * @param {*} url
+ * @param { string } url
  */
 export const openUrl = url => {
   if (!/^https?:\/\//.test(url)) return
@@ -253,7 +256,7 @@ export const toMD5 = str => crypto.createHash('md5').update(str).digest('hex')
 
 /**
  * 复制文本到剪贴板
- * @param {*} str
+ * @param { string } str
  */
 export const clipboardWriteText = str => clipboard.writeText(str)
 
@@ -303,8 +306,9 @@ export const throttle = (fn, delay = 100) => {
 
 /**
  * 生成防抖函数
- * @param {*} fn
- * @param {*} delay
+ * @param { (...args: T) => void } fn
+ * @param { Number } delay
+ * @template T
  */
 export const debounce = (fn, delay = 100) => {
   let timer = null
@@ -379,6 +383,7 @@ export const getProxyInfo = () => window.globalObj.proxy.enable && window.global
 export const assertApiSupport = source => window.globalObj.qualityList[source] != undefined
 
 export const getSetting = () => rendererInvoke(NAMES.mainWindow.get_setting)
+/** @param { LxMusic.Common.Setting } setting */
 export const saveSetting = setting => rendererInvoke(NAMES.mainWindow.set_app_setting, setting)
 
 export const getPlayList = () => rendererInvoke(NAMES.mainWindow.get_playlist).catch(error => {

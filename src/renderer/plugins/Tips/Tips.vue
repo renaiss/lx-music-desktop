@@ -27,6 +27,9 @@ export default {
       })
     },
   },
+  computed: {
+    /** @returns { HTMLDivElement } */ ref_dom_tips(){ return this.$refs.dom_tips }
+  },
   beforeDestroy() {
     const el = this.$el
     el.parentNode.removeChild(el)
@@ -35,9 +38,13 @@ export default {
     afterLeave(el, done) {
       this.$destroy()
     },
+    /**
+     * @param { number } left
+     * @param { number } top
+     */
     handleGetOffsetXY(left, top) {
-      const tipsWidth = this.$refs.dom_tips.clientWidth
-      const tipsHeight = this.$refs.dom_tips.clientHeight
+      const tipsWidth = this.ref_dom_tips.clientWidth
+      const tipsHeight = this.ref_dom_tips.clientHeight
       const dom_container = document.body
       const containerWidth = dom_container.clientWidth
       const containerHeight = dom_container.clientHeight

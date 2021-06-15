@@ -82,9 +82,12 @@ export interface Odc {
   /** 自动清除搜索列表 */ isAutoClearSearchList: boolean;
 }
 
+/** 搜索来源 */
+export type SearchSourcesId = LxMusic.Renderer.MusicSourcesId | "all";
+
 /** 搜素 */
 export interface Search {
-  /** 搜索来源 */ searchSource: LxMusic.Renderer.MusicSourcesId | "all";
+  /** 搜索来源 */ searchSource: SearchSourcesId;
   /** 临时所搜来源 */ tempSearchSource: LxMusic.Renderer.MusicSourcesId;
   /** 显示热搜 */ isShowHotSearch: boolean;
   /** 显示搜索历史 */ isShowHistorySearch: boolean;

@@ -25,7 +25,13 @@ const state = {
 
 // getters
 const getters = {
-  /** @param { LxMusic.Renderer.HotSearchState } state */
+  /**
+   * @param  { LxMusic.Renderer.HotSearchActionContext["state"] } state
+   * @param  { LxMusic.Renderer.HotSearchActionContext["getters"] } getters
+   * @param  { LxMusic.Renderer.HotSearchActionContext["rootState"] } rootState
+   * @param  { LxMusic.Renderer.HotSearchActionContext["rootGetters"] } rootGetters
+   * @returns { LxMusic.Renderer.TabListProp<LxMusic.Common.SearchSourcesId> }
+   */
   sources(state, getters, rootState, { sourceNames }) {
     return sources.map(item => ({ id: item.id, name: sourceNames[item.id] }))
   },

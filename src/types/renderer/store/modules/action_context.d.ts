@@ -83,32 +83,31 @@ type ActionContextRootState = LxMusic.Renderer.StoreRootState;
 export interface ActionContext<M extends StoreModuleName, S> extends VuexActionContext<S, ActionContextRootState> {
   dispatch: StoreModuleDispatch<M>;
   commit: StoreModuleCommit<M>;
+  rootGetters: { [name in keyof RootStore["getters"]]: ReturnType<RootStore["getters"][name]>; };
 }
+
+export type StoreGetterParams<M extends StoreModuleName, S, A = ActionContext<M, S>> = [state: A["state"], getters: A["getters"], rootState: A["rootState"], rootGetter: A["rootGetter"]];
 
 declare module "vuex" {
   const mapGetters:
     (
       <T extends keyof RootStore["getters"]>(name: T[]) => {
-        [name in T]: (...args: ParametersOther<RootStore["getters"][name]>)
-          => ReturnType<RootStore["getters"][name]>;
+        [name in T]: () => ReturnType<RootStore["getters"][name]>;
       }
     ) &
     (
       <N extends KVMap<string, keyof RootStore["getters"]>>(name: N) => {
-        [name in keyof N]: (...args: ParametersOther<RootStore["getters"][N[name]]>)
-          => ReturnType<RootStore["getters"][N[name]]>;
-      }
+        [name in keyof N]: ()
+          => ReturnType<RootStore["getters"][N[name]]>; }
     ) &
     (
       <M extends StoreModuleName, T extends keyof StoreModuleMap[M]["getters"]>(module: M, name: T[]) => {
-        [name in T]: (...args: ParametersOther<StoreModuleMap[M]["getters"][name]>)
-          => ReturnType<StoreModuleMap[M]["getters"][name]>;
+        [name in T]: () => ReturnType<StoreModuleMap[M]["getters"][name]>;
       }
     ) &
     (
       <M extends StoreModuleName, N extends KVMap<string, keyof StoreModuleMap[M]["getters"]>>(module: M, name: N) => {
-        [name in keyof N]: (...args: ParametersOther<StoreModuleMap[M]["getters"][N[name]]>)
-          => ReturnType<StoreModuleMap[M]["getters"][N[name]]>;
+        [name in keyof N]: () => ReturnType<StoreModuleMap[M]["getters"][N[name]]>;
       }
     );
 

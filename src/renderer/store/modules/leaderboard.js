@@ -22,7 +22,13 @@ const state = {
 
 // getters
 const getters = {
-  /** @param { LxMusic.Renderer.LeaderboardState } state */
+  /**
+   * @param  { LxMusic.Renderer.LeaderboardActionContext["state"] } state
+   * @param  { LxMusic.Renderer.LeaderboardActionContext["getters"] } getters
+   * @param  { LxMusic.Renderer.LeaderboardActionContext["rootState"] } rootState
+   * @param  { LxMusic.Renderer.LeaderboardActionContext["rootGetters"] } rootGetters
+   * @returns { LxMusic.Renderer.TabListProp<LxMusic.Renderer.MusicSourcesId> }
+   */
   sources(state, getters, rootState, { sourceNames }) {
     return sources.map(item => ({ id: item.id, name: sourceNames[item.id] }))
   },

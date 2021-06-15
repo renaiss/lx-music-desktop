@@ -29,6 +29,7 @@ declare namespace LxMusic {
     import("./renderer/plugins/Tips"); export * from "./renderer/plugins/Tips";
     import("./renderer/store"); export * from "./renderer/store";
     import("./renderer/utils"); export * from "./renderer/utils";
+    import("./renderer/lang"); export * from "./renderer/lang";
   }
   namespace Utils {
     import("./main/utils"); export * from "./main/utils";
@@ -38,5 +39,8 @@ declare namespace LxMusic {
   }
   namespace Component {
     import("./renderer/components"); export * from "./renderer/components";
+  }
+  namespace View {
+    import("./renderer/view"); export * from "./renderer/view";
   }
 }

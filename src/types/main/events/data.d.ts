@@ -47,8 +47,10 @@ export interface LxEventDataNameMap {
   }
 }
 
+type LxEventDataMapAssert = LxMusic.Common.ModuleNameMap<any[]>;
+
 /** 事件数据名称表 */
-export interface LxEventDataMap extends LxMusic.Common.ModuleNameMap<any[]> {
+export type LxEventDataMap = {
   /** 通用 */
   common:
   { [name in LxEventDataNameMap["common"]["initConfig"]]: []; } &
@@ -89,10 +91,16 @@ export interface LxEventDataMap extends LxMusic.Common.ModuleNameMap<any[]> {
 export type LxEventModuleName = keyof LxEventDataMap;
 
 /** 事件监听 */
-export type LxEventOn<M extends LxEventModuleName> = <T extends keyof LxEventDataMap[M]>(name: T, callback: (...args: LxEventDataMap[M][T]) => void) => void;
+export type LxEventOn<
+  M extends LxEventModuleName,
+  E extends LxEventDataMapAssert = LxEventDataMap,
+  > = <T extends keyof E[M]>(name: T, callback: (...args: E[M][T]) => void) => void;
 
 /** 事件触发 */
-export type LxEventEmit<M extends LxEventModuleName> = <T extends keyof LxEventDataMap[M]>(name: T, ...args: LxEventDataMap[M][T]) => void;
+export type LxEventEmit<
+  M extends LxEventModuleName,
+  E extends LxEventDataMapAssert = LxEventDataMap,
+  > = <T extends keyof E[M]>(name: T, ...args: E[M][T]) => void;
 
 /** 事件数据类 */
 export class LxEventDataClass<M extends LxEventModuleName> {

@@ -2,7 +2,9 @@ export type ModuleMap<T> = { [module in string]: T; };
 
 export type ModuleNameMap<T> = { [module in string]: ModuleMap<T>; };
 
-interface hotKey extends ModuleNameMap<{ action: string; name: string }> {
+type hotKeyAssert = ModuleNameMap<{ name: string; action: string; }>
+
+type hotKey = {
   common: {
 
     min: {
@@ -94,12 +96,12 @@ type keyName = {
 
 type ParseHotKeyType = { [module in string]: { [type in string]: { action: string; name: string; type: string | undefined; } } };
 
-export type ParseHotKey = {
-  [moudle in keyof hotKey]: {
-    [type in keyof hotKey[moudle]]: {
-      action: `${moudle}_${hotKey[moudle][type]["action"]}`;
-      name: `${moudle}_${hotKey[moudle][type]["name"]}`;
-      type: moudle extends keyof keyName ? keyName[moudle] : undefined;
+export type ParseHotKey<T extends hotKeyAssert = hotKey> = {
+  [moudle in keyof T]: {
+    [type in keyof T[moudle]]: {
+      /** 行为 */ action: `${moudle}_${T[moudle][type]["action"]}`;
+      /** 名称 */ name: `${moudle}_${T[moudle][type]["name"]}`;
+      /** 类型 */ type: moudle extends keyof keyName ? keyName[moudle] : undefined;
     }
   }
 }
@@ -108,4 +110,4 @@ export type HotKeyInfo = { [key in keyof ParseHotKey]: ParseHotKey[key][keyof Pa
 
 export type KeyNames = keyName[keyof keyName];
 
-export type HotKeyEventNameMap = { [key in keyof ParseHotKey]: { [name in keyof ParseHotKey[key]]: ParseHotKey[key][name]["action"]; }; };
+export type HotKeyEventNameMap<T extends hotKeyAssert = hotKey> = { [key in keyof T]: { [name in keyof T[key]]: T[key][name]["action"]; }; };

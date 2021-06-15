@@ -93,7 +93,7 @@ let cancelScrollFn = null
 
 export default {
   props: {
-    /** @type { (...angs: any[]) => LxMusic.UserApiEvent.SongInfo; } */
+    /** @type { (...angs: any[]) => LxMusic.UserApiEvent.SongInfo } */
     musicInfo: {
       type: Object,
       default() {
@@ -107,7 +107,7 @@ export default {
         }
       },
     },
-    /** @type { (...angs: any[]) => LxMusic.Renderer.PlayerDetailLyricInfo; } */
+    /** @type { (...angs: any[]) => LxMusic.Renderer.PlayerDetailLyricInfo } */
     lyric: {
       type: Object,
       default() {
@@ -118,7 +118,7 @@ export default {
         }
       },
     },
-    /** @type { (...angs: any[]) => LxMusic.Renderer.PlayerDetailPlayInfo; } */
+    /** @type { (...angs: any[]) => LxMusic.Renderer.PlayerDetailPlayInfo } */
     playInfo: {
       type: Object,
       default() {

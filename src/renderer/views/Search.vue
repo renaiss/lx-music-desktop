@@ -77,11 +77,11 @@ export default {
       clickTime: 0,
       clickIndex: -1,
       isShowDownload: false,
-      musicInfo: null,
-      selectedData: [],
+      /** @type { LxMusic.UserApiEvent.SongInfo } */ musicInfo: null,
+      /** @type { LxMusic.UserApiEvent.SongInfo[] } */ selectedData: [],
       // isShowEditBtn: false,
       isShowDownloadMultiple: false,
-      searchSourceId: null,
+      /** @type { LxMusic.Common.SearchSourcesId } */ searchSourceId: null,
       isShowListAdd: false,
       isShowListAddMultiple: false,
       keyEvent: {
@@ -89,6 +89,7 @@ export default {
         isModDown: false,
       },
       lastSelectIndex: 0,
+      /** @type { LxMusic.View.SearchMenuConfig } */
       listMenu: {
         isShowItemMenu: false,
         itemMenuControl: {
@@ -153,6 +154,7 @@ export default {
     'listInfo.list'() {
       this.removeAllSelect()
     },
+    /** @param { LxMusic.Common.SearchSourcesId } n */
     searchSourceId(n) {
       if (n === this.setting.search.searchSource) return
       if (this.text !== '') this.isLoading = true
@@ -170,6 +172,10 @@ export default {
     ...mapGetters(['userInfo', 'setting']),
     ...mapGetters('search', ['sourceList', 'allList', 'sources', 'historyList']),
     ...mapGetters('list', ['defaultList']),
+    ...mapGetters('hotSearch', { ['hotSearch/list']: 'list' }),
+    /** @returns { HTMLDivElement } */ ref_dom_scrollContent() { return this.$refs.dom_scrollContent },
+    /** @returns { HTMLTableSectionElement } */ ref_dom_tbody() { return this.$refs.dom_tbody },
+    /** @returns { LxMusic.View.SearchMenuInfo[] } */
     listItemMenu() {
       return [
         {
@@ -199,11 +205,13 @@ export default {
         },
       ]
     },
+    /** @returns { LxMusic.View.sourceListInfo } */
     listInfo() {
       return this.setting.search.searchSource == 'all' ? this.allList : this.sourceList[this.setting.search.searchSource]
     },
+    /** @returns { string[] } */
     hotSearchList() {
-      return this.$store.getters['hotSearch/list'][this.setting.search.searchSource] || []
+      return this['hotSearch/list'][this.setting.search.searchSource] || []
     },
   },
   methods: {
@@ -242,6 +250,7 @@ export default {
     handle_key_mod_up() {
       if (this.keyEvent.isModDown) this.keyEvent.isModDown = false
     },
+    /** @param { LxMusic.Renderer.HubKeyEven } */
     handle_key_mod_a_down({ event }) {
       if (event.target.tagName == 'INPUT') return
       event.preventDefault()
@@ -249,18 +258,26 @@ export default {
       this.keyEvent.isModDown = false
       this.handleSelectAllData()
     },
+    /**
+     * @param { string } text
+     * @param { number } page
+     */
     handleSearch(text, page) {
       if (text === '') return this.clearList()
       this.isLoading = true
       this.search({ text, page, limit: this.listInfo.limit }).then(data => {
         this.page = page
         this.$nextTick(() => {
-          scrollTo(this.$refs.dom_scrollContent, 0)
+          scrollTo(this.ref_dom_scrollContent, 0)
         })
       }).finally(() => {
         this.isLoading = false
       })
     },
+    /**
+     * @param { MouseEvent } event
+     * @param { number } index
+     */
     handleDoubleClick(event, index) {
       if (event.target.classList.contains('select')) return
 
@@ -278,6 +295,7 @@ export default {
       this.clickTime = 0
       this.clickIndex = -1
     },
+    /** @type { LxMusic.Renderer.ListButtonHandle } */
     handleListBtnClick(info) {
       switch (info.action) {
         case 'download':
@@ -297,6 +315,10 @@ export default {
           break
       }
     },
+    /**
+     * @param { MouseEvent & CurrentTarget } event
+     * @param { number } clickIndex
+     */
     handleSelectData(event, clickIndex) {
       if (this.keyEvent.isShiftDown) {
         if (this.selectedData.length) {
@@ -312,7 +334,8 @@ export default {
             }
             this.selectedData = this.listInfo.list.slice(lastSelectIndex, clickIndex + 1)
             if (isNeedReverse) this.selectedData.reverse()
-            let nodes = this.$refs.dom_tbody.childNodes
+            /** @type { HTMLElement[] } */
+            let nodes = this.ref_dom_tbody.childNodes
             do {
               nodes[lastSelectIndex].classList.add('active')
               lastSelectIndex++
@@ -338,13 +361,15 @@ export default {
     },
     removeAllSelect() {
       this.selectedData = []
-      let dom_tbody = this.$refs.dom_tbody
+      let dom_tbody = this.ref_dom_tbody
       if (!dom_tbody) return
+      /** @type { HTMLElement[] } */
       let nodes = dom_tbody.querySelectorAll('.active')
       for (const node of nodes) {
         if (node.parentNode == dom_tbody) node.classList.remove('active')
       }
     },
+    /** @param { number } index */
     testPlay(index) {
       let targetSong = this.listInfo.list[index]
       // if (!targetSong || !this.assertApiSupport(targetSong.source)) return
@@ -359,13 +384,16 @@ export default {
         })
       }
     },
+    /** @param { number } page */
     handleTogglePage(page) {
       this.handleSearch(this.text, page)
     },
+    /** @param { LxMusic.Renderer.MusicQualityType } type */
     handleAddDownload(type) {
       this.createDownload({ musicInfo: this.musicInfo, type })
       this.isShowDownload = false
     },
+    /** @param { LxMusic.Renderer.MusicQualityType } type */
     handleAddDownloadMultiple(type) {
       this.createDownloadMultiple({ list: this.filterList(this.selectedData), type })
       this.removeAllSelect()
@@ -374,7 +402,8 @@ export default {
     handleSelectAllData() {
       this.removeAllSelect()
       this.selectedData = [...this.listInfo.list]
-      let nodes = this.$refs.dom_tbody.childNodes
+      /** @type { HTMLElement[] } */
+      let nodes = this.ref_dom_tbody.childNodes
       for (const node of nodes) {
         node.classList.add('active')
       }
@@ -393,6 +422,7 @@ export default {
     //       break
     //   }
     // },
+    /** @param { LxMusic.UserApiEvent.SongInfo } list */
     filterList(list) {
       return this.searchSourceId == 'all'
         ? list.filter(s => this.assertApiSupport(s.source))
@@ -403,14 +433,16 @@ export default {
     handleListAddModalClose() {
       this.isShowListAdd = false
     },
+    /** @param { boolean } isClearSelect */
     handleListAddMultipleModalClose(isClearSelect) {
       if (isClearSelect) this.removeAllSelect()
       this.isShowListAddMultiple = false
     },
+    /** @param { MouseEvent & Target } event */
     handleContextMenu(event) {
       if (!event.target.classList.contains('select')) return
       event.stopImmediatePropagation()
-      let classList = this.$refs.dom_scrollContent.classList
+      let classList = this.ref_dom_scrollContent.classList
       classList.add(this.$style.copying)
       window.requestAnimationFrame(() => {
         let str = window.getSelection().toString()
@@ -424,6 +456,7 @@ export default {
       if (this.hotSearchList.length || !this.setting.search.isShowHotSearch) return
       this.getHotSearch(this.setting.search.searchSource)
     },
+    /** @param { string } text */
     handleNoitemSearch(text) {
       this.$router.push({
         path: 'search',
@@ -432,38 +465,44 @@ export default {
         },
       })
     },
+    /** @param { LxMusic.Renderer.MusicSourcesId } source */
     assertApiSupport(source) {
       return assertApiSupport(source)
     },
+    /**
+     * @param { MouseEvent & Target } event
+     * @param { number } index
+     */
     handleListItemRigthClick(event, index) {
       this.listMenu.itemMenuControl.sourceDetail = !!musicSdk[this.listInfo.list[index].source].getMusicDetailPageUrl
       this.listMenu.itemMenuControl.play =
         this.listMenu.itemMenuControl.playLater =
         this.listMenu.itemMenuControl.download =
         this.assertApiSupport(this.listInfo.list[index].source)
-      let dom_selected = this.$refs.dom_tbody.querySelector('tr.selected')
+      let dom_selected = this.ref_dom_tbody.querySelector('tr.selected')
       if (dom_selected) dom_selected.classList.remove('selected')
-      this.$refs.dom_tbody.querySelectorAll('tr')[index].classList.add('selected')
+      this.ref_dom_tbody.querySelectorAll('tr')[index].classList.add('selected')
       let dom_td = event.target.closest('td')
       this.listMenu.rightClickItemIndex = index
       this.listMenu.menuLocation.x = dom_td.offsetLeft + event.offsetX
-      this.listMenu.menuLocation.y = dom_td.offsetTop + event.offsetY - this.$refs.dom_scrollContent.scrollTop
+      this.listMenu.menuLocation.y = dom_td.offsetTop + event.offsetY - this.ref_dom_scrollContent.scrollTop
       this.$nextTick(() => {
         this.listMenu.isShowItemMenu = true
       })
     },
     hideListMenu() {
-      let dom_selected = this.$refs.dom_tbody && this.$refs.dom_tbody.querySelector('tr.selected')
+      let dom_selected = this.ref_dom_tbody && this.ref_dom_tbody.querySelector('tr.selected')
       if (dom_selected) dom_selected.classList.remove('selected')
       this.listMenu.isShowItemMenu = false
       this.listMenu.rightClickItemIndex = -1
     },
+    /** @param { LxMusic.View.SearchMenuInfo } action */
     handleListItemMenuClick(action) {
       // console.log(action)
       let index = this.listMenu.rightClickItemIndex
       this.hideListMenu()
-      let minfo
-      let url
+      /** @type { LxMusic.UserApiEvent.SongInfo } */ let minfo
+      /** @type { string } */ let url
       switch (action && action.action) {
         case 'play':
           if (this.selectedData.length) {

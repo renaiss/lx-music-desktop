@@ -65,15 +65,16 @@ export default {
   name: 'SongList',
   data() {
     return {
+      /** @type { LxMusic.Renderer.TabListProp<LxMusic.Renderer.MusicSourcesId> } */
       tagInfo: {
         name: this.$t('material.tag_list.default'),
         id: null,
       },
-      sortId: undefined,
-      source: null,
+      /** @type { string } */ sortId: undefined,
+      /** @type { LxMusic.Renderer.MusicSourcesId } */ source: null,
       isShowDownload: false,
-      musicInfo: null,
-      selectedData: [],
+      /** @type { LxMusic.UserApiEvent.SongInfo } */ musicInfo: null,
+      /** @type { LxMusic.UserApiEvent.SongInfo[] } */ selectedData: [],
       isShowDownloadMultiple: false,
       isToggleSource: false,
       isShowListAdd: false,
@@ -89,6 +90,10 @@ export default {
     ...mapGetters(['setting']),
     ...mapGetters('songList', ['sourceInfo', 'tags', 'listData', 'isVisibleListDetail', 'selectListInfo', 'listDetail']),
     ...mapGetters('list', ['defaultList']),
+    /** @returns { HTMLDivElement } */ ref_dom_scrollContent() { return this.$refs.dom_scrollContent },
+    /** @returns { import("../components/material/Tab.vue") & { $el: HTMLElement; } } */ ref_tab() { return this.$refs.tab },
+    /** @returns { import("../components/material/TagList.vue") & { $el: HTMLElement; } } */ ref_tagList() { return this.$refs.tagList },
+    /** @returns { LxMusic.Renderer.TabListProp<LxMusic.Renderer.MusicSourcesId>[] } */
     sorts() {
       let list
       list = this.source ? [...this.sourceInfo.sortList[this.source]] : []
@@ -107,16 +112,22 @@ export default {
       }
       return list
     },
+    /** @returns { LxMusic.View.SongListTagInfo } */
     tagList() {
       let tagInfo = this.tags[this.source]
       return tagInfo ? [{ name: '热门标签', list: [...tagInfo.hotTag] }, ...tagInfo.tags] : []
     },
+    /** @returns { number } */
     spaceNum() {
       let num = this.listData.list ? this.listData.list.length % 3 : 0
       return num > 0 ? 3 - num : 0
     },
   },
   watch: {
+    /**
+     * @param { string } n
+     * @param { string } o
+     */
     sortId(n, o) {
       this.setSongList({ sortId: n })
       if (o === undefined && this.listData.page !== 1) return
@@ -124,12 +135,16 @@ export default {
       this.$nextTick(() => {
         this.getList(1).then(() => {
           this.$nextTick(() => {
-            scrollTo(this.$refs.dom_scrollContent, 0)
+            scrollTo(this.ref_dom_scrollContent, 0)
           })
         })
       })
       // if (this.isVisibleListDetail) this.setVisibleListDetail(false)
     },
+    /**
+     * @param { LxMusic.Renderer.TabListProp<LxMusic.Renderer.MusicSourcesId> } n
+     * @param { LxMusic.Renderer.TabListProp<LxMusic.Renderer.MusicSourcesId> } o
+     */
     tagInfo(n, o) {
       this.setSongList({ tagInfo: n })
       if (!o && this.listData.page !== 1) return
@@ -141,12 +156,16 @@ export default {
       this.$nextTick(() => {
         this.getList(1).then(() => {
           this.$nextTick(() => {
-            scrollTo(this.$refs.dom_scrollContent, 0)
+            scrollTo(this.ref_dom_scrollContent, 0)
           })
         })
       })
       // if (this.isVisibleListDetail) this.setVisibleListDetail(false)
     },
+    /**
+     * @param { LxMusic.Renderer.MusicSourcesId } n
+     * @param { LxMusic.Renderer.MusicSourcesId } o
+     */
     source(n, o) {
       this.setSongList({ source: n })
       if (!this.tags[n]) this.getTags()
@@ -191,6 +210,7 @@ export default {
     unlistenEvent() {
       window.eventHub.$off('key_backspace_down', this.handle_key_backspace_down)
     },
+    /** @param { LxMusic.Renderer.EventHubKeyInfo } info */
     handle_key_backspace_down({ event }) {
       if (!this.isVisibleListDetail ||
         event.repeat ||
@@ -201,6 +221,7 @@ export default {
         event.target.classList.contains('key-bind')) return
       this.hideListDetail()
     },
+    /** @param { LxMusic.Renderer.ListButtonHandleInfo } info */
     handleListBtnClick(info) {
       switch (info.action) {
         case 'download':
@@ -223,6 +244,7 @@ export default {
           break
       }
     },
+    /** @param { LxMusic.Renderer.SongListSendActionData["menuClick"] } info */
     handleMenuClick(info) {
       let minfo
       let url
@@ -274,6 +296,7 @@ export default {
           openUrl(url)
       }
     },
+    /** @param { number } index */
     testPlay(index) {
       let targetSong = this.listDetail.list[index]
       // if (!this.assertApiSupport(targetSong.source)) return
@@ -288,6 +311,7 @@ export default {
         })
       }
     },
+    /** @param { number } index */
     handleSearch(index) {
       const info = this.listDetail.list[index]
       this.$router.push({
@@ -300,14 +324,15 @@ export default {
     handleToggleListPage(page) {
       this.getList(page).then(() => {
         this.$nextTick(() => {
-          scrollTo(this.$refs.dom_scrollContent, 0)
+          scrollTo(this.ref_dom_scrollContent, 0)
         })
       })
     },
+    /** @param { number } page */
     handleToggleListDetailPage(page) {
       this.handleGetListDetail(this.selectListInfo.id, page).then(() => {
         this.$nextTick(() => {
-          scrollTo(this.$refs.dom_scrollContent, 0)
+          scrollTo(this.ref_dom_scrollContent, 0)
         })
       })
     },
@@ -342,20 +367,21 @@ export default {
     //       break
     //   }
     // },
-    handleSongListAction({ action, data }) {
-      switch (action) {
+    /** @param { LxMusic.Renderer.SongListSendData } info */
+    handleSongListAction(info) {
+      switch (info.action) {
         case 'listBtnClick':
-          return this.handleListBtnClick(data)
+          return this.handleListBtnClick(info.data)
         case 'menuClick':
-          return this.handleMenuClick(data)
+          return this.handleMenuClick(info.data)
         case 'togglePage':
-          return this.handleToggleListDetailPage(data)
+          return this.handleToggleListDetailPage(info.data)
         // case 'flowBtnClick':
-        //   return this.handleFlowBtnClick(data)
+        //   return this.handleFlowBtnClick(info.data)
         case 'testPlay':
-          return this.testPlay(data)
+          return this.testPlay(info.data)
         case 'search':
-          return this.handleSearch(data)
+          return this.handleSearch(info.data)
       }
     },
     resetSelect() {
@@ -368,10 +394,12 @@ export default {
         this.setTagListWidth()
       }, 50)
     },
+    /** @param { boolean } isSelect */
     handleListAddModalClose(isSelect) {
       if (isSelect) this.resetSelect()
       this.isShowListAddMultiple = false
     },
+    /** @type { LxMusic.Renderer.SearchInputSendEventHnalde } */
     handleImportSongListEvent({ action }) {
       switch (action) {
         case 'submit':
@@ -395,13 +423,18 @@ export default {
       this.setVisibleListDetail(true)
       this.handleGetListDetail(this.importSongListText, 1)
     },
+    /** @param { LxMusic.UserApiEvent.SongInfo[] } list */
     filterList(list) {
       return list.filter(s => this.assertApiSupport(s.source))
     },
     setTagListWidth() {
       this.isInitedTagListWidth = true
-      this.listWidth = this.$refs.tagList.$el.clientWidth + this.$refs.tab.$el.clientWidth + 2
+      this.listWidth = this.ref_tagList.$el.clientWidth + this.ref_tab.$el.clientWidth + 2
     },
+    /**
+     * @param { string } id
+     * @param { number } page
+     */
     handleGetListDetail(id, page) {
       this.isGetDetailFailed = false
       return this.getListDetail({ id, page }).catch(err => {
@@ -409,6 +442,7 @@ export default {
         return Promise.reject(err)
       })
     },
+    /** @param { LxMusic.Renderer.MusicSourcesId } source */
     assertApiSupport(source) {
       return assertApiSupport(source)
     },

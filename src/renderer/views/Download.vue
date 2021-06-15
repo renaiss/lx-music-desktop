@@ -45,7 +45,7 @@ export default {
     return {
       clickTime: window.performance.now(),
       clickIndex: -1,
-      selectedData: [],
+      /** @type { LxMusic.Renderer.DownloadInfo[] } */ selectedData: [],
       isShowDownloadMultiple: false,
       tabId: 'all',
       keyEvent: {
@@ -53,6 +53,7 @@ export default {
         isModDown: false,
       },
       lastSelectIndex: 0,
+      /** @type { LxMusic.View.DownloadListMenuInfo } */
       listMenu: {
         isShowItemMenu: false,
         itemMenuControl: {
@@ -69,6 +70,7 @@ export default {
           x: 0,
           y: 0,
         },
+        rightClickItemIndex: -1,
       },
     }
   },
@@ -76,9 +78,13 @@ export default {
     ...mapGetters(['setting']),
     ...mapGetters('download', ['list', 'downloadStatus']),
     ...mapGetters('player', ['playInfo']),
+    /** @returns { HTMLTableSectionElement } */ ref_dom_tbody() { return this.$refs.dom_tbody },
+    /** @returns { HTMLDivElement } */ ref_dom_scrollContent() { return this.$refs.dom_scrollContent },
+    /** @returns { boolean } */
     isPlayList() {
       return this.playInfo.listId == 'download'
     },
+    /** @returns { number } */
     playListIndex() {
       if (this.playInfo.listId != 'download' || !this.list.length) return
       let info = this.list[this.playInfo.playIndex]
@@ -86,6 +92,7 @@ export default {
       let key = info.key
       return this.showList.findIndex(i => i.key == key)
     },
+    /** @returns { LxMusic.Renderer.DownloadInfo[] } */
     showList() {
       switch (this.tabId) {
         case 'runing':
@@ -100,6 +107,7 @@ export default {
           return this.list
       }
     },
+    /** @returns { LxMusic.View.DownloadTabInfo[] } */
     tabs() {
       return [
         {
@@ -124,6 +132,7 @@ export default {
         },
       ]
     },
+    /** @returns { LxMusic.View.DownloadMenuInfo[] } */
     listItemMenu() {
       return [
         {
@@ -182,7 +191,7 @@ export default {
   },
   methods: {
     ...mapActions('download', ['removeTask', 'removeTasks', 'startTask', 'startTasks', 'pauseTask', 'pauseTasks']),
-    ...mapMutations('player', ['setList']),
+    ...mapMutations('player', ['setList', 'setTempPlayList']),
     listenEvent() {
       window.eventHub.$on('key_shift_down', this.handle_key_shift_down)
       window.eventHub.$on('key_shift_up', this.handle_key_shift_up)
@@ -209,6 +218,7 @@ export default {
     handle_key_mod_up() {
       if (this.keyEvent.isModDown) this.keyEvent.isModDown = false
     },
+    /** @param { LxMusic.Renderer.HubKeyEven } event */
     handle_key_mod_a_down({ event }) {
       if (event.target.tagName == 'INPUT') return
       event.preventDefault()
@@ -216,6 +226,10 @@ export default {
       this.keyEvent.isModDown = false
       this.handleSelectAllData()
     },
+    /**
+     * @param { HTMLTableRowElement } event
+     * @param { number } index
+     */
     handleDoubleClick(event, index) {
       if (event.target.classList.contains('select')) return
 
@@ -233,6 +247,10 @@ export default {
       this.clickTime = 0
       this.clickIndex = -1
     },
+    /**
+     * @param { HTMLTableRowElement } event
+     * @param { number } clickIndex
+     */
     handleSelectData(event, clickIndex) {
       if (this.keyEvent.isShiftDown) {
         if (this.selectedData.length) {
@@ -248,7 +266,7 @@ export default {
             }
             this.selectedData = this.showList.slice(lastSelectIndex, clickIndex + 1)
             if (isNeedReverse) this.selectedData.reverse()
-            let nodes = this.$refs.dom_tbody.childNodes
+            let nodes = this.ref_dom_tbody.childNodes
             do {
               nodes[lastSelectIndex].classList.add('active')
               lastSelectIndex++
@@ -274,13 +292,15 @@ export default {
     },
     removeAllSelect() {
       this.selectedData = []
-      let dom_tbody = this.$refs.dom_tbody
+      let dom_tbody = this.ref_dom_tbody
       if (!dom_tbody) return
+      /** @type { HTMLElement[] } */
       let nodes = dom_tbody.querySelectorAll('.active')
       for (const node of nodes) {
         if (node.parentNode == dom_tbody) node.classList.remove('active')
       }
     },
+    /** @param { number } index */
     handleClick(index) {
       const key = this.showList[index].key
       index = this.list.findIndex(i => i.key === key)
@@ -293,10 +313,12 @@ export default {
         this.handleStartTask(index)
       }
     },
+    /** @param { LxMusic.Renderer.DownloadInfo } targetSong */
     async handlePlay(targetSong) {
       if (!await checkPath(path.join(this.setting.download.savePath, targetSong.fileName))) return
       this.setList({ list: { list: this.list, id: 'download' }, index: this.list.findIndex(i => i.key === targetSong.key) })
     },
+    /** @type { LxMusic.Renderer.ListButtonHandle } */
     handleListBtnClick(info) {
       let item = this.showList[info.index]
       switch (info.action) {
@@ -312,7 +334,7 @@ export default {
         case 'remove':
           this.removeTask(item)
           break
-        case 'playLater':
+        case 'playLater': // TODO 未能抵达
           if (this.selectedData.length) {
             this.setTempPlayList(this.selectedData.map(s => ({ listId: 'download', musicInfo: s })))
             this.removeAllSelect()
@@ -331,8 +353,8 @@ export default {
     handleSelectAllData() {
       this.removeAllSelect()
       this.selectedData = [...this.showList]
-
-      let nodes = this.$refs.dom_tbody.childNodes
+      /** @type { HTMLElement[] } */
+      let nodes = this.ref_dom_tbody.childNodes
       for (const node of nodes) {
         node.classList.add('active')
       }
@@ -354,10 +376,12 @@ export default {
     //       break
     //   }
     // },
+    /** @param { string } filePath */
     async handleOpenFolder(filePath) {
       if (!await checkPath(filePath)) return
       openDirInExplorer(filePath)
     },
+    /** @param { LxMusic.UserApiEvent.SongInfo } musicInfo */
     handleSearch(musicInfo) {
       this.$router.push({
         path: 'search',
@@ -369,15 +393,19 @@ export default {
     handleTabChange() {
       this.selectedData = []
     },
+    /**
+     * @param { MouseEvent & Target<HTMLTableRowElement> } event
+     * @param { number } index
+     */
     handleListItemRigthClick(event, index) {
       this.listMenu.itemMenuControl.sourceDetail = !!musicSdk[this.showList[index].musicInfo.source].getMusicDetailPageUrl
-      let dom_selected = this.$refs.dom_tbody.querySelector('tr.selected')
+      let dom_selected = this.ref_dom_tbody.querySelector('tr.selected')
       if (dom_selected) dom_selected.classList.remove('selected')
-      this.$refs.dom_tbody.querySelectorAll('tr')[index].classList.add('selected')
+      this.ref_dom_tbody.querySelectorAll('tr')[index].classList.add('selected')
       let dom_td = event.target.closest('td')
       this.listMenu.rightClickItemIndex = index
       this.listMenu.menuLocation.x = dom_td.offsetLeft + event.offsetX
-      this.listMenu.menuLocation.y = dom_td.offsetTop + event.offsetY - this.$refs.dom_scrollContent.scrollTop
+      this.listMenu.menuLocation.y = dom_td.offsetTop + event.offsetY - this.ref_dom_scrollContent.scrollTop
 
       let item = this.showList[index]
       if (item.isComplate) {
@@ -405,11 +433,12 @@ export default {
       })
     },
     hideListMenu() {
-      let dom_selected = this.$refs.dom_tbody && this.$refs.dom_tbody.querySelector('tr.selected')
+      let dom_selected = this.ref_dom_tbody && this.ref_dom_tbody.querySelector('tr.selected')
       if (dom_selected) dom_selected.classList.remove('selected')
       this.listMenu.isShowItemMenu = false
       this.listMenu.rightClickItemIndex = -1
     },
+    /** @param { LxMusic.View.DownloadMenuInfo } action */
     handleListItemMenuClick(action) {
       // console.log(action)
       let index = this.listMenu.rightClickItemIndex

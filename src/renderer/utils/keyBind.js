@@ -2,6 +2,11 @@ import { isMac } from '../../common/utils'
 
 const downKeys = new Set()
 
+/**
+ * @param { "down" | "up" } type
+ * @param {  KeyboardEvent & Target } event
+ * @param { string[] } keys
+ */
 const handleEvent = (type, event, keys) => {
   if (isMac) {
     let index = keys.indexOf('meta')
@@ -35,6 +40,7 @@ const eventModifiers = event => {
 }
 
 // 是否忽略事件（表单元素等默认忽略）
+/** @param { HTMLElement } element */
 const assertStopCallback = element => {
   // if the element has the class "keybind" then no need to stop
   if (element.classList.contains('key-bind')) return false
@@ -50,6 +56,7 @@ const assertStopCallback = element => {
   }
 }
 
+/** @param { KeyboardEvent & Target } event */
 const handleKeyDown = event => {
   if (assertStopCallback(event.target)) return
   // event.preventDefault()
@@ -70,6 +77,7 @@ const handleKeyDown = event => {
   handleEvent('down', event, keys)
 }
 
+/** @param { KeyboardEvent & Target } event */
 const handleKeyUp = event => {
   if (assertStopCallback(event.target)) return
   event.preventDefault()
@@ -88,9 +96,9 @@ const handleKeyUp = event => {
   handleEvent('up', event, keys)
 }
 
-let handleSendEvent
+/** @type { LxMusic.Renderer.EventHubKeyHanlde } */ let handleSendEvent
 
-/** @type { LxMusic.Renderer.EventHubKeyHanlde } handle */
+/** @param { LxMusic.Renderer.EventHubKeyHanlde } handle */
 const bindKey = (handle = () => { }) => {
   handleSendEvent = handle
   document.addEventListener('keydown', handleKeyDown)

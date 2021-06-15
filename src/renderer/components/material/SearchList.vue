@@ -225,10 +225,7 @@ export default {
     handleHide() {
       this.sendEvent('hide')
     },
-    /**
-     * @param { LxMusic.Renderer.SearchSendEventType } action
-     * @param { any } data
-     */
+    /** @type { LxMusic.Renderer.SearchListSendEvent } */
     sendEvent(action, data) {
       this.$emit('action', {
         action,

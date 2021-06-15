@@ -53,7 +53,13 @@ sources.forEach(source => {
 
 // getters
 const getters = {
-  /** @param { LxMusic.Renderer.SongListState } state */ sourceInfo(state, getters, rootState, { sourceNames }) { return { sources: sources.map(item => ({ id: item.id, name: sourceNames[item.id] })), sortList } },
+  /**
+   * @param  { LxMusic.Renderer.SongListActionContext["state"] } state
+   * @param  { LxMusic.Renderer.SongListActionContext["getters"] } getters
+   * @param  { LxMusic.Renderer.SongListActionContext["rootState"] } rootState
+   * @param  { LxMusic.Renderer.SongListActionContext["rootGetters"] } rootGetters
+   */
+  sourceInfo(state, getters, rootState, { sourceNames }) { return { sources: sources.map(item => ({ id: item.id, name: sourceNames[item.id] })), sortList } },
   /** @param { LxMusic.Renderer.SongListState } state */ tags: state => state.tags,
   /** @param { LxMusic.Renderer.SongListState } state */ isVisibleListDetail: state => state.isVisibleListDetail,
   /** @param { LxMusic.Renderer.SongListState } state */ selectListInfo: state => state.selectListInfo,

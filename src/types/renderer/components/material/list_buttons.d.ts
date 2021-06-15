@@ -1,5 +1,5 @@
 /** 播放器动作 */
-export type PlayerAction = "play" |
+export type ListButtonActionType = "play" |
   "listAdd" |
   "download" |
   "add" |
@@ -8,3 +8,10 @@ export type PlayerAction = "play" |
   "file" |
   "search" |
   "remove";
+
+export interface ListButtonHandleInfo {
+  action: ListButtonActionType;
+  index: number;
+}
+
+export type ListButtonHandle = (info: ListButtonHandleInfo) => void;

@@ -77,7 +77,7 @@ export default {
   },
   methods: {
     ...mapMutations('search', { clearSearchList: 'clearList', }),
-    /** @param { { action:"focus" | "blur" | "submit" | "listClick"; data: number; } } info */
+    /** @type { LxMusic.Renderer.SearchInputSendEventHnalde } */
     handleEvent({ action, data }) {
       switch (action) {
         case 'focus':

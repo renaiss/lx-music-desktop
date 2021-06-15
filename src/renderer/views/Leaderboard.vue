@@ -32,15 +32,16 @@ export default {
   name: 'Leaderboard',
   data() {
     return {
-      tabId: null,
-      source: null,
+      /** @type { string } */ tabId: null,
+      /** @type { LxMusic.Renderer.MusicSourcesId } */ source: null,
       page: 1,
       isShowDownload: false,
-      musicInfo: null,
-      selectedData: [],
+      /** @type { LxMusic.UserApiEvent.SongInfo } */ musicInfo: null,
+      /** @type { LxMusic.UserApiEvent.SongInfo[] } */ selectedData: [],
       isShowDownloadMultiple: false,
       isShowListAdd: false,
       isShowListAddMultiple: false,
+      /** @type { LxMusic.View.LeaderboardMenuConfig } */
       boardListData: {
         isShowItemMenu: false,
         itemMenuControl: {
@@ -62,9 +63,14 @@ export default {
     ...mapGetters(['setting']),
     ...mapGetters('leaderboard', ['sources', 'boards', 'list', 'info']),
     ...mapGetters('list', ['defaultList']),
+    /** @returns { HTMLDivElement } */ ref_dom_lists() { return this.$refs.dom_lists },
+    /** @returns { HTMLUListElement } */ ref_dom_lists_list() { return this.$refs.dom_lists_list },
+    /** @returns { import("../components/material/SongList.vue") } */ ref_songList() { return this.$refs.songList },
+    /** @returns { string[] } */
     boardList() {
       return this.source && this.boards[this.source] ? this.boards[this.source] : []
     },
+    /** @returns { LxMusic.View.LeaderboardMenuInfo[] } */
     listsItemMenu() {
       return [
         {
@@ -81,6 +87,10 @@ export default {
     },
   },
   watch: {
+    /**
+     * @param { string } n
+     * @param { string } o
+     */
     tabId(n, o) {
       this.setLeaderboard({ tabId: n })
       if (!n || (!o && this.page !== 1)) return
@@ -88,6 +98,10 @@ export default {
         this.page = this.info.page
       })
     },
+    /**
+     * @param { LxMusic.Renderer.MusicSourcesId } n
+     * @param { LxMusic.Renderer.MusicSourcesId } o
+     */
     source(n, o) {
       this.setLeaderboard({ source: n })
       if (o) this.tabId = null
@@ -110,37 +124,39 @@ export default {
     ...mapActions('download', ['createDownload', 'createDownloadMultiple']),
     ...mapMutations('list', ['listAdd', 'listAddMultiple', 'createUserList']),
     ...mapMutations('player', ['setList', 'setTempPlayList']),
-    handleListBtnClick(info) {
-      switch (info.action) {
+    /** @type { LxMusic.Renderer.ListButtonHandle } */
+    handleListBtnClick({ action, index }) {
+      switch (action) {
         case 'download':
-          this.musicInfo = this.list[info.index]
+          this.musicInfo = this.list[index]
           this.$nextTick(() => {
             this.isShowDownload = true
           })
           break
         case 'play':
-          this.testPlay(info.index)
+          this.testPlay(index)
           break
         case 'search':
-          this.handleSearch(info.index)
+          this.handleSearch(index)
           break
         case 'listAdd':
-          this.musicInfo = this.list[info.index]
+          this.musicInfo = this.list[index]
           this.$nextTick(() => {
             this.isShowListAdd = true
           })
           break
       }
     },
-    handleMenuClick(info) {
+    /** @param { { action: LxMusic.Renderer.SongListMenuActionType; index: number; } } info */
+    handleMenuClick({ action, index }) {
       let minfo
       let url
-      switch (info.action) {
+      switch (action) {
         case 'download':
           if (this.selectedData.length) {
             this.isShowDownloadMultiple = true
           } else {
-            this.musicInfo = this.list[info.index]
+            this.musicInfo = this.list[index]
             this.$nextTick(() => {
               this.isShowDownload = true
             })
@@ -151,18 +167,18 @@ export default {
             this.listAddMultiple({ id: 'default', list: this.selectedData })
             this.resetSelect()
           }
-          this.testPlay(info.index)
+          this.testPlay(index)
           break
         case 'playLater':
           if (this.selectedData.length) {
             this.setTempPlayList(this.selectedData.map(s => ({ listId: '__temp__', musicInfo: s })))
             this.resetSelect()
           } else {
-            this.setTempPlayList([{ listId: '__temp__', musicInfo: this.list[info.index] }])
+            this.setTempPlayList([{ listId: '__temp__', musicInfo: this.list[index] }])
           }
           break
         case 'search':
-          this.handleSearch(info.index)
+          this.handleSearch(index)
           break
         case 'addTo':
           if (this.selectedData.length) {
@@ -170,19 +186,20 @@ export default {
               this.isShowListAddMultiple = true
             })
           } else {
-            this.musicInfo = this.list[info.index]
+            this.musicInfo = this.list[index]
             this.$nextTick(() => {
               this.isShowListAdd = true
             })
           }
           break
         case 'sourceDetail':
-          minfo = this.list[info.index]
+          minfo = this.list[index]
           url = musicSdk[minfo.source].getMusicDetailPageUrl(minfo)
           if (!url) return
           openUrl(url)
       }
     },
+    /** @param { number } index */
     testPlay(index) {
       let targetSong = this.list[index]
       this.listAdd({ id: 'default', musicInfo: targetSong })
@@ -196,6 +213,7 @@ export default {
         })
       }
     },
+    /** @param { number } index */
     handleSearch(index) {
       const info = this.list[index]
       this.$router.push({
@@ -205,26 +223,30 @@ export default {
         },
       })
     },
+    /** @param { number } page */
     handleTogglePage(page) {
       this.getList(page).then(() => {
         this.page = this.info.page
       })
     },
+    /** @param { string } type */
     handleAddDownload(type) {
       this.createDownload({ musicInfo: this.musicInfo, type })
       this.isShowDownload = false
     },
+    /** @param { LxMusic.Renderer.MusicQualityType } type */
     handleAddDownloadMultiple(type) {
       if (this.source == 'xm' && type == 'flac') type = 'wav'
       this.createDownloadMultiple({ list: [...this.selectedData], type })
       this.isShowDownloadMultiple = false
       this.resetSelect()
     },
+    /** @param { boolean } isSelect */
     handleListAddModalClose(isSelect) {
       if (isSelect) this.resetSelect()
       this.isShowListAddMultiple = false
     },
-    // handleFlowBtnClick(action) {
+    // handleFlowBtnClick(/** @type { LxMusic.View.FlowBtnClickType } */ action) {
     //   switch (action) {
     //     case 'download':
     //       this.isShowDownloadMultiple = true
@@ -237,22 +259,24 @@ export default {
     //       break
     //   }
     // },
-    handleSongListAction({ action, data }) {
-      switch (action) {
+    /** @param { LxMusic.Renderer.SongListSendData } info */
+    handleSongListAction(info) {
+      switch (info.action) {
         case 'listBtnClick':
-          return this.handleListBtnClick(data)
+          return this.handleListBtnClick(info.data)
         case 'menuClick':
-          return this.handleMenuClick(data)
+          return this.handleMenuClick(info.data)
         case 'togglePage':
-          return this.handleTogglePage(data)
+          return this.handleTogglePage(info.data)
         // case 'flowBtnClick':
-        //   return this.handleFlowBtnClick(data)
+        //   return this.handleFlowBtnClick(info.data)
         case 'testPlay':
-          return this.testPlay(data)
+          return this.testPlay(info.data)
         case 'search':
-          return this.handleSearch(data)
+          return this.handleSearch(info.data)
       }
     },
+    /** @param { string } id */
     handleToggleList(id) {
       if (this.tabId == id) return
       this.tabId = id
@@ -260,6 +284,10 @@ export default {
     resetSelect() {
       this.selectedData = []
     },
+    /**
+     * @param { MouseEvent & CurrentTarget } event
+     * @param { number } index
+     */
     handleListsItemRigthClick(event, index) {
       // const board = this.boardList[index]
       // this.boardListData.itemMenuControl.sync = !!source && !!musicSdk[source].songList
@@ -267,9 +295,9 @@ export default {
       // this.boardListData.itemMenuControl.movedown = index < this.userList.length - 1
       this.boardListData.rightClickItemIndex = index
       this.boardListData.menuLocation.x = event.currentTarget.offsetLeft + event.offsetX
-      this.boardListData.menuLocation.y = event.currentTarget.offsetTop + event.offsetY - this.$refs.dom_lists_list.scrollTop
+      this.boardListData.menuLocation.y = event.currentTarget.offsetTop + event.offsetY - this.ref_dom_lists_list.scrollTop
       // this.hideListsMenu()
-      this.$refs.songList.hideListMenu()
+      this.ref_songList.hideListMenu()
       this.$nextTick(() => {
         this.boardListData.isShowItemMenu = true
       })
@@ -278,6 +306,7 @@ export default {
       this.boardListData.isShowItemMenu = false
       this.boardListData.rightClickItemIndex = -1
     },
+    /** @param { LxMusic.View.LeaderboardMenuInfo } action */
     async handleListsItemMenuClick(action) {
       let index = this.boardListData.rightClickItemIndex
       this.hideListsMenu()

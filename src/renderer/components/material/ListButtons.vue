@@ -76,7 +76,7 @@ export default {
     ...mapGetters(['setting']),
   },
   methods: {
-    /** @param { LxMusic.Renderer.PlayerAction } action */
+    /** @param { LxMusic.Renderer.ListButtonActionType } action */
     handleClick(action) {
       this.$emit('btn-click', { action, index: this.index })
     },

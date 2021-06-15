@@ -93,8 +93,9 @@ import { mapGetters, mapActions, mapMutations } from 'vuex'
 import { requestMsg } from '../../utils/message'
 import { player as eventPlayerNames } from '../../../common/hotKey'
 import path from 'path'
+import FontPlayer from '@renderer/utils/lyric-font-player/font-player'
 
-/** @type { HTMLAudioElement | undefined } */ let audio
+/** @type { HTMLMediaElement } */ let audio
 
 const playNextModes = [
   'listLoop',
@@ -113,19 +114,19 @@ export default {
       status: '',
       statusText: '',
       musicInfo: {
-        /** @type { string } */ songmid: null,
-        /** @type { string } */ img: null,
-        /** @type { string } */ lrc: null,
-        /** @type { string } */ url: null,
-        /** @type { string } */ lxlrc: null,
-        /** @type { string } */ tlrc: null,
+        /** @type { string } */ songmid: "",
+        /** @type { string } */ img: "",
+        /** @type { string } */ lrc: "",
+        /** @type { string } */ url: "",
+        /** @type { string } */ lxlrc: "",
+        /** @type { string } */ tlrc: "",
         name: '',
         singer: '',
         album: '',
       },
       pregessWidth: 0,
       lyric: {
-        lines: [],
+        /** @type { FontPlayer[] } */ lines: [],
         text: '',
         line: 0,
       },
@@ -143,7 +144,9 @@ export default {
         playTime: 0,
       },
       isShowAddMusicTo: false,
-        /** @type { null | NodeJS.Timeout } */ loadingTimeout: null,
+      /** @type { null | NodeJS.Timeout } */ loadingTimeout: null,
+      /** @type { (volume: number | boolean) => void } */ handleSaveVolume: () => {},
+      /** @type { (n: LxMusic.Renderer.SaveDataPlayInfo) => void } */ savePlayInfo: () => {},
     }
   },
   computed: {
@@ -210,10 +213,10 @@ export default {
     this.$nextTick(() => {
       this.setProgressWidth()
     })
-    this.handleSaveVolume = debounce(volume => {
+    this.handleSaveVolume = debounce((/** @type {number | boolean} */ volume) => {
       this.setVolume(volume)
     }, 300)
-    this.savePlayInfo = throttle(n => {
+    this.savePlayInfo = throttle((/** @type { LxMusic.Renderer.SaveDataPlayInfo } */ n) => {
       rendererSend(NAMES.mainWindow.save_data, {
         path: 'playInfo',
         data: n,
@@ -646,7 +649,9 @@ export default {
     },
     /**
      * @param { LxMusic.UserApiEvent.SongInfo } targetSong
-     * @param { boolean } isRefresh
+     * @param { boolean } [isRefresh]
+     * @param { boolean } [isRetryed]
+     * @returns { Promise<void> }
      */
     setUrl(targetSong, isRefresh, isRetryed = false) {
       let type = this.getPlayType(this.setting.player.highQuality, targetSong)
@@ -733,6 +738,7 @@ export default {
     clearAppTitle() {
       setTitle()
     },
+    /** @param { MouseEvent } e */
     handleVolumeMsDown(e) {
       this.volumeEvent.isMsDown = true
       this.volumeEvent.msDownX = e.clientX
@@ -793,6 +799,7 @@ export default {
       if (!this.targetSong) return
       this.visiblePlayerDetail(true)
     },
+    /** @param { TransitionEvent } e */
     handleTransitionEnd(e) {
       // console.log(e)
       this.isActiveTransition = false

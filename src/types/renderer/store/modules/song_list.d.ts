@@ -1,6 +1,6 @@
 /** 歌曲列表明细信息 */
 export interface SongListDetailInfo {
-  /** 列表 */ list: [];
+  /** 列表 */ list: LxMusic.UserApiEvent.SongInfo[];
   /** 描述 */ desc: string;
   /** 总数 */ total: number
   /** 页面 */ page: number;
@@ -14,7 +14,7 @@ export type SongListCacheMap = Map<LxMusic.Renderer.MusicSourcesId, LxMusic.Rend
 
 /** 歌曲列表数据 */
 export interface SongListState {
-  /** 标签 */ tags: { [id in LxMusic.Renderer.MusicSourcesId]: LxMusic.Renderer.MusicPlatformTagInfo; };
+  /** 标签 */ tags: { [id in LxMusic.Renderer.MusicSourcesId]: LxMusic.Renderer.MusicPlatformTagInfo; }; // TODO type error
   /** 列表 */ list: LxMusic.Renderer.LeaderboardState;
   /** 列表明细 */ listDetail: SongListDetailInfo;
   /** 选择列表信息 */ selectListInfo: LxMusic.Renderer.MusicPlatformDetailInfo["info"];

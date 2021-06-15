@@ -138,10 +138,7 @@ export default {
         this.selectIndex = -1
       })
     },
-    /**
-     * @param { LxMusic.Renderer.SearchSendEventType } action
-     * @param { number | undefined } data
-     */
+    /** @type { LxMusic.Renderer.SearchInputSendEvent } */
     sendEvent(action, data) {
       this.$emit('event', {
         action,

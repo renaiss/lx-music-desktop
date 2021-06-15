@@ -17,7 +17,7 @@ div.scroll(:class="$style.tab")
 <script>
 export default {
   props: {
-    /** @type { (...args: any[]) => any[]; } */
+    /** @type { (...args: any[]) => LxMusic.Renderer.TabListProp[]; } */
     list: {
       type: Array,
       default() {
@@ -36,7 +36,7 @@ export default {
     },
   },
   methods: {
-    /** @param { unknown } item */
+    /** @param { LxMusic.Renderer.TabListProp } item */
     handleClick(item) {
       if (item === this.value) return
       this.$emit('input', item)

@@ -55,4 +55,4 @@ export interface LyricInfoInfo {
 export type SetLyricInfo = LyricInfo & { /** 信息 */ info: LyricInfoInfo; }
 
 /** 设置歌词信息函数 */
-export type SetLyricInfoFunc = <T extends LyricInfoType>(type: T, data: LyricInfoMap[T], info: LyricInfoInfo) => void;
+export type SetLyricInfoFunc = <T extends LyricInfoType>(type: T, data?: LyricInfoMap[T], info?: LyricInfoInfo) => void;

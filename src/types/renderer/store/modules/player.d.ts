@@ -11,6 +11,9 @@ export type PlayMusicInfo = {
 } | {
   /** 列表编号 */ listId: "play";
   /** 音乐信息 */ musicInfo: LxMusic.UserApiEvent.SongInfo;
+} | {
+  /** 列表编号 */ listId: "__temp__";
+  /** 音乐信息 */ musicInfo: LxMusic.UserApiEvent.SongInfo;
 })
 
 /** 播放器数据 */

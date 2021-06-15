@@ -297,17 +297,22 @@ import { mainWindow as eventsNameMainWindow, winLyric as eventsNameWinLyric } fr
 import { gzip, gunzip } from 'zlib'
 import music from '../utils/music'
 
-let hotKeyTargetInput
-let newHotKey
+
+/** @type { ?HTMLInputElement } */ let hotKeyTargetInput
+/** @type { ?string } */ let newHotKey
 
 export default {
   name: 'Setting',
   computed: {
     ...mapGetters(['setting', 'settingVersion', 'themes', 'version', 'windowSizeList']),
     ...mapGetters('list', ['defaultList', 'loveList', 'userList']),
+    /** @returns { HTMLTableSectionElement } */ ref_dom_setting() { return this.$refs.dom_setting },
+    /** @returns { HTMLTableSectionElement } */ ref_dom_setting_list() { return this.$refs.dom_setting_list },
+    /** @returns { boolean } */
     isShowRebootBtn() {
       return this.current_setting.windowSizeId != window.currentWindowSizeId
     },
+    /** @returns { import("vue-i18n").TranslateResult } */
     downloadProgress() {
       return this.version.downloadProgress
         ? `${this.version.downloadProgress.percent.toFixed(2)}% - ${sizeFormate(this.version.downloadProgress.transferred)}/${sizeFormate(this.version.downloadProgress.total)} - ${sizeFormate(this.version.downloadProgress.bytesPerSecond)}/s`
@@ -350,16 +355,9 @@ export default {
       ]
     },
     sourceNameTypes() {
-      return [
-        {
-          id: 'real',
-          label: this.$t('view.setting.basic_sourcename_real'),
-        },
-        {
-          id: 'alias',
-          label: this.$t('view.setting.basic_sourcename_alias'),
-        },
-      ]
+      return ['real','alias'].map(id=>(
+        { id, label: this.$t(`view.setting.basic_sourcename_${id}`) }
+      ))
     },
     musicNames() {
       return [
@@ -378,16 +376,9 @@ export default {
       ]
     },
     controlBtnPositionList() {
-      return [
-        {
-          name: this.$t('view.setting.basic_control_btn_position_left'),
-          id: 'left',
-        },
-        {
-          name: this.$t('view.setting.basic_control_btn_position_right'),
-          id: 'right',
-        },
-      ]
+      return ['left','right'].map(id=>(
+        { id, name: this.$t(`view.setting.basic_control_btn_position_${id}`) }
+      ))
     },
     trayThemeList() {
       return [
@@ -404,6 +395,7 @@ export default {
   },
   data() {
     return {
+      /** @type { LxMusic.Common.Setting } */
       current_setting: {
         player: {
           togglePlayMethod: 'random',
@@ -475,6 +467,7 @@ export default {
         controlBtnPosition: 'left',
         apiSource: 'temp',
       },
+      /** @type { LxMusic.Common.DefaultHotKey } */
       current_hot_key: {
         local: {
           enable: false,
@@ -486,8 +479,9 @@ export default {
         },
       },
       languageList,
-      cacheSize: '0 B',
+      /** @type { LxMusic.Renderer.DataSize } */ cacheSize: '0 B',
       mediaDevices: [],
+      /** @type { LxMusic.View.SettingHotKeyConfig } */
       hotKeys: {
         local: [
           {
@@ -584,6 +578,7 @@ export default {
           },
         ],
       },
+      /** @type { LxMusic.View.SettingHotKeyMap } */
       hotKeyConfig: {
         local: {},
         global: {},
@@ -593,6 +588,7 @@ export default {
       },
       isEditHotKey: false,
       isShowUserApiModal: false,
+      /** @deprecated */
       toc: {
         list: [],
         activeId: '',
@@ -603,6 +599,10 @@ export default {
   },
   watch: {
     current_setting: {
+      /**
+       * @param { LxMusic.Common.Setting } n
+       * @param { LxMusic.Common.Setting } o
+       */
       handler(n, o) {
         if (!this.settingVersion) return
         if (JSON.stringify(this.setting) === JSON.stringify(n)) return
@@ -610,30 +610,38 @@ export default {
       },
       deep: true,
     },
+    /** @param { boolean } n */
     'setting.isAgreePact'(n) {
       this.current_setting.isAgreePact = n
     },
+    /** @param { string } n */
     'setting.player.mediaDeviceId'(n) {
       this.current_setting.player.mediaDeviceId = n
     },
+    /** @param { boolean } n */
     'setting.player.isMute'(n) {
       this.current_setting.player.isMute = n
     },
+    /** @param { string } n */
     'setting.apiSource'(n) {
       this.current_setting.apiSource = n
     },
+    /** @param { boolean } n */
     'setting.desktopLyric.enable'(n) {
       this.current_setting.desktopLyric.enable = n
     },
+    /** @param { boolean } n */
     'setting.desktopLyric.isLock'(n) {
       this.current_setting.desktopLyric.isLock = n
     },
+    /** @param { LxMusic.Common.PlayMethodInfo } n */
     'setting.player.togglePlayMethod'(n) {
       this.current_setting.player.togglePlayMethod = n
     },
     // 'setting.player.isPlayLxlrc'(n) {
     //   this.current_setting.player.isPlayLxlrc = n
     // },
+    /** @param { boolean } n */
     'current_setting.player.isShowTaskProgess'(n) {
       if (n) return
       this.$nextTick(() => {
@@ -677,7 +685,7 @@ export default {
       this.getHotKeyStatus()
     },
     // initTOC() {
-    //   const list = this.$refs.dom_setting_list.children
+    //   const list = this.ref_dom_setting.children
     //   const toc = []
     //   let prevTitle
     //   for (const item of list) {
@@ -716,10 +724,13 @@ export default {
         this.current_setting.download.savePath = result.filePaths[0]
       })
     },
+    /** @param { string } dir */
     handleOpenDir(dir) {
       openDirInExplorer(dir)
     },
+    /** @param { string } path */
     async importSetting(path) {
+      /** @type { LxMusic.View.SettingFileInfo } */
       let settingData
       try {
         settingData = JSON.parse(await this.handleReadFile(path))
@@ -731,6 +742,7 @@ export default {
       setting.isAgreePact = false
       this.refreshSetting(setting, settingVersion)
     },
+    /** @param { string } path */
     exportSetting(path) {
       console.log(path)
       const data = {
@@ -739,6 +751,7 @@ export default {
       }
       this.handleSaveFile(path, JSON.stringify(data))
     },
+    /** @param { string } path */
     async importPlayList(path) {
       let listData
       try {
@@ -760,6 +773,7 @@ export default {
 
       await this.refreshSetting(this.setting, this.settingVersion)
     },
+    /** @param { string } path */
     async exportPlayList(path) {
       const data = JSON.parse(JSON.stringify({
         type: 'playList',
@@ -776,6 +790,7 @@ export default {
       }
       this.handleSaveFile(path, JSON.stringify(data))
     },
+    /** @param { string } path */
     async importAllData(path) {
       let allData
       try {
@@ -881,9 +896,11 @@ export default {
         this.exportPlayList(result.filePath)
       })
     },
+    /** @param { string } url */
     handleOpenUrl(url) {
       openUrl(url)
     },
+    /** @param { LxMusic.Renderer.MusicQualitysApiId } id */
     handleAPISourceChange(id) {
       this.$nextTick(() => {
         window.globalObj.apiSource = id
@@ -892,9 +909,11 @@ export default {
     showUpdateModal() {
       this.setVersionModalVisible({ isShow: true })
     },
+    /** @param { string } text */
     clipboardWriteText(text) {
       clipboardWriteText(text)
     },
+    /** @param { keyof LxMusic.Common.Setting["network"]["proxy"] } key */
     handleProxyChange(key) {
       window.globalObj.proxy[key] = this.current_setting.network.proxy[key]
     },
@@ -915,10 +934,12 @@ export default {
       this.clearMyListCache()
       this.isDisabledListCacheClear = false
     },
+    /** @param { number } index */
     handleWindowSizeChange(index) {
       let info = index == null ? this.windowSizeList[2] : this.windowSizeList[index]
       setWindowSize(info.width, info.height)
     },
+    /** @param { LxMusic.Common.Setting } newSetting */
     async refreshSetting(newSetting, newVersion) {
       await saveSetting(newSetting)
       const { setting, version } = await getSetting()
@@ -937,6 +958,7 @@ export default {
       this.init()
       this.handleLangChange(this.current_setting.langId)
     },
+    /** @param { LxMusic.Renderer.LangLocale } id */
     handleLangChange(id) {
       this.$i18n.locale = id
       // this.$nextTick(() => this.initTOC())
@@ -950,13 +972,16 @@ export default {
     handleShowPact() {
       window.globalObj.isShowPact = true
     },
+    /** @param { LxMusic.Common.Setting } config */
     handleUpdateSetting(config) {
       this.current_setting = JSON.parse(JSON.stringify(config))
     },
     initHotKeyConfig() {
+      /** @type { LxMusic.View.SettingHotKeyMap } */
       let config = {}
       for (const type of Object.keys(this.current_hot_key)) {
         let typeInfo = this.current_hot_key[type]
+        /** @type { LxMusic.View.ValueOf<LxMusic.View.SettingHotKeyMap> } */
         let configInfo = config[type] = {}
         for (const key of Object.keys(typeInfo.keys)) {
           let info = typeInfo.keys[key]
@@ -969,6 +994,11 @@ export default {
       }
       this.hotKeyConfig = config
     },
+    /**
+     * @param { Event & Target<HTMLInputElement> } event
+     * @param { LxMusic.Common.HotKeyInfo } info
+     * @param { keyof LxMusic.Common.DefaultHotKey } type
+     */
     async handleHotKeyFocus(event, info, type) {
       await rendererInvoke(NAMES.hotKey.enable, false)
       window.isEditingHotKey = true
@@ -978,6 +1008,11 @@ export default {
       hotKeyTargetInput = event.target
       event.target.value = this.$t('view.setting.hot_key_tip_input')
     },
+    /**
+     * @param { Event } event
+     * @param { LxMusic.Common.HotKeyInfo } info
+     * @param { keyof LxMusic.Common.DefaultHotKey } type
+     */
     async handleHotKeyBlur(event, info, type) {
       await rendererInvoke(NAMES.hotKey.enable, true)
       window.isEditingHotKey = false
@@ -1040,6 +1075,7 @@ export default {
       await this.handleHotKeySaveConfig()
       await this.getHotKeyStatus()
     },
+    /** @param { string } name */
     formatHotKeyName(name) {
       if (name.includes('arrow')) {
         name = name.replace(/arrow(left|right|up|down)/, s => {
@@ -1056,6 +1092,7 @@ export default {
       if (name.length > 1) name = name.replace(/\+/g, ' + ')
       return name
     },
+    /** @param { LxMusic.Renderer.EventHubKeyInfo } info */
     handleKeyDown({ event, keys, key, type }) {
       // if (!event || event.repeat) return
       if (!event || event.repeat || type == 'up' || !this.isEditHotKey) return
@@ -1071,6 +1108,7 @@ export default {
       // console.log(keys, key, type)
       newHotKey = key
     },
+    /** @param { LxMusic.Common.DefaultHotKey } config */
     handleUpdateHotKeyConfig(config) {
       // console.log(config)
       for (const type of Object.keys(config)) {
@@ -1102,15 +1140,21 @@ export default {
         return status
       })
     },
+    /** @param { boolean } isShow */
     handleTrayShowChange(isShow) {
       this.current_setting.tray.isToTray = isShow
     },
+    /**
+     * @param { string } path
+     * @param { string } data
+     */
     async handleSaveFile(path, data) {
       if (!path.endsWith('.lxmc')) path += '.lxmc'
       fs.writeFile(path, await this.gzip(data), 'binary', err => {
         console.log(err)
       })
     },
+    /** @param { string } path */
     async handleReadFile(path) {
       let isJSON = path.endsWith('.json')
       let data = await fs.promises.readFile(path, isJSON ? 'utf8' : 'binary')
@@ -1118,6 +1162,7 @@ export default {
       data = await this.gunzip(Buffer.from(data, 'binary'))
       return data.toString('utf8')
     },
+    /** @param { string } str */
     gzip(str) {
       return new Promise((resolve, reject) => {
         gzip(str, (err, result) => {
@@ -1126,6 +1171,7 @@ export default {
         })
       })
     },
+    /** @param { string } buf */
     gunzip(buf) {
       return new Promise((resolve, reject) => {
         gunzip(buf, (err, result) => {
